@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Shield, Clock, Sparkles, Wifi, WifiOff, Users, ChevronDown, CheckCircle2, Award, ArrowRight, Globe, Database, Crown, UserCheck, Lock, Bell, Building2, AlertTriangle, Radio, X, MapPin, Laptop, ShieldCheck, Zap, LogOut } from 'lucide-react';
+import { Shield, Clock, Sparkles, Wifi, WifiOff, Users, ChevronDown, CheckCircle2, Award, ArrowRight, Globe, Database, Crown, UserCheck, Lock, Bell, Building2, AlertTriangle, Radio, X, MapPin, Laptop, ShieldCheck, Zap, LogOut, Camera, KeyRound, User } from 'lucide-react';
 import { Employee, UserRole, SystemRole, getEffectiveSystemRole, AuthUser } from '../types';
 import { rtcService } from '../services/rtcService';
+import { ProfileSettingsModal, ProfileTabId } from './ProfileSettingsModal';
 
 interface NavbarProps {
   currentUser: Employee;
   allUsers: Employee[];
   onSwitchUser: (user: Employee) => void;
+  onUpdateEmployee?: (user: Employee) => void;
   isWifiConnected: boolean;
   onToggleWifi: () => void;
   currentWifiSsid: string;
@@ -29,6 +31,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   currentUser,
   allUsers,
   onSwitchUser,
+  onUpdateEmployee,
   isWifiConnected,
   onToggleWifi,
   currentWifiSsid,
@@ -48,7 +51,15 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [isNetworkPopoverOpen, setIsNetworkPopoverOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [profileModalInitialTab, setProfileModalInitialTab] = useState<ProfileTabId>('profile');
   const networkPopoverRef = useRef<HTMLDivElement | null>(null);
+
+  const openProfileModal = (tab: ProfileTabId = 'profile') => {
+    setProfileModalInitialTab(tab);
+    setIsProfileModalOpen(true);
+    setUserDropdownOpen(false);
+  };
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -350,115 +361,144 @@ export const Navbar: React.FC<NavbarProps> = ({
               <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
             </button>
 
-            {/* Dropdown Menu */}
+            {/* User Profile Settings Dropdown */}
             {userDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-80 rounded-2xl bg-white border border-slate-200 shadow-2xl p-2.5 z-50 animate-in fade-in slide-in-from-top-2">
-                <div className="px-3 py-2 border-b border-slate-100 mb-2">
-                  <div className="flex items-center justify-between">
-                    <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 font-mono-code">RBAC Persona Switcher</p>
-                    <span className="text-[9px] px-1.5 py-0.2 rounded font-bold font-mono-code uppercase bg-orange-100 text-orange-700">
-                      Multi-Role
-                    </span>
+              <div className="absolute right-0 mt-2 w-84 rounded-3xl bg-white border border-slate-200 shadow-2xl p-3 z-50 animate-in fade-in slide-in-from-top-2">
+                {/* User Identity Banner Card */}
+                <div className="p-3.5 rounded-2xl bg-gradient-to-br from-slate-900 via-slate-850 to-slate-900 text-white mb-2.5 relative overflow-hidden shadow-md">
+                  <div className="absolute -top-6 -right-6 w-28 h-28 bg-[#FF6B00]/20 rounded-full blur-xl pointer-events-none" />
+                  
+                  <div className="flex items-center gap-3 relative z-10">
+                    <div className="relative group cursor-pointer" onClick={() => openProfileModal('photo')}>
+                      <img
+                        src={currentUser.avatar}
+                        alt={currentUser.name}
+                        className="w-12 h-12 rounded-full object-cover border-2 border-white/90 shadow-md group-hover:opacity-80 transition-opacity"
+                      />
+                      <div className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Camera className="w-4 h-4 text-white" />
+                      </div>
+                    </div>
+                    
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-xs font-black text-white truncate leading-tight">
+                        {currentUser.name}
+                      </h4>
+                      <p className="text-[10px] text-slate-400 font-mono-code truncate mt-0.5">
+                        {currentUser.nik} • {currentUser.department}
+                      </p>
+                      <div className="mt-1 flex items-center gap-1.5">
+                        <span className={`text-[9px] font-black px-2 py-0.2 rounded-full uppercase tracking-wider font-mono-code ${
+                          currentRole === 'superuser'
+                            ? 'bg-amber-400/20 text-amber-300 border border-amber-400/30'
+                            : currentRole === 'admin'
+                            ? 'bg-blue-400/20 text-blue-300 border border-blue-400/30'
+                            : 'bg-emerald-400/20 text-emerald-300 border border-emerald-400/30'
+                        }`}>
+                          {currentRole === 'superuser' ? '👑 SUPERUSER' : currentRole === 'admin' ? '🛡️ ADMIN HR' : '👤 STAFF'}
+                        </span>
+                        <span className="text-[10px] text-slate-300 font-medium truncate max-w-[110px]">
+                          {currentUser.position}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-xs text-slate-600 mt-0.5">Pilih akun untuk menguji batasan hak akses RBAC:</p>
                 </div>
 
-                <div className="space-y-1.5 max-h-[360px] overflow-y-auto">
-                  {/* Group 1: Superuser */}
-                  <div className="px-2 pt-1">
-                    <span className="text-[10px] font-black uppercase text-amber-700 font-mono-code flex items-center gap-1">
-                      <Crown className="w-3 h-3 text-amber-600" /> Superuser (Akses Penuh)
+                {/* Profile Actions List */}
+                <div className="space-y-1">
+                  <div className="px-2 pt-1 pb-0.5">
+                    <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider font-mono-code">
+                      Pengaturan Profil & Akun
                     </span>
                   </div>
-                  {allUsers.filter(u => getEffectiveSystemRole(u) === 'superuser').map(user => {
-                    const isSelected = user.id === currentUser.id;
-                    return (
-                      <button
-                        key={user.id}
-                        onClick={() => {
-                          onSwitchUser(user);
-                          setUserDropdownOpen(false);
-                        }}
-                        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left transition-all cursor-pointer ${
-                          isSelected
-                            ? 'bg-amber-50 text-amber-900 font-bold border border-amber-200'
-                            : 'hover:bg-slate-50 text-slate-700'
-                        }`}
-                      >
-                        <img src={user.avatar} alt={user.name} className="w-7 h-7 rounded-full object-cover" />
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs font-semibold truncate leading-tight">{user.name}</p>
-                          <p className="text-[10px] text-slate-500 truncate">{user.position}</p>
-                        </div>
-                        {isSelected && <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0" />}
-                      </button>
-                    );
-                  })}
 
-                  {/* Group 2: Admin */}
-                  <div className="px-2 pt-2 border-t border-slate-100">
-                    <span className="text-[10px] font-black uppercase text-blue-700 font-mono-code flex items-center gap-1">
-                      <Shield className="w-3 h-3 text-blue-600" /> Admin (HR & Operations)
-                    </span>
-                  </div>
-                  {allUsers.filter(u => getEffectiveSystemRole(u) === 'admin').map(user => {
-                    const isSelected = user.id === currentUser.id;
-                    return (
-                      <button
-                        key={user.id}
-                        onClick={() => {
-                          onSwitchUser(user);
-                          setUserDropdownOpen(false);
-                        }}
-                        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left transition-all cursor-pointer ${
-                          isSelected
-                            ? 'bg-blue-50 text-blue-900 font-bold border border-blue-200'
-                            : 'hover:bg-slate-50 text-slate-700'
-                        }`}
-                      >
-                        <img src={user.avatar} alt={user.name} className="w-7 h-7 rounded-full object-cover" />
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs font-semibold truncate leading-tight">{user.name}</p>
-                          <p className="text-[10px] text-slate-500 truncate">{user.position}</p>
-                        </div>
-                        {isSelected && <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />}
-                      </button>
-                    );
-                  })}
+                  {/* Option 1: Edit Profile */}
+                  <button
+                    onClick={() => openProfileModal('profile')}
+                    className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-200/80 transition-all text-left cursor-pointer group"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-xl bg-orange-50 border border-orange-200/70 text-[#FF6B00] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                        <User className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-slate-800 group-hover:text-[#FF6B00] transition-colors leading-tight">
+                          Edit Data Diri & Kontak
+                        </p>
+                        <p className="text-[10px] text-slate-500">
+                          Nama, No. WhatsApp, Email & Rekening
+                        </p>
+                      </div>
+                    </div>
+                    <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#FF6B00] group-hover:translate-x-0.5 transition-all" />
+                  </button>
 
-                  {/* Group 3: Staff Biasa */}
-                  <div className="px-2 pt-2 border-t border-slate-100">
-                    <span className="text-[10px] font-black uppercase text-emerald-700 font-mono-code flex items-center gap-1">
-                      <UserCheck className="w-3 h-3 text-emerald-600" /> Staff Biasa (Data Sendiri Saja)
-                    </span>
-                  </div>
-                  {allUsers.filter(u => getEffectiveSystemRole(u) === 'staff').map(user => {
-                    const isSelected = user.id === currentUser.id;
-                    return (
-                      <button
-                        key={user.id}
-                        onClick={() => {
-                          onSwitchUser(user);
-                          setUserDropdownOpen(false);
-                        }}
-                        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left transition-all cursor-pointer ${
-                          isSelected
-                            ? 'bg-emerald-50 text-emerald-900 font-bold border border-emerald-200'
-                            : 'hover:bg-slate-50 text-slate-700'
-                        }`}
-                      >
-                        <img src={user.avatar} alt={user.name} className="w-7 h-7 rounded-full object-cover" />
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs font-semibold truncate leading-tight">{user.name}</p>
-                          <p className="text-[10px] text-slate-500 truncate">{user.position}</p>
-                        </div>
-                        {isSelected && <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />}
-                      </button>
-                    );
-                  })}
+                  {/* Option 2: Change Photo */}
+                  <button
+                    onClick={() => openProfileModal('photo')}
+                    className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-200/80 transition-all text-left cursor-pointer group"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-xl bg-blue-50 border border-blue-200/70 text-blue-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                        <Camera className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-slate-800 group-hover:text-blue-600 transition-colors leading-tight">
+                          Ganti Foto Profil
+                        </p>
+                        <p className="text-[10px] text-slate-500">
+                          Unggah foto baru atau pilih avatar resmi
+                        </p>
+                      </div>
+                    </div>
+                    <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all" />
+                  </button>
+
+                  {/* Option 3: Change Password */}
+                  <button
+                    onClick={() => openProfileModal('password')}
+                    className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-200/80 transition-all text-left cursor-pointer group"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-xl bg-emerald-50 border border-emerald-200/70 text-emerald-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                        <KeyRound className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-slate-800 group-hover:text-emerald-600 transition-colors leading-tight">
+                          Ganti Kata Sandi (Password)
+                        </p>
+                        <p className="text-[10px] text-slate-500">
+                          Perbarui kredensial keamanan akun Anda
+                        </p>
+                      </div>
+                    </div>
+                    <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all" />
+                  </button>
+
+                  {/* Option 4: Sesi & Keamanan */}
+                  <button
+                    onClick={() => openProfileModal('security')}
+                    className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-200/80 transition-all text-left cursor-pointer group"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-xl bg-purple-50 border border-purple-200/70 text-purple-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                        <ShieldCheck className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-slate-800 group-hover:text-purple-600 transition-colors leading-tight">
+                          Keamanan & Info Jaringan
+                        </p>
+                        <p className="text-[10px] text-slate-500">
+                          {isOfficeNetwork ? 'WFO Kantor Terverifikasi' : 'Remote Luar Kantor'} • IP {realDetectedIp || '103.31.205.218'}
+                        </p>
+                      </div>
+                    </div>
+                    <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-purple-600 group-hover:translate-x-0.5 transition-all" />
+                  </button>
                 </div>
 
-                {/* Direct Shortcut to User Performance / ESS Portal */}
+                {/* Direct Shortcut to User Performance & Logout */}
                 <div className="pt-2 mt-2 border-t border-slate-100 space-y-1.5">
                   <button
                     onClick={() => {
@@ -496,6 +536,21 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
       </div>
+
+      {/* Profile Settings Modal */}
+      <ProfileSettingsModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        currentUser={currentUser}
+        authUser={authUser}
+        onUpdateEmployee={onUpdateEmployee || (() => {})}
+        initialTab={profileModalInitialTab}
+        realDetectedIp={realDetectedIp}
+        realDetectedIsp={realDetectedIsp}
+        realDetectedCity={realDetectedCity}
+        isOfficeNetwork={isOfficeNetwork}
+        onLogout={onLogout}
+      />
     </header>
 
     {/* Floating Tour Demo Button in Bottom-Left Corner */}

@@ -612,6 +612,9 @@ export function App() {
     if (currentUser.id === emp.id) {
       setCurrentUser(emp);
     }
+    if (authUser && authUser.employee && authUser.employee.id === emp.id) {
+      setAuthUser(prev => prev ? { ...prev, employee: emp } : null);
+    }
     api.saveEmployee(emp).catch(err => console.error('Failed to update employee in SQLite', err));
   };
 
@@ -663,6 +666,7 @@ export function App() {
         currentUser={currentUser}
         allUsers={employees}
         onSwitchUser={handleSwitchUser}
+        onUpdateEmployee={handleUpdateEmployee}
         isWifiConnected={isWifiConnected}
         onToggleWifi={toggleWifi}
         currentWifiSsid={currentWifiSsid}
