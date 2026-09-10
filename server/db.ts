@@ -204,14 +204,46 @@ function initializeSchema(db: DatabaseSync) {
       entity TEXT NOT NULL,
       entityId TEXT,
       details TEXT,
+      userName TEXT DEFAULT 'System',
+      userNik TEXT,
+      userRole TEXT DEFAULT 'system',
+      module TEXT DEFAULT 'SYSTEM',
+      ipAddress TEXT DEFAULT '127.0.0.1',
+      status TEXT DEFAULT 'SUCCESS',
+      metadata TEXT,
       timestamp TEXT DEFAULT CURRENT_TIMESTAMP
     );
   `);
+
+  // Ensure audit_logs columns exist (backward-compatible schema migration)
+  try {
+    const existingAuditCols = (db.prepare('PRAGMA table_info(audit_logs);').all() as any[]).map(c => c.name);
+    const newAuditCols = [
+      { name: 'userName', def: "TEXT DEFAULT 'System'" },
+      { name: 'userNik', def: "TEXT" },
+      { name: 'userRole', def: "TEXT DEFAULT 'system'" },
+      { name: 'module', def: "TEXT DEFAULT 'SYSTEM'" },
+      { name: 'ipAddress', def: "TEXT DEFAULT '127.0.0.1'" },
+      { name: 'status', def: "TEXT DEFAULT 'SUCCESS'" },
+      { name: 'metadata', def: "TEXT" }
+    ];
+    for (const col of newAuditCols) {
+      if (!existingAuditCols.includes(col.name)) {
+        try {
+          db.exec(`ALTER TABLE audit_logs ADD COLUMN ${col.name} ${col.def};`);
+        } catch (e) {}
+      }
+    }
+  } catch (e) {}
 
   // Auto-seed if database is new or empty
   const empCount = (db.prepare('SELECT count(*) as count FROM employees;').get() as any)?.count || 0;
   if (empCount === 0) {
     seedInitialData(db);
+  }
+  const logCount = (db.prepare('SELECT count(*) as count FROM audit_logs;').get() as any)?.count || 0;
+  if (logCount < 10) {
+    seedRealisticAuditLogs(db);
   }
 }
 
@@ -687,4 +719,520 @@ export function resetDatabase() {
   db.exec('DELETE FROM audit_logs;');
   seedInitialData(db);
   return getAllData();
+}
+
+export interface AuditLogRecord {
+  id: number;
+  timestamp: string;
+  userName: string;
+  userNik?: string;
+  userRole: string;
+  action: string;
+  module: string;
+  entity?: string;
+  entityId?: string;
+  details: string;
+  ipAddress?: string;
+  status: 'SUCCESS' | 'WARNING' | 'FAILED';
+  metadata?: string;
+}
+
+export function seedRealisticAuditLogs(db: DatabaseSync) {
+  const seedItems = [
+    {
+      timestamp: '2026-09-06 08:00:00',
+      userName: 'System Initialization',
+      userNik: 'SYS-INIT',
+      userRole: 'system',
+      action: 'INIT_DATABASE',
+      module: 'SYSTEM',
+      entity: 'database',
+      entityId: 'hris.sqlite',
+      details: 'Inisialisasi awal database SQLite hris.sqlite untuk PRIME HRIS Enterprise.',
+      ipAddress: '127.0.0.1',
+      status: 'SUCCESS',
+      metadata: JSON.stringify({ version: '1.0.0', platform: 'PRIME HRIS Enterprise' })
+    },
+    {
+      timestamp: '2026-09-07 08:15:30',
+      userName: 'Galih Primananda',
+      userNik: 'PRIME-2022-001',
+      userRole: 'admin',
+      action: 'CHECKIN_WFO',
+      module: 'ATTENDANCE',
+      entity: 'attendances',
+      entityId: 'ATT-20260907-001',
+      details: 'Presensi On-Site WFO shift pagi berhasil diverifikasi di kantor pusat.',
+      ipAddress: '103.31.205.218',
+      status: 'SUCCESS',
+      metadata: JSON.stringify({ wifi: 'PRIME-Corporate-5G' })
+    },
+    {
+      timestamp: '2026-09-07 09:00:15',
+      userName: 'Direksi PT Prime',
+      userNik: 'PRIME-2021-001',
+      userRole: 'superuser',
+      action: 'AUTH_LOGIN',
+      module: 'AUTH',
+      entity: 'user_accounts',
+      entityId: 'USR-004',
+      details: 'Login superuser (Direksi) dari IP terpercaya Gateway Utama.',
+      ipAddress: '103.31.205.218',
+      status: 'SUCCESS',
+      metadata: JSON.stringify({ role: 'Director', systemRole: 'superuser' })
+    },
+    {
+      timestamp: '2026-09-07 16:45:00',
+      userName: 'System Backup Daemon',
+      userNik: 'SYS-DAEMON',
+      userRole: 'system',
+      action: 'DATABASE_BACKUP',
+      module: 'SYSTEM',
+      entity: 'database',
+      entityId: 'hris.sqlite',
+      details: 'Snapshot harian database hris.sqlite berhasil disimpan ke direktori backup DEV20.',
+      ipAddress: '127.0.0.1',
+      status: 'SUCCESS',
+      metadata: JSON.stringify({ destination: 'D:/0 Running apps/dev20-db-backup/snapshots' })
+    },
+    {
+      timestamp: '2026-09-08 08:20:10',
+      userName: 'Ahmad Fauzi',
+      userNik: 'PRIME-2022-003',
+      userRole: 'staff',
+      action: 'CHECKIN_WFO',
+      module: 'ATTENDANCE',
+      entity: 'attendances',
+      entityId: 'ATT-20260908-002',
+      details: 'Presensi selfie WFO berhasil dicatat tepat waktu pukul 08:20 WIB.',
+      ipAddress: '103.31.205.218',
+      status: 'SUCCESS',
+      metadata: JSON.stringify({ checkInTime: '08:20:10', onTime: true })
+    },
+    {
+      timestamp: '2026-09-08 10:30:00',
+      userName: 'Siti Nurhaliza',
+      userNik: 'PRIME-2022-002',
+      userRole: 'admin',
+      action: 'SIMULATE_PAYROLL',
+      module: 'PAYROLL',
+      entity: 'payroll',
+      entityId: 'SIM-001',
+      details: 'Menjalankan simulasi interim formula lembur Depnaker 1/173 untuk 8 karyawan aktif.',
+      ipAddress: '192.168.3.122',
+      status: 'SUCCESS',
+      metadata: JSON.stringify({ formula: '1/173 * Upah Pokok', activeEmployees: 8 })
+    },
+    {
+      timestamp: '2026-09-08 14:00:25',
+      userName: 'Budi Santoso',
+      userNik: 'PRIME-2022-005',
+      userRole: 'admin',
+      action: 'APPROVAL_REJECTED',
+      module: 'APPROVALS',
+      entity: 'approvals',
+      entityId: 'REIMB-9021',
+      details: 'Menolak klaim reimbursement REIMB-9021. Alasan: Nota kuitansi tidak memiliki stempel resmi vendor.',
+      ipAddress: '103.31.205.218',
+      status: 'FAILED',
+      metadata: JSON.stringify({ reason: 'Nota kuitansi tidak memiliki stempel resmi vendor', amount: 180000 })
+    },
+    {
+      timestamp: '2026-09-08 17:10:00',
+      userName: 'Galih Primananda',
+      userNik: 'PRIME-2022-001',
+      userRole: 'admin',
+      action: 'PAYSLIP_PRINTED',
+      module: 'PAYROLL',
+      entity: 'payroll',
+      entityId: 'SLIP-001',
+      details: 'Mencetak Slip Gaji Resmi digital periode September 2026 ber-QR code validasi Direksi.',
+      ipAddress: '103.31.205.218',
+      status: 'SUCCESS',
+      metadata: JSON.stringify({ period: 'September 2026', employeeNik: 'PRIME-2022-001' })
+    },
+    {
+      timestamp: '2026-09-09 08:15:00',
+      userName: 'Galih Primananda',
+      userNik: 'PRIME-2022-001',
+      userRole: 'admin',
+      action: 'CHECKIN_WFO',
+      module: 'ATTENDANCE',
+      entity: 'attendances',
+      entityId: 'ATT-20260909-001',
+      details: 'Presensi On-Site WFO berhasil divalidasi. Kamera cerdas mendeteksi wajah dengan rasio 1:1.',
+      ipAddress: '103.31.205.218',
+      status: 'SUCCESS',
+      metadata: JSON.stringify({ distanceMeters: 14, wifi: 'PRIME-Corporate-5G' })
+    },
+    {
+      timestamp: '2026-09-09 08:35:12',
+      userName: 'Doni Prasetyo',
+      userNik: 'PRIME-2023-012',
+      userRole: 'staff',
+      action: 'CHECKIN_WFO',
+      module: 'ATTENDANCE',
+      entity: 'attendances',
+      entityId: 'ATT-20260909-006',
+      details: 'Presensi terlambat 5 menit. Alasan: Kemacetan perlintasan jalur logistik industri Manyar.',
+      ipAddress: '103.31.205.218',
+      status: 'WARNING',
+      metadata: JSON.stringify({ lateMinutes: 5, reason: 'Kemacetan perlintasan jalur logistik industri Manyar' })
+    },
+    {
+      timestamp: '2026-09-09 10:05:18',
+      userName: 'Direksi PT Prime',
+      userNik: 'PRIME-2021-001',
+      userRole: 'superuser',
+      action: 'GEOFENCE_UPDATE',
+      module: 'HR_RULES',
+      entity: 'salary_rules',
+      entityId: 'default',
+      details: 'Pembaruan titik koordinat Geofence: Lat -7.118942, Lng 112.584319, radius 350 meter (Kawasan Kantor Pusat & Hub PRIME).',
+      ipAddress: '103.31.205.218',
+      status: 'SUCCESS',
+      metadata: JSON.stringify({ lat: -7.118942, lng: 112.584319, radiusMeters: 350 })
+    },
+    {
+      timestamp: '2026-09-09 11:20:45',
+      userName: 'System Watchdog',
+      userNik: 'SYS-DAEMON',
+      userRole: 'system',
+      action: 'INTEGRITY_CHECK',
+      module: 'SYSTEM',
+      entity: 'database',
+      entityId: 'hris.sqlite',
+      details: 'Pemeriksaan integritas basis data SQLite hris.sqlite: WAL mode aktif, zero corrupted pages terdeteksi.',
+      ipAddress: '127.0.0.1',
+      status: 'SUCCESS',
+      metadata: JSON.stringify({ journalMode: 'wal', integrity: 'ok', sizeKb: 145 })
+    },
+    {
+      timestamp: '2026-09-09 14:15:05',
+      userName: 'Siti Nurhaliza',
+      userNik: 'PRIME-2022-002',
+      userRole: 'admin',
+      action: 'APPROVAL_APPROVED',
+      module: 'APPROVALS',
+      entity: 'approvals',
+      entityId: 'APPR-002',
+      details: 'Menyetujui klaim reimbursement konsumsi lembur proyek PT Freeport Indonesia sebesar Rp 375.000.',
+      ipAddress: '192.168.3.122',
+      status: 'SUCCESS',
+      metadata: JSON.stringify({ amount: 375000, project: 'PT Freeport Indonesia' })
+    },
+    {
+      timestamp: '2026-09-09 15:40:22',
+      userName: 'Galih Primananda',
+      userNik: 'PRIME-2022-001',
+      userRole: 'admin',
+      action: 'SAVE_EMPLOYEE',
+      module: 'EMPLOYEES',
+      entity: 'employees',
+      entityId: 'EMP-007',
+      details: 'Pembaruan nomor rekening bank & validasi MAC Address hardware (FC:FB:FB:12:34:56) untuk karyawan Doni Prasetyo.',
+      ipAddress: '103.31.205.218',
+      status: 'SUCCESS',
+      metadata: JSON.stringify({ employeeId: 'EMP-007', macAddress: 'FC:FB:FB:12:34:56' })
+    },
+    {
+      timestamp: '2026-09-09 16:30:00',
+      userName: 'Rahmat Hidayat',
+      userNik: 'PRIME-2023-014',
+      userRole: 'staff',
+      action: 'SUBMIT_REIMBURSEMENT',
+      module: 'PAYROLL',
+      entity: 'reimbursements',
+      entityId: 'REIMB-4412',
+      details: 'Mengajukan klaim reimbursement: "BBM Mobil Operasional Kunjungan Smelter Manyar" sebesar Rp 250.000 (Proyek PRIME-ENG-01).',
+      ipAddress: '103.31.205.218',
+      status: 'SUCCESS',
+      metadata: JSON.stringify({ amount: 250000, category: 'TRANSPORT_BBM', project: 'PRIME-ENG-01' })
+    },
+    {
+      timestamp: '2026-09-09 17:05:12',
+      userName: 'Budi Santoso',
+      userNik: 'PRIME-2022-005',
+      userRole: 'admin',
+      action: 'CHECKOUT_WFO',
+      module: 'ATTENDANCE',
+      entity: 'attendances',
+      entityId: 'ATT-20260909-002',
+      details: 'Check-out kepulangan shift reguler berhasil dicatat. Total durasi kerja efektif: 8 jam 50 menit.',
+      ipAddress: '103.31.205.218',
+      status: 'SUCCESS',
+      metadata: JSON.stringify({ durationHours: 8.83, workTime: '08:15 - 17:05' })
+    },
+    {
+      timestamp: '2026-09-10 07:55:18',
+      userName: 'Hendra Wijaya',
+      userNik: 'PRIME-2023-009',
+      userRole: 'staff',
+      action: 'CHECKIN_DINAS_LUAR',
+      module: 'ATTENDANCE',
+      entity: 'attendances',
+      entityId: 'ATT-20260910-005',
+      details: 'Presensi Dinas Luar Mendadak diajukan: PT Vale Indonesia Sorowako Mill Site. Disposisi diajukan ke manajer.',
+      ipAddress: '114.122.45.89',
+      status: 'SUCCESS',
+      metadata: JSON.stringify({ client: 'PT Vale Indonesia Tbk', destination: 'Sorowako Mill Site' })
+    },
+    {
+      timestamp: '2026-09-10 08:12:30',
+      userName: 'Galih Primananda',
+      userNik: 'PRIME-2022-001',
+      userRole: 'admin',
+      action: 'CHECKIN_WFO',
+      module: 'ATTENDANCE',
+      entity: 'attendances',
+      entityId: 'ATT-20260910-001',
+      details: 'Presensi On-Site WFO berhasil divalidasi melalui Gateway Utama PRIME. Koordinat GPS akurat (akurasi 5.2m).',
+      ipAddress: '103.31.205.218',
+      status: 'SUCCESS',
+      metadata: JSON.stringify({ distanceMeters: 15, wifi: 'PRIME-Corporate-5G', auditHash: '#901233' })
+    },
+    {
+      timestamp: '2026-09-10 08:18:02',
+      userName: 'Budi Santoso',
+      userNik: 'PRIME-2022-005',
+      userRole: 'admin',
+      action: 'CHECKIN_WFO',
+      module: 'ATTENDANCE',
+      entity: 'attendances',
+      entityId: 'ATT-20260910-002',
+      details: 'Presensi selfie WFO berhasil diverifikasi. Watermark audit hash #789211 terekam dalam database.',
+      ipAddress: '103.31.205.218',
+      status: 'SUCCESS',
+      metadata: JSON.stringify({ distanceMeters: 28, wifi: 'PRIME-Corporate-5G', auditHash: '#789211' })
+    },
+    {
+      timestamp: '2026-09-10 08:25:44',
+      userName: 'Ahmad Fauzi',
+      userNik: 'PRIME-2022-003',
+      userRole: 'staff',
+      action: 'CHECKIN_WFO',
+      module: 'ATTENDANCE',
+      entity: 'attendances',
+      entityId: 'ATT-20260910-003',
+      details: 'Presensi selfie WFO berhasil diverifikasi. Jarak GPS: 42 meter dari pusat Geofence kantor. SSID: PRIME-Corporate-5G.',
+      ipAddress: '103.31.205.218',
+      status: 'SUCCESS',
+      metadata: JSON.stringify({ distanceMeters: 42, wifi: 'PRIME-Corporate-5G', auditHash: '#892144' })
+    },
+    {
+      timestamp: '2026-09-10 08:32:10',
+      userName: 'Rahmat Hidayat',
+      userNik: 'PRIME-2023-014',
+      userRole: 'staff',
+      action: 'CHECKIN_WFO',
+      module: 'ATTENDANCE',
+      entity: 'attendances',
+      entityId: 'ATT-20260910-004',
+      details: 'Presensi WFO tercatat pukul 08:32 WIB (Terlambat 2 menit di luar batas toleransi 08:30 WIB). Disposisi justifikasi otomatis dibuat.',
+      ipAddress: '103.31.205.218',
+      status: 'WARNING',
+      metadata: JSON.stringify({ checkInTime: '08:32:10', lateMinutes: 2, tolerance: '08:30' })
+    },
+    {
+      timestamp: '2026-09-10 09:15:40',
+      userName: 'Siti Nurhaliza',
+      userNik: 'PRIME-2022-002',
+      userRole: 'admin',
+      action: 'EXPORT_PAYROLL',
+      module: 'PAYROLL',
+      entity: 'payroll',
+      entityId: 'PAY-SEP-2026',
+      details: 'Ekspor berkas konsolidasi payroll periode September 2026 ke format CSV untuk audit perbankan.',
+      ipAddress: '192.168.3.122',
+      status: 'SUCCESS',
+      metadata: JSON.stringify({ format: 'CSV', recordCount: 8, totalDisbursement: 61850000 })
+    },
+    {
+      timestamp: '2026-09-10 10:30:15',
+      userName: 'Direksi PT Prime',
+      userNik: 'PRIME-2021-001',
+      userRole: 'superuser',
+      action: 'UPDATE_SALARY_RULES',
+      module: 'HR_RULES',
+      entity: 'salary_rules',
+      entityId: 'default',
+      details: 'Pembaruan toleransi keterlambatan 15 menit dan verifikasi subnet Gateway Utama PRIME (103.31.205.0/24).',
+      ipAddress: '103.31.205.218',
+      status: 'SUCCESS',
+      metadata: JSON.stringify({ gracePeriod: 15, subnet: '103.31.205.0/24' })
+    },
+    {
+      timestamp: '2026-09-10 11:45:10',
+      userName: 'Galih Primananda',
+      userNik: 'PRIME-2022-001',
+      userRole: 'admin',
+      action: 'APPROVAL_APPROVED',
+      module: 'APPROVALS',
+      entity: 'approvals',
+      entityId: 'APPR-001',
+      details: 'Menyetujui pengajuan Cuti Tahunan untuk Ahmad Fauzi (3 hari kerja). Catatan: Disetujui, pekerjaan telah di-handover.',
+      ipAddress: '103.31.205.218',
+      status: 'SUCCESS',
+      metadata: JSON.stringify({ applicant: 'Ahmad Fauzi', days: 3, category: 'CUTI_TAHUNAN' })
+    },
+    {
+      timestamp: '2026-09-10 12:15:22',
+      userName: 'Galih Primananda',
+      userNik: 'PRIME-2022-001',
+      userRole: 'admin',
+      action: 'AUTH_LOGIN',
+      module: 'AUTH',
+      entity: 'user_accounts',
+      entityId: 'USR-001',
+      details: 'Login berhasil ke sesi HRIS Enterprise melalui Google Chrome (WFO Terverifikasi).',
+      ipAddress: '103.31.205.218',
+      status: 'SUCCESS',
+      metadata: JSON.stringify({ browser: 'Chrome 128', platform: 'Windows 11 NT' })
+    }
+  ];
+
+  const insert = db.prepare(`
+    INSERT INTO audit_logs (
+      action, entity, entityId, details,
+      userName, userNik, userRole, module,
+      ipAddress, status, metadata, timestamp
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+  `);
+
+  for (const item of seedItems) {
+    insert.run(
+      item.action,
+      item.entity,
+      item.entityId,
+      item.details,
+      item.userName,
+      item.userNik,
+      item.userRole,
+      item.module,
+      item.ipAddress,
+      item.status,
+      item.metadata,
+      item.timestamp
+    );
+  }
+}
+
+export function addAuditLog(entry: {
+  action: string;
+  entity?: string;
+  entityId?: string;
+  details: string;
+  userName?: string;
+  userNik?: string;
+  userRole?: string;
+  module?: string;
+  ipAddress?: string;
+  status?: 'SUCCESS' | 'WARNING' | 'FAILED';
+  metadata?: any;
+  timestamp?: string;
+}) {
+  const db = getDatabase();
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const d = new Date();
+  const localNow = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  const now = entry.timestamp || localNow;
+  const metaStr = entry.metadata ? (typeof entry.metadata === 'string' ? entry.metadata : JSON.stringify(entry.metadata)) : null;
+
+  const stmt = db.prepare(`
+    INSERT INTO audit_logs (
+      action, entity, entityId, details,
+      userName, userNik, userRole, module,
+      ipAddress, status, metadata, timestamp
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+  `);
+
+  stmt.run(
+    entry.action || 'ACTIVITY',
+    entry.entity || 'SYSTEM',
+    entry.entityId || null,
+    entry.details || '',
+    entry.userName || 'System',
+    entry.userNik || null,
+    entry.userRole || 'system',
+    entry.module || 'SYSTEM',
+    entry.ipAddress || '127.0.0.1',
+    entry.status || 'SUCCESS',
+    metaStr,
+    now
+  );
+}
+
+export function getAuditLogsPaginated({
+  page = 1,
+  limit = 10,
+  search = '',
+  module = '',
+  role = '',
+  status = ''
+}: {
+  page?: number;
+  limit?: number;
+  search?: string;
+  module?: string;
+  role?: string;
+  status?: string;
+} = {}) {
+  const db = getDatabase();
+  const safePage = Math.max(1, Number(page) || 1);
+  const safeLimit = Math.max(1, Math.min(100, Number(limit) || 10));
+  const offset = (safePage - 1) * safeLimit;
+
+  let whereClauses: string[] = [];
+  let params: any[] = [];
+
+  if (search && search.trim()) {
+    const term = `%${search.trim().toLowerCase()}%`;
+    whereClauses.push(`(
+      LOWER(details) LIKE ? OR
+      LOWER(userName) LIKE ? OR
+      LOWER(COALESCE(userNik, '')) LIKE ? OR
+      LOWER(action) LIKE ? OR
+      LOWER(COALESCE(ipAddress, '')) LIKE ?
+    )`);
+    params.push(term, term, term, term, term);
+  }
+
+  if (module && module !== 'ALL') {
+    whereClauses.push(`module = ?`);
+    params.push(module);
+  }
+
+  if (role && role !== 'ALL') {
+    whereClauses.push(`LOWER(userRole) = ?`);
+    params.push(role.toLowerCase());
+  }
+
+  if (status && status !== 'ALL') {
+    whereClauses.push(`status = ?`);
+    params.push(status);
+  }
+
+  const whereSql = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
+
+  const countRow = db.prepare(`SELECT COUNT(*) as total FROM audit_logs ${whereSql};`).get(...params) as any;
+  const totalRows = countRow?.total || 0;
+  const totalPages = Math.ceil(totalRows / safeLimit) || 1;
+
+  const rows = db.prepare(`
+    SELECT * FROM audit_logs
+    ${whereSql}
+    ORDER BY timestamp DESC, id DESC
+    LIMIT ? OFFSET ?;
+  `).all(...params, safeLimit, offset) as any[];
+
+  return {
+    logs: rows,
+    pagination: {
+      page: safePage,
+      limit: safeLimit,
+      totalRows,
+      totalPages,
+      hasMore: safePage < totalPages
+    }
+  };
 }

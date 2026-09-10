@@ -10,7 +10,8 @@ import {
   ChevronRight,
   UserCheck,
   Shield,
-  Crown
+  Crown,
+  History
 } from 'lucide-react';
 import { UserRole, SystemRole } from '../types';
 
@@ -116,6 +117,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
           desc: 'Konfigurasi jam kerja kantor, batas toleransi terlambat, rumus lembur & BPJS',
           icon: Sliders,
           badge: null
+        },
+        {
+          id: 'audit',
+          title: 'AUDIT TRAIL & LOG',
+          desc: 'Log rekaman kronologis aktivitas sistem, autentikasi, presensi & perubahan data',
+          icon: History,
+          badge: null
         }
       ];
     }
@@ -163,6 +171,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
         desc: 'Konfigurasi kebijakan jam kerja, formula lembur Depnaker, BPJS & IP Gateway',
         icon: Sliders,
         badge: null
+      },
+      {
+        id: 'audit',
+        title: 'AUDIT TRAIL & LOG',
+        desc: 'Log rekaman kronologis aktivitas sistem, autentikasi, presensi & perubahan data',
+        icon: History,
+        badge: 'SEC'
       }
     ];
   };

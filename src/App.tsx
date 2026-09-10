@@ -13,6 +13,7 @@ import { UserPerformanceTab } from './components/UserPerformanceTab';
 import { NotificationApprovalModal } from './components/NotificationApprovalModal';
 import { TourDemoModal } from './components/TourDemoModal';
 import { LoginPage } from './components/LoginPage';
+import { AuditLogTab } from './components/AuditLogTab';
 
 import {
   INITIAL_EMPLOYEES,
@@ -104,6 +105,18 @@ export function App() {
   const handleWhitelistCurrentIp = () => {
     if (realDetectedIp && !customIpWhitelist.includes(realDetectedIp)) {
       setCustomIpWhitelist(prev => [...prev, realDetectedIp]);
+      api.logActivity({
+        userName: currentUser.name,
+        userNik: currentUser.nik,
+        userRole: currentUser.role,
+        module: 'SECURITY',
+        action: 'IP_WHITELIST_ADD',
+        entity: 'NetworkGateway',
+        entityId: realDetectedIp,
+        details: `Menambahkan IP publik ${realDetectedIp} (${realDetectedIsp || 'ISP'}) ke daftar jaringan resmi kantor`,
+        status: 'SUCCESS',
+        ipAddress: realDetectedIp
+      }).catch(() => {});
     }
   };
 
@@ -195,9 +208,40 @@ export function App() {
     } else {
       setActiveTab('dashboard');
     }
+    const displayName = user.employee?.name || user.username;
+    const displayNik = user.employee?.nik || 'NIK-SYSTEM';
+    api.logActivity({
+      userName: displayName,
+      userNik: displayNik,
+      userRole: user.role,
+      module: 'AUTH',
+      action: 'LOGIN_WEB',
+      entity: 'UserSession',
+      entityId: user.id,
+      details: `Pengguna ${displayName} (${user.role}) berhasil masuk ke PRIME HRIS`,
+      status: 'SUCCESS',
+      ipAddress: realDetectedIp,
+      metadata: { systemRole: user.systemRole, username: user.username }
+    }).catch(() => {});
   };
 
   const handleLogout = async () => {
+    try {
+      api.logActivity({
+        userName: currentUser.name,
+        userNik: currentUser.nik,
+        userRole: currentUser.role,
+        module: 'AUTH',
+        action: 'USER_LOGOUT',
+        entity: 'UserSession',
+        entityId: currentUser.id,
+        details: `Sesi login berakhir: ${currentUser.name} (${currentUser.nik}) keluar dari sistem`,
+        status: 'SUCCESS',
+        ipAddress: realDetectedIp
+      }).catch(() => {});
+    } catch (e) {
+      // ignore
+    }
     await api.logout();
     setAuthUser(null);
     setActiveTab('dashboard');
@@ -326,16 +370,32 @@ export function App() {
   };
 
   const handleSwitchUser = (newEmp: Employee) => {
+    const prevEmp = currentUser;
     setCurrentUser(newEmp);
     const role = getEffectiveSystemRole(newEmp);
     if (role === 'staff') {
-      if (activeTab === 'salary_rules') {
+      if (activeTab === 'salary_rules' || activeTab === 'audit') {
         setActiveTab('dashboard');
         setDashboardSubView('performance');
       } else if (activeTab === 'dashboard') {
         setDashboardSubView('performance');
       }
     }
+
+    // Record persona switch event in audit trail
+    api.logActivity({
+      userName: prevEmp.name,
+      userNik: prevEmp.nik,
+      userRole: prevEmp.role,
+      module: 'AUTH',
+      action: 'ROLE_SWITCH',
+      entity: 'UserSession',
+      entityId: newEmp.id,
+      details: `Beralih persona pengguna ke ${newEmp.name} (${newEmp.role} - ${newEmp.nik})`,
+      status: 'SUCCESS',
+      ipAddress: realDetectedIp,
+      metadata: { previousUser: prevEmp.name, previousNik: prevEmp.nik, switchedTo: newEmp.name, newRole: newEmp.role }
+    }).catch(() => {});
   };
 
   const handleNavigateToTab = (tabId: string, projectIdFilter?: string) => {
@@ -357,7 +417,7 @@ export function App() {
         setDashboardSubView('performance');
         return;
       }
-      if (tabId === 'salary_rules') {
+      if (tabId === 'salary_rules' || tabId === 'audit') {
         setActiveTab('dashboard');
         setDashboardSubView('performance');
         return;
@@ -646,7 +706,8 @@ export function App() {
               { id: 'approvals', label: 'Approval SDM' },
               { id: 'users', label: 'Karyawan' },
               { id: 'payroll', label: 'Payroll' },
-              { id: 'salary_rules', label: 'Pengaturan' }
+              { id: 'salary_rules', label: 'Pengaturan' },
+              { id: 'audit', label: 'Audit Log' }
             ]
         ).map(tab => {
           const isTabActive = activeTab === tab.id || (tab.id === 'dashboard' && (activeTab === 'dashboard_hris' || activeTab === 'dashboard_finance' || activeTab === 'user_performance'));
@@ -743,6 +804,14 @@ export function App() {
             currentUser={currentUser}
             salaryRules={salaryRules}
             onUpdateSalaryRules={handleUpdateSalaryRules}
+          />
+        )}
+
+        {activeTab === 'audit' && (
+          <AuditLogTab
+            currentUser={currentUser}
+            realDetectedIp={realDetectedIp}
+            onNavigateToTab={handleNavigateToTab}
           />
         )}
 

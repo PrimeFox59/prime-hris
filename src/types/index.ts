@@ -253,3 +253,34 @@ export interface CommercialProposal {
     features: string[];
   }>;
 }
+
+export type AuditModule = 'AUTH' | 'ATTENDANCE' | 'APPROVALS' | 'EMPLOYEES' | 'PAYROLL' | 'HR_RULES' | 'SYSTEM';
+
+export type AuditStatus = 'SUCCESS' | 'WARNING' | 'FAILED';
+
+export interface AuditLogItem {
+  id: number;
+  timestamp: string;
+  userName: string;
+  userNik?: string;
+  userRole: SystemRole | 'system';
+  action: string;
+  module: AuditModule;
+  entity?: string;
+  entityId?: string;
+  details: string;
+  ipAddress?: string;
+  status: AuditStatus;
+  metadata?: string;
+}
+
+export interface PaginatedAuditLogs {
+  logs: AuditLogItem[];
+  pagination: {
+    page: number;
+    limit: number;
+    totalRows: number;
+    totalPages: number;
+    hasMore: boolean;
+  };
+}

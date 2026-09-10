@@ -16,7 +16,9 @@ import {
   getCurrentUserFromToken,
   changeUserPassword,
   listUserAccounts,
-  verifyToken
+  verifyToken,
+  addAuditLog,
+  getAuditLogsPaginated
 } from './db.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -300,7 +302,36 @@ const server = http.createServer(async (req, res) => {
         return sendJson(200, result);
       }
 
-      // 11. Reset Database with Broadcast
+      // 11. Audit Logs (Paginated & Filterable with 10-Item Load)
+      if (cleanUrl === '/api/audit-logs' && method === 'GET') {
+        const urlObj = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+        const page = parseInt(urlObj.searchParams.get('page') || '1', 10);
+        const limit = parseInt(urlObj.searchParams.get('limit') || '10', 10);
+        const search = urlObj.searchParams.get('search') || '';
+        const module = urlObj.searchParams.get('module') || '';
+        const role = urlObj.searchParams.get('role') || '';
+        const status = urlObj.searchParams.get('status') || '';
+
+        const result = getAuditLogsPaginated({ page, limit, search, module, role, status });
+        return sendJson(200, result);
+      }
+
+      if (cleanUrl === '/api/audit-logs' && method === 'POST') {
+        const body = await readBody();
+        const clientIp = req.headers['cf-connecting-ip'] || 
+                         req.headers['x-real-ip'] || 
+                         (req.headers['x-forwarded-for'] ? req.headers['x-forwarded-for'].split(',')[0].trim() : null) || 
+                         req.socket.remoteAddress || 
+                         '127.0.0.1';
+        addAuditLog({
+          ...body,
+          ipAddress: body.ipAddress || clientIp
+        });
+        broadcastRealtimeEvent('AUDIT_LOG_ADDED', body);
+        return sendJson(200, { success: true });
+      }
+
+      // 12. Reset Database with Broadcast
       if (cleanUrl === '/api/reset' && method === 'POST') {
         const result = resetDatabase();
         broadcastRealtimeEvent('DATABASE_RESET', {});

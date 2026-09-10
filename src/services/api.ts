@@ -5,7 +5,9 @@ import {
   ApprovalItem,
   SalaryRuleConfig,
   ReimbursementClaim,
-  AuthUser
+  AuthUser,
+  AuditLogItem,
+  PaginatedAuditLogs
 } from '../types';
 
 export interface BootstrapResponse {
@@ -209,5 +211,58 @@ export const api = {
   // 9. Download link for SQLite file
   getDownloadDbUrl(): string {
     return '/api/download-db';
+  },
+
+  // 10. Audit Logs with 10-Item Infinite Scroll Pagination
+  async getAuditLogs(params: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    module?: string;
+    role?: string;
+    status?: string;
+  } = {}): Promise<PaginatedAuditLogs> {
+    const query = new URLSearchParams();
+    if (params.page) query.set('page', String(params.page));
+    query.set('limit', String(params.limit || 10)); // Default 10 per request
+    if (params.search) query.set('search', params.search);
+    if (params.module && params.module !== 'ALL') query.set('module', params.module);
+    if (params.role && params.role !== 'ALL') query.set('role', params.role);
+    if (params.status && params.status !== 'ALL') query.set('status', params.status);
+
+    const res = await fetch(`/api/audit-logs?${query.toString()}`, {
+      headers: api.getAuthHeaders()
+    });
+    if (!res.ok) {
+      throw new Error(`Gagal memuat audit log: ${res.statusText}`);
+    }
+    return res.json();
+  },
+
+  // 11. Client Activity Logger
+  async logActivity(entry: {
+    action: string;
+    entity?: string;
+    entityId?: string;
+    details: string;
+    userName?: string;
+    userNik?: string;
+    userRole?: string;
+    module?: string;
+    ipAddress?: string;
+    status?: 'SUCCESS' | 'WARNING' | 'FAILED';
+    metadata?: any;
+  }): Promise<{ success: boolean }> {
+    try {
+      const res = await fetch('/api/audit-logs', {
+        method: 'POST',
+        headers: api.getAuthHeaders(),
+        body: JSON.stringify(entry)
+      });
+      return res.json();
+    } catch (e) {
+      console.warn('[Audit Logger Warning]', e);
+      return { success: false };
+    }
   }
 };

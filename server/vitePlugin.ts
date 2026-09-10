@@ -10,7 +10,9 @@ import {
   saveSalaryRules,
   saveReimbursement,
   resetDatabase,
-  getDbInfo
+  getDbInfo,
+  addAuditLog,
+  getAuditLogsPaginated
 } from './db.ts';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -109,7 +111,30 @@ export function sqliteApiPlugin(): Plugin {
             return sendJson(200, result);
           }
 
-          // 8. Reset SQLite Database to default seed
+          // 8. Audit Logs (Paginated & Filterable with 10-Item Load)
+          if (cleanUrl === '/api/audit-logs' && method === 'GET') {
+            const urlObj = new URL(req.url || '', 'http://localhost');
+            const page = parseInt(urlObj.searchParams.get('page') || '1', 10);
+            const limit = parseInt(urlObj.searchParams.get('limit') || '10', 10);
+            const search = urlObj.searchParams.get('search') || '';
+            const module = urlObj.searchParams.get('module') || '';
+            const role = urlObj.searchParams.get('role') || '';
+            const status = urlObj.searchParams.get('status') || '';
+
+            const result = getAuditLogsPaginated({ page, limit, search, module, role, status });
+            return sendJson(200, result);
+          }
+
+          if (cleanUrl === '/api/audit-logs' && method === 'POST') {
+            const body = await readBody();
+            addAuditLog({
+              ...body,
+              ipAddress: body.ipAddress || req.socket.remoteAddress || '127.0.0.1'
+            });
+            return sendJson(200, { success: true });
+          }
+
+          // 9. Reset SQLite Database to default seed
           if (cleanUrl === '/api/reset' && method === 'POST') {
             const data = resetDatabase();
             return sendJson(200, { success: true, message: 'Database reset to default seed', ...data });
