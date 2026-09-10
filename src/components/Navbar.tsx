@@ -114,25 +114,25 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <>
-      <header className="sticky top-0 z-50 glass-nav border-b border-white/60">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 sm:gap-4">
+      <header className="sticky top-0 z-50 glass-nav border-b border-white/60 w-full max-w-full overflow-x-hidden">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 sm:gap-4 w-full max-w-full min-w-0">
         
         {/* Brand Logo & System Badge */}
-        <div id="tour-brand-logo" className="flex items-center gap-3 select-none cursor-pointer motion-slide-right" onClick={() => onNavigateToTab('dashboard')}>
-          <div className="flex items-center gap-2">
+        <div id="tour-brand-logo" className="flex items-center gap-2 sm:gap-3 select-none cursor-pointer motion-slide-right min-w-0" onClick={() => onNavigateToTab('dashboard')}>
+          <div className="flex items-center gap-2 min-w-0">
             {/* Prime ProjectX Vector Brand Logo */}
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-slate-950 via-slate-900 to-slate-800 border border-slate-700/80 shadow-md flex items-center justify-center relative overflow-hidden group-hover:border-[#FF6B00] transition-colors">
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-slate-950 via-slate-900 to-slate-800 border border-slate-700/80 shadow-md flex items-center justify-center relative overflow-hidden group-hover:border-[#FF6B00] transition-colors shrink-0">
                 <div className="absolute -inset-1 bg-gradient-to-tr from-[#FF6B00] to-[#00E2B0] opacity-25 blur-xs"></div>
                 <span className="relative font-mono-code font-black text-white text-base tracking-tighter">
                   P<span className="text-[#FF6B00]">X</span>
                 </span>
               </div>
-              <div className="flex flex-col text-left">
-                <span className="text-sm font-black tracking-wider text-slate-900 font-mono-code leading-none">
+              <div className="flex flex-col text-left min-w-0">
+                <span className="text-xs sm:text-sm font-black tracking-wider text-slate-900 font-mono-code leading-none truncate">
                   PRIME<span className="text-[#FF6B00]">PROJECTX</span>
                 </span>
-                <span className="text-[9px] font-bold tracking-widest text-slate-400 uppercase font-mono-code">
+                <span className="text-[8.5px] sm:text-[9px] font-bold tracking-widest text-slate-400 uppercase font-mono-code truncate">
                   PT Prime Infinity Systems
                 </span>
               </div>
@@ -140,7 +140,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             <div className="h-5 w-px bg-slate-200/80 mx-1 hidden sm:block"></div>
 
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-orange-50 border border-orange-200/70 shadow-xs">
+            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-orange-50 border border-orange-200/70 shadow-xs shrink-0">
               <Clock className="w-3.5 h-3.5 text-[#FF6B00] animate-pulse" />
               <span className="text-[10px] sm:text-[11px] font-black tracking-wider text-[#FF6B00] font-mono-code">
                 PRIME hris

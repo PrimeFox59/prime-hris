@@ -709,7 +709,7 @@ export function App() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col selection:bg-orange-500 selection:text-white">
+    <div className="min-h-screen flex flex-col selection:bg-orange-500 selection:text-white w-full max-w-full overflow-x-hidden">
       
       {/* Top Glass Navigation Bar */}
       <Navbar
@@ -802,7 +802,7 @@ export function App() {
       </div>
 
       {/* Main Content Area with Dynamic Key for Tab Transition Animation */}
-      <main key={activeTab} className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 md:pl-24 pb-28 md:pb-8 transition-all motion-fade-in-up">
+      <main key={activeTab} className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-6 md:pl-24 pb-28 md:pb-8 transition-all motion-fade-in-up min-w-0 max-w-full overflow-x-hidden">
         {(activeTab === 'dashboard' || activeTab === 'dashboard_hris' || activeTab === 'dashboard_finance' || activeTab === 'user_performance') && (
           <DashboardTab
             currentUser={currentUser}

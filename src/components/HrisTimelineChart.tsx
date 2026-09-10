@@ -101,7 +101,7 @@ export const HrisTimelineChart: React.FC<HrisTimelineChartProps> = ({
   };
 
   return (
-    <div className="glass-card rounded-3xl p-5 sm:p-6 border border-slate-200/80 shadow-md space-y-5 motion-fade-in-up">
+    <div className="glass-card rounded-3xl p-4 sm:p-6 border border-slate-200/80 shadow-md space-y-5 motion-fade-in-up w-full max-w-full min-w-0 overflow-hidden">
       {/* Header & Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
         <div className="flex items-center gap-2.5">
