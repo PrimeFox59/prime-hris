@@ -25,6 +25,10 @@ interface NavbarProps {
   onWhitelistCurrentIp?: () => void;
   authUser?: AuthUser | null;
   onLogout?: () => void;
+  isProfileModalOpenControlled?: boolean;
+  onOpenProfileModalControlled?: (tab?: ProfileTabId) => void;
+  onCloseProfileModalControlled?: () => void;
+  profileModalInitialTabControlled?: ProfileTabId;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -47,7 +51,11 @@ export const Navbar: React.FC<NavbarProps> = ({
   onSetSimulatedNetworkMode,
   onWhitelistCurrentIp,
   authUser,
-  onLogout
+  onLogout,
+  isProfileModalOpenControlled,
+  onOpenProfileModalControlled,
+  onCloseProfileModalControlled,
+  profileModalInitialTabControlled
 }) => {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [isNetworkPopoverOpen, setIsNetworkPopoverOpen] = useState(false);
@@ -55,10 +63,25 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [profileModalInitialTab, setProfileModalInitialTab] = useState<ProfileTabId>('profile');
   const networkPopoverRef = useRef<HTMLDivElement | null>(null);
 
+  const effectiveIsProfileModalOpen = isProfileModalOpenControlled !== undefined ? isProfileModalOpenControlled : isProfileModalOpen;
+  const effectiveProfileModalInitialTab = profileModalInitialTabControlled !== undefined ? profileModalInitialTabControlled : profileModalInitialTab;
+
   const openProfileModal = (tab: ProfileTabId = 'profile') => {
-    setProfileModalInitialTab(tab);
-    setIsProfileModalOpen(true);
+    if (onOpenProfileModalControlled) {
+      onOpenProfileModalControlled(tab);
+    } else {
+      setProfileModalInitialTab(tab);
+      setIsProfileModalOpen(true);
+    }
     setUserDropdownOpen(false);
+  };
+
+  const closeProfileModal = () => {
+    if (onCloseProfileModalControlled) {
+      onCloseProfileModalControlled();
+    } else {
+      setIsProfileModalOpen(false);
+    }
   };
 
   useEffect(() => {
@@ -176,7 +199,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             {/* Smart Network Audit Popover */}
             {isNetworkPopoverOpen && (
-              <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 w-84 sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200/90 p-4 z-50 text-left font-sans animate-in fade-in zoom-in-95 duration-150">
+              <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 w-[calc(100vw-2rem)] sm:w-96 max-w-sm bg-white rounded-2xl shadow-2xl border border-slate-200/90 p-4 z-50 text-left font-sans animate-in fade-in zoom-in-95 duration-150">
                 {/* Popover Header */}
                 <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                   <div className="flex items-center gap-2">
@@ -363,7 +386,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             {/* User Profile Settings Dropdown */}
             {userDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-84 rounded-3xl bg-white border border-slate-200 shadow-2xl p-3 z-50 animate-in fade-in slide-in-from-top-2">
+              <div className="absolute right-0 mt-2 w-[calc(100vw-1.5rem)] sm:w-84 max-w-sm rounded-3xl bg-white border border-slate-200 shadow-2xl p-3 z-50 animate-in fade-in slide-in-from-top-2">
                 {/* User Identity Banner Card */}
                 <div className="p-3.5 rounded-2xl bg-gradient-to-br from-slate-900 via-slate-850 to-slate-900 text-white mb-2.5 relative overflow-hidden shadow-md">
                   <div className="absolute -top-6 -right-6 w-28 h-28 bg-[#FF6B00]/20 rounded-full blur-xl pointer-events-none" />
@@ -539,12 +562,12 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Profile Settings Modal */}
       <ProfileSettingsModal
-        isOpen={isProfileModalOpen}
-        onClose={() => setIsProfileModalOpen(false)}
+        isOpen={effectiveIsProfileModalOpen}
+        onClose={closeProfileModal}
         currentUser={currentUser}
         authUser={authUser}
         onUpdateEmployee={onUpdateEmployee || (() => {})}
-        initialTab={profileModalInitialTab}
+        initialTab={effectiveProfileModalInitialTab}
         realDetectedIp={realDetectedIp}
         realDetectedIsp={realDetectedIsp}
         realDetectedCity={realDetectedCity}
@@ -553,9 +576,9 @@ export const Navbar: React.FC<NavbarProps> = ({
       />
     </header>
 
-    {/* Floating Tour Demo Button in Bottom-Left Corner */}
+    {/* Floating Tour Demo Button in Bottom-Left Corner (Hidden on narrow mobile screens to avoid dock overlap) */}
     {onStartTour && (
-      <div className="fixed bottom-6 left-6 z-40 no-print">
+      <div className="fixed bottom-20 md:bottom-6 left-4 sm:left-6 z-40 no-print hidden sm:flex">
         <button
           id="tour-start-button"
           onClick={onStartTour}

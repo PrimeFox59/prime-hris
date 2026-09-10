@@ -392,7 +392,7 @@ export const PayrollTab: React.FC<PayrollTabProps> = ({
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full text-left text-xs min-w-[760px]">
               <thead className="bg-slate-50/90 text-slate-500 uppercase font-mono-code text-[10px] tracking-wider border-b border-slate-200">
                 <tr>
                   <th className="px-4 py-3">NIK & Karyawan</th>
@@ -490,7 +490,7 @@ export const PayrollTab: React.FC<PayrollTabProps> = ({
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full text-left text-xs min-w-[720px]">
               <thead className="bg-slate-50/90 text-slate-500 uppercase font-mono-code text-[10px] tracking-wider border-b border-slate-200">
                 <tr>
                   <th className="px-4 py-3">Nama Karyawan & NIK</th>

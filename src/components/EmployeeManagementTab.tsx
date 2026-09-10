@@ -260,7 +260,7 @@ export const EmployeeManagementTab: React.FC<EmployeeManagementTabProps> = ({
       {/* Employees Grid Table */}
       <div id="tour-employee-table" className="glass-card rounded-3xl p-5 sm:p-6 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+          <table className="w-full text-left text-xs min-w-[760px]">
             <thead>
               <tr className="border-b border-slate-200/80 text-slate-500 uppercase tracking-wider text-[10px] font-mono-code">
                 <th className="py-2.5 px-3">Karyawan</th>

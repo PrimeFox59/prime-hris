@@ -15,6 +15,8 @@ import { TourDemoModal } from './components/TourDemoModal';
 import { LoginPage } from './components/LoginPage';
 import { AuditLogTab } from './components/AuditLogTab';
 import { ProjectManagementTab } from './components/ProjectManagementTab';
+import { MobileBottomNav } from './components/MobileBottomNav';
+import { ProfileTabId } from './components/ProfileSettingsModal';
 
 import {
   INITIAL_EMPLOYEES,
@@ -43,6 +45,15 @@ export function App() {
   // Notification & Approval Modal Popup State
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState<boolean>(false);
   const [isTourOpen, setIsTourOpen] = useState<boolean>(false);
+
+  // Profile Settings Modal State
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState<boolean>(false);
+  const [profileModalInitialTab, setProfileModalInitialTab] = useState<ProfileTabId>('profile');
+
+  const handleOpenProfileModal = (tab: ProfileTabId = 'profile') => {
+    setProfileModalInitialTab(tab);
+    setIsProfileModalOpen(true);
+  };
 
   // SQLite Database Sync State
   const [isDbLoading, setIsDbLoading] = useState<boolean>(true);
@@ -722,6 +733,10 @@ export function App() {
         onWhitelistCurrentIp={handleWhitelistCurrentIp}
         authUser={authUser}
         onLogout={handleLogout}
+        isProfileModalOpenControlled={isProfileModalOpen}
+        onOpenProfileModalControlled={handleOpenProfileModal}
+        onCloseProfileModalControlled={() => setIsProfileModalOpen(false)}
+        profileModalInitialTabControlled={profileModalInitialTab}
       />
 
       {/* Floating Pill Sidebar Dock (Desktop) */}
@@ -733,8 +748,22 @@ export function App() {
         pendingApprovalsCount={effectiveNotificationCount}
       />
 
+      {/* Mobile Bottom Navigation Dock (Screens < 768px) */}
+      <MobileBottomNav
+        activeTab={activeTab}
+        onSelectTab={handleNavigateToTab}
+        currentUser={currentUser}
+        pendingApprovalsCount={effectiveNotificationCount}
+        onOpenNotificationModal={() => setIsNotificationModalOpen(true)}
+        onOpenProfileModal={handleOpenProfileModal}
+        onStartTour={() => setIsTourOpen(true)}
+        onLogout={handleLogout}
+        realDetectedIp={realDetectedIp}
+        isOfficeNetwork={isOfficeNetwork}
+      />
+
       {/* Mobile Navigation Tabs (Screens < 768px) */}
-      <div className="md:hidden sticky top-16 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 px-3 py-2 flex items-center gap-2 overflow-x-auto no-print">
+      <div className="md:hidden sticky top-16 z-30 bg-white/90 backdrop-blur-md border-b border-slate-200 px-3 py-2 flex items-center gap-2 overflow-x-auto no-print">
         {(getEffectiveSystemRole(currentUser) === 'staff'
           ? [
               { id: 'dashboard', label: 'Kinerja Saya' },
@@ -773,7 +802,7 @@ export function App() {
       </div>
 
       {/* Main Content Area with Dynamic Key for Tab Transition Animation */}
-      <main key={activeTab} className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 md:pl-24 transition-all motion-fade-in-up">
+      <main key={activeTab} className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 md:pl-24 pb-28 md:pb-8 transition-all motion-fade-in-up">
         {(activeTab === 'dashboard' || activeTab === 'dashboard_hris' || activeTab === 'dashboard_finance' || activeTab === 'user_performance') && (
           <DashboardTab
             currentUser={currentUser}
@@ -921,7 +950,7 @@ export function App() {
 
       {/* Floating Real-Time Sync Notification Toast */}
       {liveToast && (
-        <div className="fixed bottom-6 left-6 z-50 animate-in fade-in slide-in-from-bottom-5 duration-300 max-w-sm font-sans no-print">
+        <div className="fixed bottom-20 md:bottom-6 left-4 sm:left-6 z-50 animate-in fade-in slide-in-from-bottom-5 duration-300 max-w-[calc(100vw-2rem)] sm:max-w-sm font-sans no-print">
           <div className={`p-3.5 rounded-2xl shadow-2xl flex items-center gap-3 border backdrop-blur-md ${
             liveToast.type === 'warn' 
               ? 'bg-amber-950/95 text-amber-100 border-amber-500/60'
