@@ -77,27 +77,45 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#F7F9FC] via-[#FFFFFF] to-[#EFF4FA] flex flex-col justify-between selection:bg-[#0066FF] selection:text-white relative overflow-hidden">
+    <div className="h-screen w-screen overflow-hidden relative flex flex-col justify-between bg-[#F4F8FE] selection:bg-[#0066FF] selection:text-white">
       
-      {/* MINIMALIST TOP BAR */}
-      <header className="w-full px-4 sm:px-8 py-3 flex items-center justify-between z-30 relative">
+      {/* FULLSCREEN PANORAMIC 3D ECOSYSTEM HERO WITH LIVE FLOW MOTION */}
+      <div className="absolute inset-0 w-full h-full flex items-center justify-center overflow-hidden pointer-events-none z-0">
+        <div className="relative w-full h-full flex items-center justify-center">
+          {/* High-definition Image 5 Master Artwork spanning fullscreen */}
+          <img
+            src="/ecosystem_hero.png"
+            alt="PRIME hris Ecosystem Operational"
+            className="w-full h-full object-cover lg:object-contain object-center select-none pointer-events-none"
+          />
+
+          {/* SVG Live Data Flow Motion Layer (1672 x 941) */}
+          <EcosystemMotionOverlay
+            activeRole={hoveredRole}
+            isMotionActive={isMotionActive}
+          />
+        </div>
+      </div>
+
+      {/* FLOATING TOP BAR */}
+      <header className="w-full px-4 sm:px-8 py-3 flex items-center justify-between z-30 relative bg-gradient-to-b from-white/80 via-white/30 to-transparent">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-xl bg-[#0066FF] text-white flex items-center justify-center font-black text-lg shadow-md shadow-blue-500/20">
             P
           </div>
           <div className="flex items-baseline gap-1.5">
-            <span className="font-black text-lg sm:text-xl tracking-tight text-slate-900">
+            <span className="font-black text-lg sm:text-xl tracking-tight text-slate-900 drop-shadow-xs">
               PRIME <span className="text-[#0066FF] font-black">hris</span>
             </span>
-            <span className="text-[10px] font-bold px-1.5 py-0.2 rounded-md bg-blue-50 text-[#0066FF] border border-blue-200">
+            <span className="text-[10px] font-bold px-1.5 py-0.2 rounded-md bg-blue-50/90 text-[#0066FF] border border-blue-200 shadow-xs">
               v2.4
             </span>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           {/* Server indicator */}
-          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/80 border border-slate-200/80 text-[11px] font-mono text-slate-600 shadow-2xs">
+          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/85 backdrop-blur-md border border-slate-200/80 text-[11px] font-mono text-slate-600 shadow-2xs">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
             <span>DEV20 : 8567</span>
           </div>
@@ -106,10 +124,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
           <button
             type="button"
             onClick={() => setIsMotionActive(!isMotionActive)}
-            className={`hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold transition cursor-pointer border ${
+            className={`hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold transition cursor-pointer border backdrop-blur-md ${
               isMotionActive
-                ? 'bg-blue-50 text-[#0066FF] border-blue-200 shadow-2xs hover:bg-blue-100/70'
-                : 'bg-slate-100 text-slate-400 border-slate-200 hover:bg-slate-200'
+                ? 'bg-blue-50/90 text-[#0066FF] border-blue-200 shadow-2xs hover:bg-blue-100/80'
+                : 'bg-white/80 text-slate-400 border-slate-200 hover:bg-slate-100'
             }`}
             title="Nyalakan / Matikan Efek Aliran Data Motion"
           >
@@ -122,7 +140,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
             onClick={() => setIsLoginOpen(!isLoginOpen)}
             className={`flex items-center gap-2 px-4 py-1.5 rounded-xl font-bold text-xs transition-all shadow-sm cursor-pointer ${
               isLoginOpen
-                ? 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                ? 'bg-white/85 hover:bg-white text-slate-700 border border-slate-200 shadow-xs backdrop-blur-md'
                 : 'bg-[#0066FF] hover:bg-blue-700 text-white shadow-blue-500/25 animate-pulse'
             }`}
           >
@@ -141,40 +159,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
         </div>
       </header>
 
-      {/* CENTER STAGE: THE PRISTINE SLIDE (16:9) WITH SEAMLESS BLEND & LIVE FLOW MOTION */}
-      <main className="flex-1 w-full max-w-6xl mx-auto px-2 sm:px-6 flex items-center justify-center relative my-auto py-2">
-        
-        {/* SEAMLESS 16:9 ECOSYSTEM OPERATIONAL HERO WITH LIVE FLOW MOTION */}
-        <div className="w-full relative flex items-center justify-center">
-          
-          {/* Ambient Radial Lighting for Seamless Immersion */}
-          <div className="absolute inset-0 bg-radial from-blue-100/40 via-blue-50/10 to-transparent blur-2xl -z-10 pointer-events-none scale-105" />
-
-          {/* Canvas Wrapper with exact 939:533 aspect ratio & feathered edges */}
-          <div
-            className="w-full relative aspect-[939/533] flex items-center justify-center"
-            style={{
-              WebkitMaskImage: 'radial-gradient(ellipse 99% 98% at 50% 50%, black 86%, transparent 100%)',
-              maskImage: 'radial-gradient(ellipse 99% 98% at 50% 50%, black 86%, transparent 100%)',
-            }}
-          >
-            {/* The Cleaned Pristine Graphic */}
-            <img
-              src="/ecosystem_hero.png"
-              alt="PRIME hris Ecosystem Operational"
-              className="w-full h-full object-contain pointer-events-none select-none"
-            />
-
-            {/* SVG Live Data Flow Motion Layer */}
-            <EcosystemMotionOverlay
-              activeRole={hoveredRole}
-              isMotionActive={isMotionActive}
-            />
-          </div>
-
-          {/* FLOATING FROSTED GLASS LOGIN CARD (TOP-RIGHT OVERLAY) */}
-          {isLoginOpen && (
-            <div className="absolute right-3 sm:right-6 top-6 w-[310px] sm:w-[330px] bg-white/95 backdrop-blur-2xl border border-white/90 shadow-2xl rounded-3xl p-5 z-20 animate-in fade-in zoom-in-95 duration-200">
+      {/* FLOATING FROSTED GLASS LOGIN CARD (RIGHT OVERLAY) */}
+      <main className="flex-1 w-full relative z-20 pointer-events-none flex items-center justify-end px-4 sm:px-8 lg:px-14 py-2">
+        {isLoginOpen && (
+          <div className="pointer-events-auto w-[310px] sm:w-[340px] bg-white/94 backdrop-blur-2xl border border-white/85 shadow-2xl shadow-blue-900/10 rounded-3xl p-5 z-20 animate-in fade-in zoom-in-95 duration-200">
               
               {/* Card Header */}
               <div className="flex items-center justify-between mb-3.5">
@@ -284,12 +272,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               </div>
             </div>
           )}
-        </div>
-
       </main>
 
       {/* MINIMAL FOOTER */}
-      <footer className="w-full py-2.5 px-4 text-center text-[11px] text-slate-400">
+      <footer className="w-full py-2 px-4 text-center text-[11px] text-slate-400/80 z-20 relative pointer-events-none bg-gradient-to-t from-white/60 to-transparent">
         &copy; 2026 PRIME hris • PT Prime Infinity Systems
       </footer>
     </div>
