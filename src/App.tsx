@@ -764,22 +764,6 @@ export function App() {
         activeTab={activeTab}
       />
 
-      {/* Floating Quick Tour Launcher */}
-      {!isTourOpen && (
-        <div className="fixed bottom-5 right-5 z-40 no-print">
-          <button
-            onClick={() => setIsTourOpen(true)}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-full bg-slate-950/92 hover:bg-slate-900 text-white text-xs font-bold shadow-xl shadow-orange-950/30 border border-orange-500/40 hover:border-orange-500 transition-all hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md group"
-            title="Mulai Panduan Tour Demo Interaktif Komponen & Menu"
-          >
-            <span className="w-2 h-2 rounded-full bg-[#FF6B00] animate-ping" />
-            <span className="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent font-mono-code font-black">
-              Tour Demo
-            </span>
-          </button>
-        </div>
-      )}
-
       <NotificationApprovalModal
         isOpen={isNotificationModalOpen}
         onClose={() => setIsNotificationModalOpen(false)}
