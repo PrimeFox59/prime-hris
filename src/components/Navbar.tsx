@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Shield, Clock, Sparkles, Wifi, WifiOff, Users, ChevronDown, CheckCircle2, Award, ArrowRight, Globe, Database, Crown, UserCheck, Lock, Bell, Building2, AlertTriangle, Radio, X, MapPin, Laptop, ShieldCheck, Zap } from 'lucide-react';
-import { Employee, UserRole, SystemRole, getEffectiveSystemRole } from '../types';
+import { Shield, Clock, Sparkles, Wifi, WifiOff, Users, ChevronDown, CheckCircle2, Award, ArrowRight, Globe, Database, Crown, UserCheck, Lock, Bell, Building2, AlertTriangle, Radio, X, MapPin, Laptop, ShieldCheck, Zap, LogOut } from 'lucide-react';
+import { Employee, UserRole, SystemRole, getEffectiveSystemRole, AuthUser } from '../types';
 import { rtcService } from '../services/rtcService';
 
 interface NavbarProps {
@@ -21,6 +21,8 @@ interface NavbarProps {
   simulatedNetworkMode?: 'auto' | 'office' | 'remote';
   onSetSimulatedNetworkMode?: (mode: 'auto' | 'office' | 'remote') => void;
   onWhitelistCurrentIp?: () => void;
+  authUser?: AuthUser | null;
+  onLogout?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -40,7 +42,9 @@ export const Navbar: React.FC<NavbarProps> = ({
   isOfficeNetwork = true,
   simulatedNetworkMode = 'auto',
   onSetSimulatedNetworkMode,
-  onWhitelistCurrentIp
+  onWhitelistCurrentIp,
+  authUser,
+  onLogout
 }) => {
   const [timeStr, setTimeStr] = useState('');
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
@@ -314,7 +318,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       className="mt-2.5 w-full py-1.5 px-3 rounded-xl bg-slate-900 hover:bg-black text-white text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all shadow-xs active:scale-98 cursor-pointer"
                     >
                       <Building2 className="w-3.5 h-3.5 text-orange-400" />
-                      <span>Daftarkan IP Ini sebagai Whitelist Kantor DMJ</span>
+                      <span>Daftarkan IP Ini sebagai Whitelist Kantor Resmi Prime HRIS</span>
                     </button>
                   )}
                 </div>
@@ -535,7 +539,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </div>
 
                 {/* Direct Shortcut to User Performance / ESS Portal */}
-                <div className="pt-2 mt-2 border-t border-slate-100">
+                <div className="pt-2 mt-2 border-t border-slate-100 space-y-1.5">
                   <button
                     onClick={() => {
                       onNavigateToTab('user_performance');
@@ -549,6 +553,22 @@ export const Navbar: React.FC<NavbarProps> = ({
                     </span>
                     <ArrowRight className="w-3.5 h-3.5 text-[#FF6B00]" />
                   </button>
+
+                  {onLogout && (
+                    <button
+                      onClick={() => {
+                        setUserDropdownOpen(false);
+                        onLogout();
+                      }}
+                      className="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-xs transition-all cursor-pointer shadow-2xs"
+                    >
+                      <span className="flex items-center gap-2">
+                        <LogOut className="w-3.5 h-3.5 text-rose-600" />
+                        Keluar dari Sistem (Logout)
+                      </span>
+                      <ArrowRight className="w-3.5 h-3.5 text-rose-600" />
+                    </button>
+                  )}
                 </div>
               </div>
             )}

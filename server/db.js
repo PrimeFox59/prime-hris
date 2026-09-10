@@ -1,6 +1,7 @@
 import { DatabaseSync } from 'node:sqlite';
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
 // Determine root directory
@@ -14,6 +15,61 @@ const seedPath = path.join(dataDir, 'seedData.json');
 // Ensure data directory exists
 if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
+}
+
+// Persistent Auth Secret for HMAC Signatures
+const secretPath = path.join(dataDir, 'auth.secret');
+let AUTH_SECRET = '';
+if (fs.existsSync(secretPath)) {
+  AUTH_SECRET = fs.readFileSync(secretPath, 'utf-8').trim();
+} else {
+  AUTH_SECRET = crypto.randomBytes(32).toString('hex');
+  fs.writeFileSync(secretPath, AUTH_SECRET, 'utf-8');
+}
+
+export function hashPassword(password, salt = crypto.randomBytes(16).toString('hex')) {
+  const hash = crypto.scryptSync(password, salt, 64).toString('hex');
+  return { hash, salt };
+}
+
+export function verifyPassword(password, hash, salt) {
+  try {
+    const checkHash = crypto.scryptSync(password, salt, 64).toString('hex');
+    return crypto.timingSafeEqual(Buffer.from(hash, 'hex'), Buffer.from(checkHash, 'hex'));
+  } catch (e) {
+    return false;
+  }
+}
+
+export function generateToken(user) {
+  const payload = {
+    userId: user.id,
+    employeeId: user.employee_id,
+    role: user.role,
+    systemRole: user.system_role,
+    username: user.username,
+    email: user.email,
+    exp: Date.now() + (7 * 24 * 60 * 60 * 1000) // 7 days expiration
+  };
+  const json = Buffer.from(JSON.stringify(payload)).toString('base64url');
+  const sig = crypto.createHmac('sha256', AUTH_SECRET).update(json).digest('base64url');
+  return `${json}.${sig}`;
+}
+
+export function verifyToken(token) {
+  if (!token || typeof token !== 'string') return null;
+  const parts = token.split('.');
+  if (parts.length !== 2) return null;
+  const [json, sig] = parts;
+  const expectedSig = crypto.createHmac('sha256', AUTH_SECRET).update(json).digest('base64url');
+  if (sig !== expectedSig) return null;
+  try {
+    const payload = JSON.parse(Buffer.from(json, 'base64url').toString('utf-8'));
+    if (payload.exp && Date.now() > payload.exp) return null;
+    return payload;
+  } catch (e) {
+    return null;
+  }
 }
 
 let dbInstance = null;
@@ -184,6 +240,23 @@ function initializeSchema(db) {
     );
   `);
 
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS user_accounts (
+      id TEXT PRIMARY KEY,
+      employee_id TEXT,
+      email TEXT UNIQUE NOT NULL,
+      username TEXT UNIQUE NOT NULL,
+      password_hash TEXT NOT NULL,
+      salt TEXT NOT NULL,
+      role TEXT NOT NULL,
+      system_role TEXT NOT NULL,
+      status TEXT DEFAULT 'active',
+      last_login TEXT,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+    );
+  `);
+
   // Ensure systemRole is populated in existing employees data_json
   try {
     const rows = db.prepare('SELECT id, data_json FROM employees;').all();
@@ -205,10 +278,15 @@ function initializeSchema(db) {
   if (empCount === 0) {
     seedInitialData(db);
   }
+
+  const userCount = db.prepare('SELECT count(*) as count FROM user_accounts;').get()?.count || 0;
+  if (userCount === 0) {
+    seedDefaultUsers(db);
+  }
 }
 
 export function seedInitialData(db) {
-  console.log('[SQLite] Inisialisasi & Seeding data awal PT Dwi Martha Jaya...');
+  console.log('[SQLite] Inisialisasi & Seeding data awal Prime HRIS Enterprise...');
   if (!fs.existsSync(seedPath)) {
     console.warn('[SQLite] seedData.json tidak ditemukan di:', seedPath);
     return;
@@ -519,6 +597,192 @@ export function resetDatabase() {
   db.exec('DELETE FROM reimbursements;');
   db.exec('DELETE FROM salary_rules;');
   db.exec('DELETE FROM audit_logs;');
+  db.exec('DELETE FROM user_accounts;');
   seedInitialData(db);
+  seedDefaultUsers(db);
   return getAllData();
 }
+
+export function seedDefaultUsers(db) {
+  console.log('[SQLite] Seeding akun pengguna default Prime HRIS...');
+  const insertUser = db.prepare(`
+    INSERT OR REPLACE INTO user_accounts (
+      id, employee_id, email, username, password_hash, salt, role, system_role, status
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+  `);
+
+  const defaults = [
+    {
+      id: 'USR-001',
+      employee_id: 'EMP-001',
+      email: 'admin@primeprojectx.net',
+      username: 'admin',
+      pass: 'admin123',
+      role: 'Director',
+      system_role: 'superuser'
+    },
+    {
+      id: 'USR-002',
+      employee_id: 'EMP-001',
+      email: 'galih@primeprojectx.net',
+      username: 'galih',
+      pass: 'prime123',
+      role: 'Director',
+      system_role: 'superuser'
+    },
+    {
+      id: 'USR-003',
+      employee_id: 'EMP-003',
+      email: 'hr@primeprojectx.net',
+      username: 'hrmanager',
+      pass: 'hr123',
+      role: 'HR_Manager',
+      system_role: 'admin'
+    },
+    {
+      id: 'USR-004',
+      employee_id: 'EMP-002',
+      email: 'pm@primeprojectx.net',
+      username: 'projmanager',
+      pass: 'pm123',
+      role: 'Project_Manager',
+      system_role: 'admin'
+    },
+    {
+      id: 'USR-005',
+      employee_id: 'EMP-004',
+      email: 'staff@primeprojectx.net',
+      username: 'karyawan',
+      pass: 'staff123',
+      role: 'Employee',
+      system_role: 'staff'
+    }
+  ];
+
+  for (const u of defaults) {
+    const { hash, salt } = hashPassword(u.pass);
+    insertUser.run(
+      u.id, u.employee_id, u.email, u.username, hash, salt, u.role, u.system_role, 'active'
+    );
+  }
+  console.log('[SQLite] 5 akun default Prime HRIS berhasil di-seed.');
+}
+
+export function authenticateUser(identifier, password) {
+  const db = getDatabase();
+  const trimmed = (identifier || '').trim().toLowerCase();
+  const user = db.prepare(`
+    SELECT * FROM user_accounts 
+    WHERE LOWER(email) = ? OR LOWER(username) = ?;
+  `).get(trimmed, trimmed);
+
+  if (!user) {
+    return { success: false, error: 'Email atau Username tidak terdaftar' };
+  }
+
+  if (user.status !== 'active') {
+    return { success: false, error: 'Akun Anda sedang dinonaktifkan. Hubungi Administrator.' };
+  }
+
+  const isValid = verifyPassword(password, user.password_hash, user.salt);
+  if (!isValid) {
+    return { success: false, error: 'Password yang Anda masukkan salah' };
+  }
+
+  // Update last_login
+  const now = new Date().toISOString();
+  db.prepare('UPDATE user_accounts SET last_login = ? WHERE id = ?;').run(now, user.id);
+
+  // Get Employee profile if linked
+  let employee = null;
+  if (user.employee_id) {
+    const empRow = db.prepare('SELECT data_json FROM employees WHERE id = ?;').get(user.employee_id);
+    if (empRow) {
+      try { employee = JSON.parse(empRow.data_json); } catch (e) {}
+    }
+  }
+
+  const token = generateToken(user);
+
+  db.prepare('INSERT INTO audit_logs (action, entity, entityId, details) VALUES (?, ?, ?, ?);')
+    .run('LOGIN_SUCCESS', 'user_accounts', user.id, `User ${user.username} (${user.role}) berhasil login`);
+
+  return {
+    success: true,
+    token,
+    user: {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      systemRole: user.system_role,
+      status: user.status,
+      employeeId: user.employee_id,
+      lastLogin: now,
+      employee
+    }
+  };
+}
+
+export function getCurrentUserFromToken(token) {
+  const payload = verifyToken(token);
+  if (!payload || !payload.userId) return null;
+
+  const db = getDatabase();
+  const user = db.prepare('SELECT * FROM user_accounts WHERE id = ?;').get(payload.userId);
+  if (!user || user.status !== 'active') return null;
+
+  let employee = null;
+  if (user.employee_id) {
+    const empRow = db.prepare('SELECT data_json FROM employees WHERE id = ?;').get(user.employee_id);
+    if (empRow) {
+      try { employee = JSON.parse(empRow.data_json); } catch (e) {}
+    }
+  }
+
+  return {
+    id: user.id,
+    username: user.username,
+    email: user.email,
+    role: user.role,
+    systemRole: user.system_role,
+    status: user.status,
+    employeeId: user.employee_id,
+    lastLogin: user.last_login,
+    employee
+  };
+}
+
+export function changeUserPassword(userId, oldPassword, newPassword) {
+  const db = getDatabase();
+  const user = db.prepare('SELECT * FROM user_accounts WHERE id = ?;').get(userId);
+  if (!user) return { success: false, error: 'User tidak ditemukan' };
+
+  if (oldPassword) {
+    const isValid = verifyPassword(oldPassword, user.password_hash, user.salt);
+    if (!isValid) return { success: false, error: 'Password lama salah' };
+  }
+
+  if (!newPassword || newPassword.length < 5) {
+    return { success: false, error: 'Password baru minimal 5 karakter' };
+  }
+
+  const { hash, salt } = hashPassword(newPassword);
+  db.prepare('UPDATE user_accounts SET password_hash = ?, salt = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?;')
+    .run(hash, salt, userId);
+
+  db.prepare('INSERT INTO audit_logs (action, entity, entityId, details) VALUES (?, ?, ?, ?);')
+    .run('CHANGE_PASSWORD', 'user_accounts', userId, `Password user ${user.username} diubah`);
+
+  return { success: true };
+}
+
+export function listUserAccounts() {
+  const db = getDatabase();
+  return db.prepare(`
+    SELECT id, employee_id, email, username, role, system_role, status, last_login, created_at 
+    FROM user_accounts 
+    ORDER BY created_at ASC;
+  `).all();
+}
+

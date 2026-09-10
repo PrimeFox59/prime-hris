@@ -11,7 +11,12 @@ import {
   saveSalaryRules,
   saveReimbursement,
   resetDatabase,
-  getDbInfo
+  getDbInfo,
+  authenticateUser,
+  getCurrentUserFromToken,
+  changeUserPassword,
+  listUserAccounts,
+  verifyToken
 } from './db.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -103,9 +108,65 @@ const server = http.createServer(async (req, res) => {
     });
   };
 
+  const getAuthToken = () => {
+    const authHeader = req.headers['authorization'];
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      return authHeader.substring(7).trim();
+    }
+    try {
+      const parsedUrl = new URL(req.url, 'http://localhost');
+      return parsedUrl.searchParams.get('token');
+    } catch (e) {
+      return null;
+    }
+  };
+
   // API Routes
   if (cleanUrl.startsWith('/api/')) {
     try {
+      // 0. Auth Routes
+      if (cleanUrl === '/api/auth/login' && method === 'POST') {
+        const body = await readBody();
+        const result = authenticateUser(body.identifier || body.username || body.email, body.password);
+        if (!result.success) {
+          return sendJson(401, result);
+        }
+        return sendJson(200, result);
+      }
+
+      if (cleanUrl === '/api/auth/me' && method === 'GET') {
+        const token = getAuthToken();
+        const user = getCurrentUserFromToken(token);
+        if (!user) {
+          return sendJson(401, { success: false, error: 'Unauthorized or session expired' });
+        }
+        return sendJson(200, { success: true, user });
+      }
+
+      if (cleanUrl === '/api/auth/logout' && method === 'POST') {
+        return sendJson(200, { success: true, message: 'Berhasil logout' });
+      }
+
+      if (cleanUrl === '/api/auth/change-password' && method === 'POST') {
+        const token = getAuthToken();
+        const user = getCurrentUserFromToken(token);
+        if (!user) {
+          return sendJson(401, { success: false, error: 'Unauthorized' });
+        }
+        const body = await readBody();
+        const result = changeUserPassword(user.id, body.oldPassword, body.newPassword);
+        return sendJson(result.success ? 200 : 400, result);
+      }
+
+      if (cleanUrl === '/api/auth/accounts' && method === 'GET') {
+        const token = getAuthToken();
+        const user = getCurrentUserFromToken(token);
+        if (!user || user.systemRole !== 'superuser') {
+          return sendJson(403, { success: false, error: 'Forbidden: Superuser access required' });
+        }
+        return sendJson(200, { success: true, accounts: listUserAccounts() });
+      }
+
       // 1. Health check
       if (cleanUrl === '/api/health' && method === 'GET') {
         return sendJson(200, {
@@ -247,7 +308,7 @@ const server = http.createServer(async (req, res) => {
         if (!fs.existsSync(dbPath)) return sendJson(404, { error: 'Database not found' });
         res.writeHead(200, {
           'Content-Type': 'application/x-sqlite3',
-          'Content-Disposition': 'attachment; filename="dmj_hris.sqlite"'
+          'Content-Disposition': 'attachment; filename="prime_hris.sqlite"'
         });
         return fs.createReadStream(dbPath).pipe(res);
       }

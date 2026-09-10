@@ -52,7 +52,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {
           id: 'payroll',
           title: 'SLIP GAJI SAYA',
-          desc: 'Rincian penerimaan gaji pokok, tunjangan kerja, upah lembur & cetak slip resmi DMJ',
+          desc: 'Rincian penerimaan gaji pokok, tunjangan kerja, upah lembur & cetak slip resmi Prime HRIS',
           icon: Banknote,
           badge: 'SLIP'
         },
@@ -66,9 +66,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {
           id: 'proposal',
           title: 'PROPOSAL KOMERSIAL',
-          desc: 'Proposal penawaran implementasi Prime HRIS untuk PT Dwi Martha Jaya',
+          desc: 'Proposal penawaran implementasi Prime HRIS Enterprise Platform',
           icon: FileSpreadsheet,
-          badge: 'DMJ'
+          badge: 'PRIME'
         }
       ];
     }
@@ -99,16 +99,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {
           id: 'payroll',
           title: 'PAYROLL & PROYEK',
-          desc: 'Penggajian rapi per proyek, rekap upah lembur Depnaker & slip gaji resmi',
+          desc: 'Penggajian rapi per proyek, rekap upah lembur Depnaker & slip gaji resmi Prime HRIS',
           icon: Banknote,
           badge: null
         },
         {
           id: 'proposal',
           title: 'PROPOSAL KOMERSIAL',
-          desc: 'Proposal penawaran implementasi Prime HRIS untuk PT Dwi Martha Jaya',
+          desc: 'Proposal penawaran implementasi Prime HRIS Enterprise Platform',
           icon: FileSpreadsheet,
-          badge: 'DMJ'
+          badge: 'PRIME'
         }
       ];
     }
@@ -139,16 +139,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {
         id: 'payroll',
         title: 'PAYROLL & PROYEK',
-        desc: 'Penggajian rapi dengan filter per proyek & slip gaji resmi DMJ',
+        desc: 'Penggajian rapi dengan filter per proyek & slip gaji resmi Prime HRIS',
         icon: Banknote,
         badge: null
       },
       {
         id: 'proposal',
         title: 'PROPOSAL KOMERSIAL',
-        desc: 'Proposal penawaran implementasi Prime HRIS untuk PT Dwi Martha Jaya',
+        desc: 'Proposal penawaran implementasi Prime HRIS Enterprise Platform',
         icon: FileSpreadsheet,
-        badge: 'DMJ'
+        badge: 'PRIME'
       }
     ];
   };

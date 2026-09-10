@@ -28,6 +28,10 @@ dist-ssr
 *.sqlite-shm
 *.sqlite-wal
 data/*.sqlite*
+data/*.secret
+
+# Temporary scripts
+setup-*.js
 
 # Environment & credentials
 .env

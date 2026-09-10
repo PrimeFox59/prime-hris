@@ -2,6 +2,18 @@ export type UserRole = 'Employee' | 'HR_Manager' | 'Project_Manager' | 'Director
 
 export type SystemRole = 'superuser' | 'admin' | 'staff';
 
+export interface AuthUser {
+  id: string;
+  username: string;
+  email: string;
+  role: UserRole;
+  systemRole: SystemRole;
+  status: 'active' | 'suspended';
+  employeeId?: string;
+  lastLogin?: string;
+  employee?: Employee | null;
+}
+
 export function getEffectiveSystemRole(emp?: { role: UserRole; systemRole?: SystemRole } | null): SystemRole {
   if (!emp) return 'staff';
   if (emp.systemRole) return emp.systemRole;

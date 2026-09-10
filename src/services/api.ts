@@ -4,7 +4,8 @@ import {
   AttendanceRecord,
   ApprovalItem,
   SalaryRuleConfig,
-  ReimbursementClaim
+  ReimbursementClaim,
+  AuthUser
 } from '../types';
 
 export interface BootstrapResponse {
@@ -23,10 +24,94 @@ export interface BootstrapResponse {
   };
 }
 
+let currentAuthToken: string | null = typeof window !== 'undefined' ? localStorage.getItem('prime_hris_token') : null;
+
 export const api = {
+  setAuthToken(token: string | null) {
+    currentAuthToken = token;
+    if (typeof window !== 'undefined') {
+      if (token) localStorage.setItem('prime_hris_token', token);
+      else localStorage.removeItem('prime_hris_token');
+    }
+  },
+
+  getAuthToken(): string | null {
+    return currentAuthToken;
+  },
+
+  getAuthHeaders(): HeadersInit {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json'
+    };
+    if (currentAuthToken) {
+      headers['Authorization'] = `Bearer ${currentAuthToken}`;
+    }
+    return headers;
+  },
+
+  // 0. Auth Endpoints
+  async login(identifier: string, password: string): Promise<{ success: boolean; token: string; user: AuthUser }> {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ identifier, password })
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      throw new Error(data.error || 'Gagal login. Periksa kembali email/username dan password.');
+    }
+    api.setAuthToken(data.token);
+    return data;
+  },
+
+  async getMe(): Promise<{ success: boolean; user: AuthUser }> {
+    if (!currentAuthToken) {
+      throw new Error('No auth token');
+    }
+    const res = await fetch('/api/auth/me', {
+      headers: api.getAuthHeaders()
+    });
+    if (!res.ok) {
+      api.setAuthToken(null);
+      throw new Error('Sesi telah berakhir atau tidak valid');
+    }
+    return res.json();
+  },
+
+  async logout(): Promise<void> {
+    try {
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        headers: api.getAuthHeaders()
+      });
+    } catch (e) {}
+    api.setAuthToken(null);
+  },
+
+  async changePassword(oldPassword: string, newPassword: string): Promise<{ success: boolean; error?: string }> {
+    const res = await fetch('/api/auth/change-password', {
+      method: 'POST',
+      headers: api.getAuthHeaders(),
+      body: JSON.stringify({ oldPassword, newPassword })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Gagal mengubah password');
+    return data;
+  },
+
+  async getAccounts(): Promise<{ success: boolean; accounts: any[] }> {
+    const res = await fetch('/api/auth/accounts', {
+      headers: api.getAuthHeaders()
+    });
+    if (!res.ok) throw new Error('Gagal memuat akun pengguna');
+    return res.json();
+  },
+
   // 1. Load all data from SQLite
   async getBootstrapData(): Promise<BootstrapResponse> {
-    const res = await fetch('/api/bootstrap');
+    const res = await fetch('/api/bootstrap', {
+      headers: api.getAuthHeaders()
+    });
     if (!res.ok) {
       throw new Error(`Gagal memuat data dari SQLite: ${res.statusText}`);
     }
@@ -46,7 +131,7 @@ export const api = {
   async saveAttendance(record: AttendanceRecord): Promise<{ success: boolean; record: AttendanceRecord }> {
     const res = await fetch('/api/attendance', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: api.getAuthHeaders(),
       body: JSON.stringify(record)
     });
     if (!res.ok) {

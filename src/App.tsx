@@ -12,6 +12,7 @@ import { CommercialProposalTab } from './components/CommercialProposalTab';
 import { UserPerformanceTab } from './components/UserPerformanceTab';
 import { NotificationApprovalModal } from './components/NotificationApprovalModal';
 import { TourDemoModal } from './components/TourDemoModal';
+import { LoginPage } from './components/LoginPage';
 
 import {
   INITIAL_EMPLOYEES,
@@ -21,12 +22,14 @@ import {
   INITIAL_SALARY_RULES,
   INITIAL_REIMBURSEMENTS
 } from './data/mockData';
-import { Employee, AttendanceRecord, ApprovalItem, Project, SalaryRuleConfig, ReimbursementClaim, getEffectiveSystemRole } from './types';
+import { Employee, AttendanceRecord, ApprovalItem, Project, SalaryRuleConfig, ReimbursementClaim, getEffectiveSystemRole, AuthUser } from './types';
 import { api } from './services/api';
 import { rtcService } from './services/rtcService';
 
 export function App() {
   // Global States
+  const [authUser, setAuthUser] = useState<AuthUser | null>(null);
+  const [isAuthChecking, setIsAuthChecking] = useState<boolean>(true);
   const [employees, setEmployees] = useState<Employee[]>(INITIAL_EMPLOYEES);
   const [currentUser, setCurrentUser] = useState<Employee>(INITIAL_EMPLOYEES[0]); // Galih Primananda
   const [projects, setProjects] = useState<Project[]>(INITIAL_PROJECTS);
@@ -153,6 +156,53 @@ export function App() {
     detectClientIp();
   }, []);
 
+  // Check persistent authentication session on mount
+  useEffect(() => {
+    const checkAuth = async () => {
+      const token = api.getAuthToken();
+      if (!token) {
+        setIsAuthChecking(false);
+        return;
+      }
+      try {
+        const res = await api.getMe();
+        if (res.success && res.user) {
+          setAuthUser(res.user);
+          if (res.user.employee) {
+            setCurrentUser(res.user.employee);
+          }
+        } else {
+          api.setAuthToken(null);
+          setAuthUser(null);
+        }
+      } catch (err) {
+        api.setAuthToken(null);
+        setAuthUser(null);
+      } finally {
+        setIsAuthChecking(false);
+      }
+    };
+    checkAuth();
+  }, []);
+
+  const handleLoginSuccess = (user: AuthUser, token: string) => {
+    setAuthUser(user);
+    if (user.employee) {
+      setCurrentUser(user.employee);
+    }
+    if (user.systemRole === 'staff') {
+      setActiveTab('attendance');
+    } else {
+      setActiveTab('dashboard');
+    }
+  };
+
+  const handleLogout = async () => {
+    await api.logout();
+    setAuthUser(null);
+    setActiveTab('dashboard');
+  };
+
   // Load initial dataset directly from SQLite Database
   useEffect(() => {
     const loadFromSqlite = async () => {
@@ -160,7 +210,10 @@ export function App() {
         const data = await api.getBootstrapData();
         if (data.employees && data.employees.length > 0) {
           setEmployees(data.employees);
-          setCurrentUser(data.employees[0]);
+          const currentToken = api.getAuthToken();
+          if (!currentToken) {
+            setCurrentUser(data.employees[0]);
+          }
         }
         if (data.projects && data.projects.length > 0) {
           setProjects(data.projects);
@@ -529,6 +582,24 @@ export function App() {
       reimbursements.filter(r => r.employeeId === currentUser.id && r.status === 'REJECTED').length
     : pendingApprovalsCount;
 
+  // Session verification screen
+  if (isAuthChecking) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center text-white p-4">
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center font-black text-3xl shadow-xl shadow-blue-500/30 mb-4 animate-pulse">
+          P
+        </div>
+        <div className="w-6 h-6 border-2 border-blue-400 border-t-white rounded-full animate-spin mb-3"></div>
+        <p className="text-xs font-mono text-slate-400">Memverifikasi Sesi Prime HRIS...</p>
+      </div>
+    );
+  }
+
+  // Not authenticated: render Login Page
+  if (!authUser) {
+    return <LoginPage onLoginSuccess={handleLoginSuccess} />;
+  }
+
   return (
     <div className="min-h-screen flex flex-col selection:bg-orange-500 selection:text-white">
       
@@ -551,6 +622,8 @@ export function App() {
         simulatedNetworkMode={simulatedNetworkMode}
         onSetSimulatedNetworkMode={setSimulatedNetworkMode}
         onWhitelistCurrentIp={handleWhitelistCurrentIp}
+        authUser={authUser}
+        onLogout={handleLogout}
       />
 
       {/* Floating Pill Sidebar Dock (Desktop) */}
@@ -570,14 +643,14 @@ export function App() {
               { id: 'attendance', label: 'Presensi Kamera' },
               { id: 'users', label: 'Profil Saya' },
               { id: 'payroll', label: 'Slip Gaji Saya' },
-              { id: 'proposal', label: 'Proposal DMJ' }
+              { id: 'proposal', label: 'Proposal Prime' }
             ]
           : [
               { id: 'dashboard', label: 'Dashboard' },
               { id: 'attendance', label: 'Presensi' },
               { id: 'users', label: 'User Management' },
               { id: 'payroll', label: 'Payroll & Proyek' },
-              { id: 'proposal', label: 'Proposal DMJ' }
+              { id: 'proposal', label: 'Proposal Prime' }
             ]
         ).map(tab => {
           const isTabActive = activeTab === tab.id || (tab.id === 'dashboard' && (activeTab === 'dashboard_hris' || activeTab === 'dashboard_finance' || activeTab === 'user_performance'));
