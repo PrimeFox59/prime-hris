@@ -89,14 +89,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
       {/* ========================================================================= */}
       <header className="w-full px-4 sm:px-8 py-3.5 flex items-center justify-between z-20 bg-white/80 backdrop-blur-md border-b border-slate-200/80 shadow-2xs">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-[#0066FF] text-white flex items-center justify-center font-black text-xl shadow-md shadow-blue-500/20">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-700 to-[#0066FF] text-white flex items-center justify-center font-black text-xl shadow-md shadow-blue-500/20">
             P
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="font-black text-xl tracking-tight text-slate-900">
-              PRIME <span className="text-[#0066FF]">hris</span>
+            <span className="font-black text-xl tracking-[-0.03em] text-slate-900">
+              PRIME <span className="text-[#0066FF] font-black tracking-normal">hris</span>
             </span>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-blue-50 text-[#0066FF] border border-blue-200">
+            <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-blue-50 text-[#0066FF] border border-blue-200/80 tracking-wide uppercase">
               v2.4
             </span>
           </div>
@@ -104,9 +104,9 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
 
         <div className="flex items-center gap-3">
           {/* Server Indicator */}
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-[11px] font-mono text-slate-600 shadow-2xs">
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100/90 border border-slate-200 text-[11px] font-mono text-slate-600 shadow-2xs">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span className="font-semibold">DEV20 : 8567</span>
+            <span className="font-bold tracking-tight">DEV20 : 8567</span>
           </div>
         </div>
       </header>
@@ -114,12 +114,27 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
       {/* ========================================================================= */}
       {/* 2. MAIN PROPER SPLIT STAGE                                                */}
       {/* ========================================================================= */}
-      <main className="flex-1 w-full max-w-[1540px] mx-auto px-4 sm:px-6 lg:px-10 py-6 sm:py-8 flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12 my-auto">
+      <main className="flex-1 w-full max-w-[1540px] mx-auto px-4 sm:px-6 lg:px-10 py-6 sm:py-8 flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-14 my-auto">
         
         {/* ----------------------------------------------------------------------- */}
         {/* LEFT COLUMN: THE 3D ECOSYSTEM OPERATIONAL SHOWCASE (SEAMLESS VIDEO)     */}
         {/* ----------------------------------------------------------------------- */}
-        <div className="w-full lg:flex-1 flex items-center justify-center relative select-none">
+        <div className="w-full lg:flex-1 flex flex-col items-center lg:items-start justify-center relative select-none">
+          
+          {/* Typographic Hero Headline */}
+          <div className="w-full max-w-[960px] mb-4 text-center lg:text-left">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50/80 border border-blue-200/70 text-[#0066FF] text-[10.5px] font-extrabold uppercase tracking-[0.14em] shadow-2xs mb-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#0066FF] animate-pulse"></span>
+              Ekosistem Operasional Terpadu
+            </div>
+            <h1 className="text-2xl sm:text-3xl lg:text-[34px] font-black tracking-[-0.03em] text-slate-900 leading-[1.18]">
+              Satu Platform untuk Seluruh <br className="hidden sm:inline" />
+              <span className="bg-gradient-to-r from-[#0066FF] via-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                Manajemen SDM & Operasional
+              </span>
+            </h1>
+          </div>
+
           {/* Ambient Radial Soft Glow */}
           <div className="absolute inset-0 bg-radial from-blue-100/40 via-blue-50/10 to-transparent -z-10 blur-2xl pointer-events-none" />
 
@@ -164,15 +179,16 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
         <div className="w-full lg:w-[420px] xl:w-[450px] shrink-0">
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-2xl shadow-blue-900/8">
             
-            {/* Card Header */}
+            {/* Card Header Typography */}
             <div className="mb-6">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="font-black text-2xl tracking-tight text-slate-900">
-                  PRIME <span className="text-[#0066FF]">hris</span>
-                </span>
+              <div className="flex items-center gap-1.5 text-[10.5px] font-extrabold uppercase tracking-[0.18em] text-[#0066FF] mb-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#0066FF]"></span>
+                Portal Autentikasi
               </div>
-              <h2 className="text-base font-bold text-slate-800">Masuk ke Sistem</h2>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <h2 className="text-2xl font-black tracking-tight text-slate-900">
+                Masuk ke Sistem
+              </h2>
+              <p className="text-[13px] text-slate-500 font-normal mt-1 leading-relaxed">
                 Kelola data karyawan, presensi satelit, dan slip gaji digital.
               </p>
             </div>
@@ -186,9 +202,9 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
             )}
 
             {/* Login Form */}
-            <form onSubmit={handleLogin} className="space-y-3.5">
+            <form onSubmit={handleLogin} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-600 mb-1">
+                <label className="block text-[11px] font-extrabold uppercase tracking-[0.08em] text-slate-600 mb-1.5">
                   Email atau Username
                 </label>
                 <div className="relative">
@@ -200,15 +216,15 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                     value={identifier}
                     onChange={(e) => setIdentifier(e.target.value)}
                     placeholder="misal: admin atau hr@primeprojectx.net"
-                    className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:bg-white transition"
+                    className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50/80 border border-slate-200 rounded-xl text-[13.5px] text-slate-900 font-medium placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:border-transparent focus:bg-white transition"
                     disabled={isLoading}
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-600 mb-1">
-                  Password
+                <label className="block text-[11px] font-extrabold uppercase tracking-[0.08em] text-slate-600 mb-1.5">
+                  Kata Sandi
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -218,8 +234,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Masukkan password"
-                    className="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:bg-white transition"
+                    placeholder="Masukkan password akun"
+                    className="w-full pl-10 pr-10 py-2.5 bg-slate-50/80 border border-slate-200 rounded-xl text-[13.5px] text-slate-900 font-medium placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:border-transparent focus:bg-white transition"
                     disabled={isLoading}
                   />
                   <button
@@ -235,7 +251,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-2.5 px-4 bg-[#0066FF] hover:bg-blue-700 active:scale-[0.99] text-white font-bold rounded-xl shadow-md shadow-blue-500/20 flex items-center justify-center gap-2 text-xs transition cursor-pointer disabled:opacity-60 mt-2"
+                className="w-full py-3 px-4 bg-gradient-to-r from-[#0066FF] to-blue-700 hover:from-blue-600 hover:to-blue-800 active:scale-[0.99] text-white font-extrabold rounded-xl shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 text-[13px] tracking-wide uppercase transition cursor-pointer disabled:opacity-60 mt-3"
               >
                 {isLoading ? (
                   <>
@@ -253,11 +269,13 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
 
             {/* 1-CLICK ROLE PRESETS */}
             <div className="mt-5 pt-4 border-t border-slate-100">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                  Akses Cepat 1-Klik:
+              <div className="flex items-center justify-between mb-2.5">
+                <span className="text-[10.5px] font-extrabold uppercase tracking-[0.14em] text-slate-400">
+                  Akses Cepat Peran:
                 </span>
-                <span className="text-[10px] text-slate-400 font-medium">Demo Ready</span>
+                <span className="text-[10px] font-mono text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/80">
+                  Demo Ready
+                </span>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 {PRESETS.map((p) => (
@@ -266,22 +284,31 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                     type="button"
                     onClick={() => applyPreset(p)}
                     disabled={isLoading}
-                    className="flex items-center gap-2 px-2.5 py-2 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-blue-50 hover:border-blue-300 text-slate-700 text-xs font-semibold transition cursor-pointer active:scale-95"
+                    className="flex items-center gap-2.5 p-2.5 rounded-2xl border border-slate-200/80 bg-slate-50/60 hover:bg-blue-50/70 hover:border-blue-300 text-slate-700 transition cursor-pointer active:scale-95 group text-left"
                   >
-                    {p.icon}
-                    <span className="truncate">{p.role}</span>
+                    <div className="w-7 h-7 rounded-lg bg-white border border-slate-200/80 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition">
+                      {p.icon}
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-[12px] font-bold text-slate-800 leading-tight group-hover:text-[#0066FF] transition truncate">
+                        {p.role}
+                      </div>
+                      <div className="text-[10px] font-mono text-slate-400 truncate">
+                        @{p.user}
+                      </div>
+                    </div>
                   </button>
                 ))}
               </div>
             </div>
 
             {/* Security Guarantee Pill */}
-            <div className="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
-              <div className="flex items-center gap-1">
+            <div className="mt-5 pt-3.5 border-t border-slate-100 flex items-center justify-between text-[11px] font-medium text-slate-500">
+              <div className="flex items-center gap-1.5">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-                <span>Enkripsi Sesi Aktif</span>
+                <span className="font-semibold text-slate-600">Enkripsi Sesi Aktif</span>
               </div>
-              <span>10-Tier RBAC Protected</span>
+              <span className="font-mono text-[10.5px] text-slate-400">10-Tier RBAC Protected</span>
             </div>
 
           </div>
@@ -292,7 +319,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
       {/* ========================================================================= */}
       {/* 3. FOOTER                                                                 */}
       {/* ========================================================================= */}
-      <footer className="w-full py-3 px-4 text-center text-xs text-slate-400 border-t border-slate-200/60 bg-white/50">
+      <footer className="w-full py-3.5 px-4 text-center text-[11.5px] text-slate-400 border-t border-slate-200/60 bg-white/50 tracking-tight font-medium">
         &copy; 2026 PRIME hris • PT Prime Infinity Systems • All Rights Reserved
       </footer>
     </div>
