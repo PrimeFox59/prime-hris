@@ -14,6 +14,7 @@ import { NotificationApprovalModal } from './components/NotificationApprovalModa
 import { TourDemoModal } from './components/TourDemoModal';
 import { LoginPage } from './components/LoginPage';
 import { AuditLogTab } from './components/AuditLogTab';
+import { ProjectManagementTab } from './components/ProjectManagementTab';
 
 import {
   INITIAL_EMPLOYEES,
@@ -329,6 +330,18 @@ export function App() {
           }
           return [newEmp, ...prev];
         });
+      } else if (packet.type === 'PROJECT_SAVED') {
+        const newProj: Project = packet.payload;
+        setProjects(prev => {
+          const idx = prev.findIndex(p => p.id === newProj.id);
+          if (idx >= 0) {
+            const next = [...prev];
+            next[idx] = newProj;
+            return next;
+          }
+          return [newProj, ...prev];
+        });
+        showLiveToast(`Proyek ${newProj.name || newProj.code} diperbarui`, 'info');
       } else if (packet.type === 'DATABASE_RESET') {
         api.getBootstrapData().then(data => {
           if (data.employees) setEmployees(data.employees);
@@ -632,6 +645,32 @@ export function App() {
     api.saveSalaryRules(newRules).catch(err => console.error('Failed to update salary rules in SQLite', err));
   };
 
+  // Project CRUD & Personnel Placement
+  const handleSaveProject = (proj: Project, updatedEmployees?: Employee[]) => {
+    setProjects(prev => {
+      const idx = prev.findIndex(p => p.id === proj.id);
+      if (idx >= 0) {
+        const next = [...prev];
+        next[idx] = proj;
+        return next;
+      }
+      return [proj, ...prev];
+    });
+
+    api.saveProject(proj).catch(err => console.error('Failed to save project to SQLite', err));
+
+    if (updatedEmployees && updatedEmployees.length > 0) {
+      setEmployees(prev => {
+        const map = new Map(prev.map(e => [e.id, e]));
+        updatedEmployees.forEach(e => {
+          map.set(e.id, e);
+          api.saveEmployee(e).catch(err => console.error('Failed to save reassigned employee to SQLite', err));
+        });
+        return Array.from(map.values());
+      });
+    }
+  };
+
   const pendingApprovalsCount = approvals.filter(a => a.status === 'PENDING').length;
 
   const userSystemRole = getEffectiveSystemRole(currentUser);
@@ -701,6 +740,7 @@ export function App() {
               { id: 'dashboard', label: 'Kinerja Saya' },
               { id: 'attendance', label: 'Presensi Kamera' },
               { id: 'approvals', label: 'Pengajuan' },
+              { id: 'projects', label: 'Proyek & Site' },
               { id: 'payroll', label: 'Slip Gaji' },
               { id: 'users', label: 'Profil Saya' }
             ]
@@ -708,6 +748,7 @@ export function App() {
               { id: 'dashboard', label: 'Dashboard' },
               { id: 'attendance', label: 'Presensi' },
               { id: 'approvals', label: 'Approval SDM' },
+              { id: 'projects', label: 'Proyek & Site' },
               { id: 'users', label: 'Karyawan' },
               { id: 'payroll', label: 'Payroll' },
               { id: 'salary_rules', label: 'Pengaturan' },
@@ -777,6 +818,18 @@ export function App() {
             onReject={handleReject}
             onRequestRevision={handleRequestRevision}
             onSubmitNewLeaveRequest={handleSubmitNewLeaveRequest}
+          />
+        )}
+
+        {activeTab === 'projects' && (
+          <ProjectManagementTab
+            currentUser={currentUser}
+            employees={employees}
+            projects={projects}
+            salaryRules={salaryRules}
+            onSaveProject={handleSaveProject}
+            onUpdateEmployee={handleUpdateEmployee}
+            onNavigateToTab={handleNavigateToTab}
           />
         )}
 

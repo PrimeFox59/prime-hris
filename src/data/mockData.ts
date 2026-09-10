@@ -219,7 +219,43 @@ export const INITIAL_PROJECTS: Project[] = [
     projectedLaborCost: 445000000,
     totalEstimatedHours: 4200,
     actualHoursSpent: 2380,
-    hourlyRateMultiplier: 1.25
+    hourlyRateMultiplier: 1.25,
+    description: "Proyek rekayasa struktur, instalasi konveyor material berat & perpipaan tekanan tinggi smelter Manyar.",
+    assignedEmployeeIds: ["EMP-001", "EMP-002"],
+    customRules: {
+      workSchedule: {
+        enabled: true,
+        workDays: 6,
+        checkInTime: "07:00",
+        checkOutTime: "16:30",
+        lateGraceMinutes: 15,
+        saturdayWork: true,
+        saturdayCheckIn: "07:00",
+        saturdayCheckOut: "12:00",
+        allowFlexibleHours: false
+      },
+      leavePolicy: {
+        enabled: true,
+        rosterPattern: "6_ON_2_OFF",
+        extraRemoteLeaveDays: 2,
+        minimumNoticeDays: 7,
+        requiresHandover: true,
+        customLeaveNotes: "Wajib serah terima pekerjaan ke Lead Mekanikal sebelum rotasi cuti 2 minggu."
+      },
+      allowance: {
+        enabled: true,
+        dailySiteAllowance: 85000,
+        monthlyRemoteAllowance: 1750000
+      },
+      geofence: {
+        enabled: true,
+        siteName: "Site Office Manyar KIT Gresik",
+        latitude: -7.11894,
+        longitude: 112.60281,
+        radiusMeters: 350,
+        allowedWifiSsid: "PRIME-SiteOffice-Manyar"
+      }
+    }
   },
   {
     id: "PRIME-MINING-02",
@@ -235,7 +271,43 @@ export const INITIAL_PROJECTS: Project[] = [
     projectedLaborCost: 320000000,
     totalEstimatedHours: 3100,
     actualHoursSpent: 1720,
-    hourlyRateMultiplier: 1.35
+    hourlyRateMultiplier: 1.35,
+    description: "Overhaul terjadwal excavator hidrolik 200T, dump truck CAT 777, dan generator site penambangan Pomalaa.",
+    assignedEmployeeIds: ["EMP-003", "EMP-005"],
+    customRules: {
+      workSchedule: {
+        enabled: true,
+        workDays: 6,
+        checkInTime: "06:30",
+        checkOutTime: "16:00",
+        lateGraceMinutes: 10,
+        saturdayWork: true,
+        saturdayCheckIn: "06:30",
+        saturdayCheckOut: "11:30",
+        allowFlexibleHours: false
+      },
+      leavePolicy: {
+        enabled: true,
+        rosterPattern: "10_ON_2_OFF",
+        extraRemoteLeaveDays: 4,
+        minimumNoticeDays: 14,
+        requiresHandover: true,
+        customLeaveNotes: "Penerbangan rotasi remote diakomodasi oleh perusahaan, wajib PCR/MCU sebelum kembali ke site."
+      },
+      allowance: {
+        enabled: true,
+        dailySiteAllowance: 100000,
+        monthlyRemoteAllowance: 2500000
+      },
+      geofence: {
+        enabled: true,
+        siteName: "Field Camp & Workshop Pomalaa",
+        latitude: -4.18342,
+        longitude: 121.61529,
+        radiusMeters: 400,
+        allowedWifiSsid: "PRIME-Mining-Pomalaa"
+      }
+    }
   },
   {
     id: "PRIME-CIVIL-03",
@@ -251,7 +323,26 @@ export const INITIAL_PROJECTS: Project[] = [
     projectedLaborCost: 388000000,
     totalEstimatedHours: 3600,
     actualHoursSpent: 1250,
-    hourlyRateMultiplier: 1.30
+    hourlyRateMultiplier: 1.30,
+    description: "Ereksi balok baja girder 32 meter, pondasi bore pile heavy-duty dan pengecoran lantai industrial super flat.",
+    assignedEmployeeIds: ["EMP-004"],
+    customRules: {
+      workSchedule: {
+        enabled: false,
+        workDays: 5,
+        checkInTime: "08:00",
+        checkOutTime: "17:00",
+        lateGraceMinutes: 10,
+        saturdayWork: false
+      },
+      leavePolicy: {
+        enabled: false,
+        rosterPattern: "NORMAL",
+        extraRemoteLeaveDays: 0,
+        minimumNoticeDays: 3,
+        requiresHandover: false
+      }
+    }
   },
   {
     id: "PRIME-PLANT-04",
@@ -267,7 +358,9 @@ export const INITIAL_PROJECTS: Project[] = [
     projectedLaborCost: 275000000,
     totalEstimatedHours: 3000,
     actualHoursSpent: 1710,
-    hourlyRateMultiplier: 1.00
+    hourlyRateMultiplier: 1.00,
+    description: "Pembuatan spool pipa boiler ASTM A106, spool stainless 316L, dan pengelasan SAW balok box girder crane.",
+    assignedEmployeeIds: ["EMP-006"]
   }
 ];
 

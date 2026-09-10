@@ -608,6 +608,47 @@ export function saveEmployee(emp) {
   return { success: true, employee: emp };
 }
 
+export function saveProject(proj) {
+  const db = getDatabase();
+  db.prepare(`
+    INSERT OR REPLACE INTO projects (
+      id, code, name, client, location, status,
+      startDate, targetEndDate, allocatedBudget, actualLaborCost,
+      projectedLaborCost, totalEstimatedHours, actualHoursSpent,
+      hourlyRateMultiplier, data_json, updated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP);
+  `).run(
+    proj.id,
+    proj.code,
+    proj.name,
+    proj.client || null,
+    proj.location || null,
+    proj.status || 'ACTIVE',
+    proj.startDate || null,
+    proj.targetEndDate || null,
+    proj.allocatedBudget || 0,
+    proj.actualLaborCost || 0,
+    proj.projectedLaborCost || 0,
+    proj.totalEstimatedHours || 0,
+    proj.actualHoursSpent || 0,
+    proj.hourlyRateMultiplier || 1.0,
+    JSON.stringify(proj)
+  );
+
+  addAuditLog({
+    action: 'SAVE_PROJECT',
+    entity: 'projects',
+    entityId: proj.id,
+    userName: 'Direksi / Project Lead',
+    userRole: 'admin',
+    module: 'PROJECTS',
+    status: 'SUCCESS',
+    details: `Data proyek [${proj.code}] ${proj.name} (Klien: ${proj.client || '-'}) berhasil diperbarui. Pengaturan khusus: ${proj.customRules?.workSchedule?.enabled ? `Jam Site ${proj.customRules.workSchedule.checkInTime}-${proj.customRules.workSchedule.checkOutTime}` : 'Jam Standar'}, ${proj.customRules?.leavePolicy?.enabled ? `Roster ${proj.customRules.leavePolicy.rosterPattern}` : 'Cuti Standar'}.`
+  });
+
+  return { success: true, project: proj };
+}
+
 export function saveSalaryRules(rules) {
   const db = getDatabase();
   db.prepare(`

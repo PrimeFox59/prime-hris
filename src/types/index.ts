@@ -145,6 +145,52 @@ export interface ApprovalItem {
   reviewNote?: string;
 }
 
+export interface ProjectWorkSchedule {
+  enabled: boolean;
+  workDays: number; // 5 or 6 days/week
+  checkInTime: string; // e.g. "07:30"
+  checkOutTime: string; // e.g. "16:30"
+  lateGraceMinutes: number; // e.g. 15
+  saturdayWork: boolean;
+  saturdayCheckIn?: string; // e.g. "07:30"
+  saturdayCheckOut?: string; // e.g. "12:30"
+  allowFlexibleHours?: boolean;
+}
+
+export interface ProjectLeavePolicy {
+  enabled: boolean;
+  rosterPattern: 'NORMAL' | '6_ON_2_OFF' | '10_ON_2_OFF' | '14_ON_14_OFF' | 'CUSTOM';
+  customRosterDesc?: string;
+  extraRemoteLeaveDays: number; // e.g. 2 compensatory days
+  minimumNoticeDays: number; // e.g. 7 days notice
+  requiresHandover: boolean;
+  blackoutPeriodStart?: string;
+  blackoutPeriodEnd?: string;
+  customLeaveNotes?: string;
+}
+
+export interface ProjectAllowanceRule {
+  enabled: boolean;
+  dailySiteAllowance: number; // in IDR
+  monthlyRemoteAllowance: number; // in IDR
+}
+
+export interface ProjectGeofenceRule {
+  enabled: boolean;
+  siteName?: string;
+  latitude?: number;
+  longitude?: number;
+  radiusMeters?: number;
+  allowedWifiSsid?: string;
+}
+
+export interface ProjectCustomRules {
+  workSchedule?: ProjectWorkSchedule;
+  leavePolicy?: ProjectLeavePolicy;
+  allowance?: ProjectAllowanceRule;
+  geofence?: ProjectGeofenceRule;
+}
+
 export interface Project {
   id: string;
   code: string;
@@ -160,6 +206,10 @@ export interface Project {
   totalEstimatedHours: number;
   actualHoursSpent: number;
   hourlyRateMultiplier: number;
+  description?: string;
+  projectManagerId?: string;
+  assignedEmployeeIds?: string[];
+  customRules?: ProjectCustomRules;
 }
 
 export interface ProjectPayrollAllocation {

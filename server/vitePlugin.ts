@@ -7,6 +7,7 @@ import {
   saveAttendance,
   updateApproval,
   saveEmployee,
+  saveProject,
   saveSalaryRules,
   saveReimbursement,
   resetDatabase,
@@ -94,6 +95,13 @@ export function sqliteApiPlugin(): Plugin {
           if (cleanUrl === '/api/employee' && method === 'POST') {
             const body = await readBody();
             const result = saveEmployee(body);
+            return sendJson(200, result);
+          }
+
+          // 5b. Save Project
+          if (cleanUrl === '/api/project' && method === 'POST') {
+            const body = await readBody();
+            const result = saveProject(body);
             return sendJson(200, result);
           }
 

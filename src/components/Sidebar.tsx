@@ -11,7 +11,8 @@ import {
   UserCheck,
   Shield,
   Crown,
-  History
+  History,
+  Briefcase
 } from 'lucide-react';
 import { UserRole, SystemRole } from '../types';
 
@@ -65,6 +66,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
           badge: 'SLIP'
         },
         {
+          id: 'projects',
+          title: 'PROYEK & SITE SAYA',
+          desc: 'Informasi penugasan proyek, jadwal jam in/out site & kebijakan cuti roster',
+          icon: Briefcase,
+          badge: null
+        },
+        {
           id: 'users',
           title: 'PROFIL DATA SAYA',
           desc: 'Cek data NIK, departemen, rekening bank payroll, kuota cuti & device MAC terikat',
@@ -96,6 +104,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
           desc: 'Otorisasi berjenjang pengajuan cuti, izin, lembur, dinas luar & reimbursement',
           icon: CheckSquare,
           badge: pendingApprovalsCount > 0 ? pendingApprovalsCount : null
+        },
+        {
+          id: 'projects',
+          title: 'MANAJEMEN PROYEK & SITE',
+          desc: 'Alokasi teknisi, jam kerja site, roster kerja & aturan cuti proyek',
+          icon: Briefcase,
+          badge: 'PROJ'
         },
         {
           id: 'users',
@@ -150,6 +165,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
         desc: 'Pusat otorisasi tiket SDM, persetujuan dispensasi cuti & kompensasi biaya',
         icon: CheckSquare,
         badge: pendingApprovalsCount > 0 ? pendingApprovalsCount : null
+      },
+      {
+        id: 'projects',
+        title: 'MANAJEMEN PROYEK & SITE',
+        desc: 'Alokasi teknisi, jam kerja site, roster kerja & aturan cuti proyek',
+        icon: Briefcase,
+        badge: 'PROJ'
       },
       {
         id: 'users',

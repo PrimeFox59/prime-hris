@@ -8,6 +8,7 @@ import {
   saveAttendance,
   updateApproval,
   saveEmployee,
+  saveProject,
   saveSalaryRules,
   saveReimbursement,
   resetDatabase,
@@ -283,6 +284,14 @@ const server = http.createServer(async (req, res) => {
         const body = await readBody();
         const result = saveEmployee(body);
         broadcastRealtimeEvent('EMPLOYEE_SAVED', result.employee || body);
+        return sendJson(200, result);
+      }
+
+      // 8b. Save Project with Broadcast
+      if (cleanUrl === '/api/project' && method === 'POST') {
+        const body = await readBody();
+        const result = saveProject(body);
+        broadcastRealtimeEvent('PROJECT_SAVED', result.project || body);
         return sendJson(200, result);
       }
 

@@ -15,6 +15,7 @@ export type RealtimeEventType =
   | 'EMPLOYEE_SAVED' 
   | 'REIMBURSEMENT_SAVED' 
   | 'SALARY_RULES_UPDATED' 
+  | 'PROJECT_SAVED'
   | 'DATABASE_RESET';
 
 export interface RealtimePacket {

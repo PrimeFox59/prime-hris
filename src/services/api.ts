@@ -173,6 +173,19 @@ export const api = {
     return res.json();
   },
 
+  // 5b. Save/Update Project in SQLite
+  async saveProject(project: Project): Promise<{ success: boolean; project: Project }> {
+    const res = await fetch('/api/project', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(project)
+    });
+    if (!res.ok) {
+      throw new Error(`Gagal menyimpan data proyek ke SQLite: ${res.statusText}`);
+    }
+    return res.json();
+  },
+
   // 6. Save Reimbursement Claim in SQLite
   async saveReimbursement(claim: ReimbursementClaim): Promise<{ success: boolean; claim: ReimbursementClaim }> {
     const res = await fetch('/api/reimbursement', {
