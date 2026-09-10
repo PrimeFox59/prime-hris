@@ -53,7 +53,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
       return;
     }
     if (!loginPass) {
-      setErrorMessage('Masukkan password');
+      setErrorMessage('Masukkan kata sandi');
       return;
     }
 
@@ -89,24 +89,24 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
       {/* ========================================================================= */}
       <header className="w-full px-4 sm:px-8 py-3.5 flex items-center justify-between z-20 bg-white/80 backdrop-blur-md border-b border-slate-200/80 shadow-2xs">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-700 to-[#0066FF] text-white flex items-center justify-center font-black text-xl shadow-md shadow-blue-500/20">
+          <div className="w-9 h-9 rounded-xl bg-[#0066FF] text-white flex items-center justify-center font-black text-xl shadow-md shadow-blue-500/20">
             P
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="font-black text-xl tracking-[-0.03em] text-slate-900">
-              PRIME <span className="text-[#0066FF] font-black tracking-normal">hris</span>
+            <span className="font-black text-xl tracking-tight text-slate-900">
+              PRIME <span className="text-[#0066FF]">HRIS</span>
             </span>
-            <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-blue-50 text-[#0066FF] border border-blue-200/80 tracking-wide uppercase">
-              v2.4
+            <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-md bg-blue-50 text-[#0066FF] border border-blue-200">
+              Enterprise v2.4
             </span>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
           {/* Server Indicator */}
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100/90 border border-slate-200 text-[11px] font-mono text-slate-600 shadow-2xs">
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-[11px] font-mono text-slate-600 shadow-2xs">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span className="font-bold tracking-tight">DEV20 : 8567</span>
+            <span className="font-semibold">DEV20 : 8567</span>
           </div>
         </div>
       </header>
@@ -119,22 +119,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
         {/* ----------------------------------------------------------------------- */}
         {/* LEFT COLUMN: THE 3D ECOSYSTEM OPERATIONAL SHOWCASE (SEAMLESS VIDEO)     */}
         {/* ----------------------------------------------------------------------- */}
-        <div className="w-full lg:flex-1 flex flex-col items-center lg:items-start justify-center relative select-none">
-          
-          {/* Typographic Hero Headline */}
-          <div className="w-full max-w-[960px] mb-4 text-center lg:text-left">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50/80 border border-blue-200/70 text-[#0066FF] text-[10.5px] font-extrabold uppercase tracking-[0.14em] shadow-2xs mb-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#0066FF] animate-pulse"></span>
-              Ekosistem Operasional Terpadu
-            </div>
-            <h1 className="text-2xl sm:text-3xl lg:text-[34px] font-black tracking-[-0.03em] text-slate-900 leading-[1.18]">
-              Satu Platform untuk Seluruh <br className="hidden sm:inline" />
-              <span className="bg-gradient-to-r from-[#0066FF] via-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                Manajemen SDM & Operasional
-              </span>
-            </h1>
-          </div>
-
+        <div className="w-full lg:flex-1 flex items-center justify-center relative select-none">
           {/* Ambient Radial Soft Glow */}
           <div className="absolute inset-0 bg-radial from-blue-100/40 via-blue-50/10 to-transparent -z-10 blur-2xl pointer-events-none" />
 
@@ -174,23 +159,22 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
         </div>
 
         {/* ----------------------------------------------------------------------- */}
-        {/* RIGHT COLUMN: DEDICATED PROPER ENTERPRISE LOGIN CARD                    */}
+        {/* RIGHT COLUMN: DEDICATED PROPER ENTERPRISE LOGIN CARD (GAMBAR 2 DESIGN)  */}
         {/* ----------------------------------------------------------------------- */}
         <div className="w-full lg:w-[420px] xl:w-[450px] shrink-0">
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-2xl shadow-blue-900/8">
             
-            {/* Card Header Typography */}
-            <div className="mb-6">
-              <div className="flex items-center gap-1.5 text-[10.5px] font-extrabold uppercase tracking-[0.18em] text-[#0066FF] mb-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#0066FF]"></span>
-                Portal Autentikasi
+            {/* Card Header Typography (Aligned with Gambar 2 Signature Style) */}
+            <div className="flex items-start gap-3 mb-6">
+              <div className="w-1.5 h-11 bg-gradient-to-b from-[#0066FF] to-blue-700 rounded-full mt-0.5 shrink-0" />
+              <div>
+                <div className="text-[21px] sm:text-[23px] font-black tracking-tight text-slate-900 leading-none">
+                  PRIME HRIS <span className="text-[#0066FF]">ENTERPRISE</span>
+                </div>
+                <p className="text-[12.5px] text-slate-500 font-medium mt-1.5 leading-snug">
+                  Ekosistem SDM Terintegrasi: Presensi Kamera Watermark &amp; Otomasi Penggajian.
+                </p>
               </div>
-              <h2 className="text-2xl font-black tracking-tight text-slate-900">
-                Masuk ke Sistem
-              </h2>
-              <p className="text-[13px] text-slate-500 font-normal mt-1 leading-relaxed">
-                Kelola data karyawan, presensi satelit, dan slip gaji digital.
-              </p>
             </div>
 
             {/* Error Notification */}
@@ -234,7 +218,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Masukkan password akun"
+                    placeholder="Masukkan kata sandi akun"
                     className="w-full pl-10 pr-10 py-2.5 bg-slate-50/80 border border-slate-200 rounded-xl text-[13.5px] text-slate-900 font-medium placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:border-transparent focus:bg-white transition"
                     disabled={isLoading}
                   />
@@ -251,7 +235,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-3 px-4 bg-gradient-to-r from-[#0066FF] to-blue-700 hover:from-blue-600 hover:to-blue-800 active:scale-[0.99] text-white font-extrabold rounded-xl shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 text-[13px] tracking-wide uppercase transition cursor-pointer disabled:opacity-60 mt-3"
+                className="w-full py-3 px-4 bg-gradient-to-r from-[#0066FF] to-blue-700 hover:from-blue-600 hover:to-blue-800 active:scale-[0.99] text-white font-extrabold rounded-xl shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 text-[13px] tracking-wide uppercase transition cursor-pointer disabled:opacity-60 mt-2"
               >
                 {isLoading ? (
                   <>
@@ -261,17 +245,17 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                 ) : (
                   <>
                     <LogIn className="w-4 h-4" />
-                    <span>Masuk ke PRIME hris</span>
+                    <span>Masuk ke PRIME HRIS</span>
                   </>
                 )}
               </button>
             </form>
 
-            {/* 1-CLICK ROLE PRESETS */}
+            {/* 1-CLICK ROLE PRESETS (PILL-STYLE ALIGNED WITH GAMBAR 2) */}
             <div className="mt-5 pt-4 border-t border-slate-100">
               <div className="flex items-center justify-between mb-2.5">
                 <span className="text-[10.5px] font-extrabold uppercase tracking-[0.14em] text-slate-400">
-                  Akses Cepat Peran:
+                  Akses Cepat Peran (1-Klik):
                 </span>
                 <span className="text-[10px] font-mono text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/80">
                   Demo Ready
@@ -320,7 +304,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
       {/* 3. FOOTER                                                                 */}
       {/* ========================================================================= */}
       <footer className="w-full py-3.5 px-4 text-center text-[11.5px] text-slate-400 border-t border-slate-200/60 bg-white/50 tracking-tight font-medium">
-        &copy; 2026 PRIME hris • PT Prime Infinity Systems • All Rights Reserved
+        &copy; 2026 PRIME HRIS ENTERPRISE • PT PRIME INFINITY SYSTEMS • ALL RIGHTS RESERVED
       </footer>
     </div>
   );
