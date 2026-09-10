@@ -30,7 +30,7 @@ import {
 import { Employee, AttendanceRecord, AttendanceMode, SalaryRuleConfig } from '../types';
 import { rtcService } from '../services/rtcService';
 
-// Hitung jarak nyata dari koordinat GPS HP ke Geofence Kantor DMJ (Haversine Formula)
+// Hitung jarak nyata dari koordinat GPS HP ke Geofence Kantor Pusat (Haversine Formula)
 export function calculateDistanceMeters(lat1: number, lon1: number, lat2: number, lon2: number): number {
   const R = 6371e3; // Radius bumi dalam meter
   const φ1 = (lat1 * Math.PI) / 180;
@@ -84,7 +84,7 @@ export const PresensiCameraTab: React.FC<PresensiCameraTabProps> = ({
   const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [mode, setMode] = useState<AttendanceMode>('WFO');
-  const [note, setNote] = useState('Supervisi Machining & Koordinasi Operasional Shift DMJ');
+  const [note, setNote] = useState('Supervisi Machining & Koordinasi Operasional Shift');
   
   const [destination, setDestination] = useState('PT Vale Indonesia, Sorowako Mill Site');
   const [clientName, setClientName] = useState('PT Vale Indonesia Tbk');
@@ -111,13 +111,13 @@ export const PresensiCameraTab: React.FC<PresensiCameraTabProps> = ({
     }
   }, [realDetectedIp, realDetectedIsp, realDetectedCity, isSimulatedExternalIp]);
 
-  // Check if active IP is authorized in DMJ Gateway
+  // Check if active IP is authorized in Corporate Gateway
   const isCurrentIpAuthorized = useMemo(() => {
     if (isSimulatedExternalIp) return false;
     if (customIpWhitelist.includes(activeIp)) return true;
     const networks = salaryRules.authorizedIpNetworks || [
-      { ipOrSubnet: '103.31.205.218', label: 'Gateway DMJ', isp: 'Biznet', isRegisteredOffice: true },
-      { ipOrSubnet: '103.31.205.0/24', label: 'Subnet DMJ', isp: 'Biznet', isRegisteredOffice: true }
+      { ipOrSubnet: '103.31.205.218', label: 'Gateway Utama PRIME', isp: 'Biznet', isRegisteredOffice: true },
+      { ipOrSubnet: '103.31.205.0/24', label: 'Subnet Utama PRIME', isp: 'Biznet', isRegisteredOffice: true }
     ];
     return networks.some(net => {
       if (net.ipOrSubnet === activeIp) return true;
@@ -189,7 +189,7 @@ export const PresensiCameraTab: React.FC<PresensiCameraTabProps> = ({
     lat: salaryRules?.officeGeofence?.lat ?? -7.118942,
     lng: salaryRules?.officeGeofence?.lng ?? 112.584319,
     accuracy: 6.5,
-    address: salaryRules?.officeGeofence?.address ?? 'Kawasan Industri Terpadu, Jl. Raya Utama DMJ Blok A1-A4, Jawa Timur'
+    address: salaryRules?.officeGeofence?.address ?? 'Kawasan Perkantoran & Innovation Hub PRIME Blok A1-A4, Jawa Timur'
   });
 
   // State Pelacakan GPS Asli Smartphone Karyawan
@@ -205,7 +205,7 @@ export const PresensiCameraTab: React.FC<PresensiCameraTabProps> = ({
 
   // Geofence Office Settings Modal State
   const [isGeofenceModalOpen, setIsGeofenceModalOpen] = useState(false);
-  const [tempOfficeName, setTempOfficeName] = useState(salaryRules.officeGeofence?.name || 'PT Dwi Martha Jaya - Kantor Pusat & Workshop');
+  const [tempOfficeName, setTempOfficeName] = useState(salaryRules.officeGeofence?.name || 'PRIME Enterprise - Kantor Pusat & Innovation Hub');
   const [tempOfficeLat, setTempOfficeLat] = useState<number | string>(salaryRules.officeGeofence?.lat ?? -7.118942);
   const [tempOfficeLng, setTempOfficeLng] = useState<number | string>(salaryRules.officeGeofence?.lng ?? 112.584319);
   const [tempOfficeRadius, setTempOfficeRadius] = useState<number>(salaryRules.officeGeofence?.radiusMeters || 350);
@@ -214,7 +214,7 @@ export const PresensiCameraTab: React.FC<PresensiCameraTabProps> = ({
   const [geofenceModalMsg, setGeofenceModalMsg] = useState<{ text: string; type: 'success' | 'error' | 'info' } | null>(null);
 
   const openGeofenceModal = () => {
-    setTempOfficeName(salaryRules.officeGeofence?.name || 'PT Dwi Martha Jaya - Kantor Pusat & Workshop');
+    setTempOfficeName(salaryRules.officeGeofence?.name || 'PRIME Enterprise - Kantor Pusat & Innovation Hub');
     setTempOfficeLat(salaryRules.officeGeofence?.lat ?? -7.118942);
     setTempOfficeLng(salaryRules.officeGeofence?.lng ?? 112.584319);
     setTempOfficeRadius(salaryRules.officeGeofence?.radiusMeters || 350);
@@ -266,11 +266,11 @@ export const PresensiCameraTab: React.FC<PresensiCameraTabProps> = ({
     setIsSavingGeofence(true);
     try {
       const updatedGeofence = {
-        name: tempOfficeName.trim() || 'PT Dwi Martha Jaya - Kantor & Workshop',
+        name: tempOfficeName.trim() || 'PRIME Enterprise - Kantor Pusat & Innovation Hub',
         lat: Number(numLat.toFixed(6)),
         lng: Number(numLng.toFixed(6)),
         radiusMeters: numRadius,
-        address: tempOfficeAddress.trim() || 'Kawasan Kantor & Workshop DMJ'
+        address: tempOfficeAddress.trim() || 'Kawasan Kantor Pusat & Tech Hub PRIME'
       };
 
       const updatedSalaryRules: SalaryRuleConfig = {
@@ -456,7 +456,7 @@ export const PresensiCameraTab: React.FC<PresensiCameraTabProps> = ({
         const lng = Number(pos.coords.longitude.toFixed(6));
         const accuracy = Math.round(pos.coords.accuracy) || 5;
 
-        // Hitung jarak nyata ke titik kantor DMJ
+        // Hitung jarak nyata ke titik kantor pusat
         const officeLat = salaryRules?.officeGeofence?.lat ?? -7.118942;
         const officeLng = salaryRules?.officeGeofence?.lng ?? 112.584319;
         const dist = calculateDistanceMeters(lat, lng, officeLat, officeLng);
@@ -596,7 +596,7 @@ export const PresensiCameraTab: React.FC<PresensiCameraTabProps> = ({
 
     ctx.fillStyle = '#FF8533';
     ctx.font = 'bold 10px monospace';
-    ctx.fillText(`PT DWI MARTHA JAYA • PRIME HRIS SECURE AUDIT STAMP #${Math.floor(100000 + Math.random() * 900000)}`, 16, 458);
+    ctx.fillText(`PRIME HRIS ENTERPRISE • SECURE AUDIT STAMP #${Math.floor(100000 + Math.random() * 900000)}`, 16, 458);
   };
 
   // Helper menggambar frame video / gambar ke canvas dengan menjaga rasio asli (object-cover) tanpa ter-resize menyempit
@@ -768,7 +768,7 @@ export const PresensiCameraTab: React.FC<PresensiCameraTabProps> = ({
     e.preventDefault();
 
     if (isWifiRestricted) {
-      alert(`Gagal Presensi: IP jaringan Anda (${activeIp}) tidak terdaftar dalam Gateway Resmi PT Dwi Martha Jaya. Silakan hubungkan ke jaringan kantor atau pilih mode Dinas Luar Mendadak.`);
+      alert(`Gagal Presensi: IP jaringan Anda (${activeIp}) tidak terdaftar dalam Gateway Resmi PRIME Enterprise. Silakan hubungkan ke jaringan kantor atau pilih mode Dinas Luar Mendadak.`);
       return;
     }
 
@@ -778,7 +778,7 @@ export const PresensiCameraTab: React.FC<PresensiCameraTabProps> = ({
       setCapturedPhoto(photoToUse);
     }
 
-    const noteToUse = note.trim() || 'Supervisi Machining & Operasional Shift DMJ';
+    const noteToUse = note.trim() || 'Supervisi Machining & Operasional Shift';
     const lateReasonToUse = isLate ? (lateReason.trim() || 'Penumpukan arus lalulintas jalur industri Manyar') : undefined;
 
     const now = rtcService.getServerNow();
@@ -1039,7 +1039,7 @@ export const PresensiCameraTab: React.FC<PresensiCameraTabProps> = ({
                     type="button"
                     onClick={openGeofenceModal}
                     className="px-2.5 py-1 rounded-lg bg-orange-50 border border-orange-200 hover:bg-orange-100 text-[10px] font-bold font-mono-code text-[#FF6B00] flex items-center gap-1 transition-all cursor-pointer shadow-2xs active:scale-95"
-                    title="Atur titik koordinat & radius geofence kantor DMJ"
+                    title="Atur titik koordinat & radius geofence kantor pusat"
                   >
                     <MapPin className="w-3 h-3" />
                     <span>Set Titik Kantor</span>
@@ -1181,7 +1181,7 @@ export const PresensiCameraTab: React.FC<PresensiCameraTabProps> = ({
                         {mode === 'DINAS_LUAR'
                           ? 'DISPENSASI PRESENSI: DINAS LUAR MENDADAK'
                           : isCurrentIpAuthorized
-                          ? 'GATEWAY RESMI PT DWI MARTHA JAYA'
+                          ? 'GATEWAY RESMI PRIME ENTERPRISE'
                           : 'AKSES TERKUNCI: JARINGAN LUAR KANTOR'}
                       </span>
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
@@ -1208,7 +1208,7 @@ export const PresensiCameraTab: React.FC<PresensiCameraTabProps> = ({
                       {mode === 'DINAS_LUAR'
                         ? 'Verifikasi jaringan kantor dilewati untuk tugas luar. Presensi diajukan ke approval atasan dengan audit watermark dinas.'
                         : isCurrentIpAuthorized
-                        ? 'Koneksi terverifikasi dari Gateway resmi PT Dwi Martha Jaya. Akses presensi On-Site dibuka.'
+                        ? 'Koneksi terverifikasi dari Gateway resmi PRIME Enterprise. Akses presensi On-Site dibuka.'
                         : 'Koneksi perangkat Anda berada di luar jaringan kantor resmi. Untuk presensi WFO wajib terhubung ke jaringan kantor.'}
                     </p>
                   </div>
@@ -1232,7 +1232,7 @@ export const PresensiCameraTab: React.FC<PresensiCameraTabProps> = ({
                     type="button"
                     onClick={openGeofenceModal}
                     className="px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white text-[11px] font-bold flex items-center gap-1.5 shadow-2xs cursor-pointer transition-all active:scale-95"
-                    title="Atur titik koordinat Latitude, Longitude, dan Radius Geofence Kantor DMJ"
+                    title="Atur titik koordinat Latitude, Longitude, dan Radius Geofence Kantor Pusat"
                   >
                     <MapPin className="w-3.5 h-3.5" />
                     <span>Atur Lat/Lng Kantor</span>
@@ -1350,7 +1350,7 @@ export const PresensiCameraTab: React.FC<PresensiCameraTabProps> = ({
               {/* Quick Preset Chips for Note */}
               <div className="flex flex-wrap gap-1.5 pt-0.5">
                 {[
-                  'Supervisi Shift DMJ',
+                  'Supervisi Shift Lapangan',
                   'Machining CNC & QC',
                   'Maintenance Tooling',
                   'Koordinasi Site'
@@ -1425,10 +1425,10 @@ export const PresensiCameraTab: React.FC<PresensiCameraTabProps> = ({
               <div className="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-center space-y-1 animate-in fade-in">
                 <p className="text-xs font-bold text-rose-700 flex items-center justify-center gap-1.5">
                   <ShieldAlert className="w-4 h-4" />
-                  Presensi WFO Terkunci: IP Anda ({activeIp}) Berada di Luar Gateway Resmi DMJ
+                  Presensi WFO Terkunci: IP Anda ({activeIp}) Berada di Luar Gateway Resmi PRIME
                 </p>
                 <p className="text-[11px] text-rose-600">
-                  Wajib menggunakan koneksi kantor PT Dwi Martha Jaya, atau klik tombol <b>+ Daftarkan IP Ini</b> bila IP ini valid, atau ganti mode ke <b>Dinas Luar Mendadak</b>.
+                  Wajib menggunakan koneksi kantor resmi PRIME Enterprise, atau klik tombol <b>+ Daftarkan IP Ini</b> bila IP ini valid, atau ganti mode ke <b>Dinas Luar Mendadak</b>.
                 </p>
               </div>
             )}
@@ -1575,7 +1575,7 @@ export const PresensiCameraTab: React.FC<PresensiCameraTabProps> = ({
                 Presensi Berhasil Diterima & Disimpan!
               </h2>
               <p className="text-xs text-slate-600">
-                Data kehadiran dan foto selfie resmi telah dicatat ke dalam database PT Dwi Martha Jaya.
+                Data kehadiran dan foto selfie resmi telah dicatat ke dalam database PRIME HRIS Enterprise.
               </p>
             </div>
 
@@ -1674,7 +1674,7 @@ export const PresensiCameraTab: React.FC<PresensiCameraTabProps> = ({
                     Pengaturan Titik Koordinat & Geofence Kantor
                   </h3>
                   <p className="text-xs text-slate-500">
-                    Konfigurasi lokasi resmi PT Dwi Martha Jaya & batas toleransi radius presensi WFO
+                    Konfigurasi lokasi resmi PRIME Enterprise & batas toleransi radius presensi WFO
                   </p>
                 </div>
               </div>
@@ -1744,7 +1744,7 @@ export const PresensiCameraTab: React.FC<PresensiCameraTabProps> = ({
                   type="text"
                   value={tempOfficeName}
                   onChange={e => setTempOfficeName(e.target.value)}
-                  placeholder="e.g. PT Dwi Martha Jaya - Workshop Manyar"
+                  placeholder="e.g. PRIME Enterprise - Innovation Hub Surabaya"
                   className="w-full glass-input rounded-xl px-3 py-2 text-xs text-slate-800"
                   required
                 />
@@ -1800,7 +1800,7 @@ export const PresensiCameraTab: React.FC<PresensiCameraTabProps> = ({
                     { radius: 50, label: '50m (Ketat)' },
                     { radius: 100, label: '100m (Gedung)' },
                     { radius: 200, label: '200m (Workshop)' },
-                    { radius: 350, label: '350m (Standar DMJ)' },
+                    { radius: 350, label: '350m (Standar Geofence)' },
                     { radius: 500, label: '500m (Kawasan Industri)' }
                   ].map(chip => (
                     <button

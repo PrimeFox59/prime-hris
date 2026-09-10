@@ -110,7 +110,7 @@ export const HrisTimelineChart: React.FC<HrisTimelineChartProps> = ({
               TIMELINE INTERAKTIF SDM
             </span>
             <span className="text-xs font-bold text-slate-500 font-mono-code">
-              Operasional 24 Jam • PT Dwi Martha Jaya
+              Operasional 24 Jam • PRIME Enterprise
             </span>
           </div>
           <h2 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight flex items-center gap-2">

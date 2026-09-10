@@ -50,6 +50,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
           badge: null
         },
         {
+          id: 'approvals',
+          title: 'PENGAJUAN & IZIN SAYA',
+          desc: 'Formulir & riwayat pengajuan cuti, izin sakit, dispensasi lembur & reimbursement',
+          icon: CheckSquare,
+          badge: pendingApprovalsCount > 0 ? pendingApprovalsCount : null
+        },
+        {
           id: 'payroll',
           title: 'SLIP GAJI SAYA',
           desc: 'Rincian penerimaan gaji pokok, tunjangan kerja, upah lembur & cetak slip resmi PRIME hris',
@@ -62,13 +69,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           desc: 'Cek data NIK, departemen, rekening bank payroll, kuota cuti & device MAC terikat',
           icon: UserCheck,
           badge: null
-        },
-        {
-          id: 'proposal',
-          title: 'PROPOSAL KOMERSIAL',
-          desc: 'Proposal penawaran implementasi PRIME hris Enterprise Platform',
-          icon: FileSpreadsheet,
-          badge: 'PRIME'
         }
       ];
     }
@@ -84,10 +84,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
         },
         {
           id: 'attendance',
-          title: 'PRESENSI & IP GATEWAY',
+          title: 'PRESENSI & JAM KERJA',
           desc: 'Verifikasi selfie kamera, validasi IP kantor & pendaftaran presensi dinas luar',
           icon: Camera,
           badge: null
+        },
+        {
+          id: 'approvals',
+          title: 'PUSAT APPROVAL SDM',
+          desc: 'Otorisasi berjenjang pengajuan cuti, izin, lembur, dinas luar & reimbursement',
+          icon: CheckSquare,
+          badge: pendingApprovalsCount > 0 ? pendingApprovalsCount : null
         },
         {
           id: 'users',
@@ -104,16 +111,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
           badge: null
         },
         {
-          id: 'proposal',
-          title: 'PROPOSAL KOMERSIAL',
-          desc: 'Proposal penawaran implementasi PRIME hris Enterprise Platform',
-          icon: FileSpreadsheet,
-          badge: 'PRIME'
+          id: 'salary_rules',
+          title: 'PENGATURAN & ATURAN HR',
+          desc: 'Konfigurasi jam kerja kantor, batas toleransi terlambat, rumus lembur & BPJS',
+          icon: Sliders,
+          badge: null
         }
       ];
     }
 
-    // Default: Superuser (Full Menus without approvals)
+    // Default: Superuser (Direksi & Super Admin)
     return [
       {
         id: 'dashboard',
@@ -130,8 +137,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
         badge: null
       },
       {
+        id: 'approvals',
+        title: 'APPROVAL & PENGAJUAN',
+        desc: 'Pusat otorisasi tiket SDM, persetujuan dispensasi cuti & kompensasi biaya',
+        icon: CheckSquare,
+        badge: pendingApprovalsCount > 0 ? pendingApprovalsCount : null
+      },
+      {
         id: 'users',
-        title: 'USER MANAGEMENT',
+        title: 'MASTER DATA KARYAWAN',
         desc: 'Manajemen pengguna & staf, jatah cuti, data rekening & MAC device',
         icon: Users,
         badge: null
@@ -144,11 +158,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
         badge: null
       },
       {
-        id: 'proposal',
-        title: 'PROPOSAL KOMERSIAL',
-        desc: 'Proposal penawaran implementasi PRIME hris Enterprise Platform',
-        icon: FileSpreadsheet,
-        badge: 'PRIME'
+        id: 'salary_rules',
+        title: 'PENGATURAN & KEBIJAKAN',
+        desc: 'Konfigurasi kebijakan jam kerja, formula lembur Depnaker, BPJS & IP Gateway',
+        icon: Sliders,
+        badge: null
       }
     ];
   };

@@ -74,7 +74,7 @@ export const EmployeeManagementTab: React.FC<EmployeeManagementTabProps> = ({
 
   const openAddModal = () => {
     setEditingEmployee(null);
-    setNik(`DMJ-2026-${String(employees.length + 1).padStart(3, '0')}`);
+    setNik(`PRIME-2026-${String(employees.length + 1).padStart(3, '0')}`);
     setName('');
     setEmail('');
     setPhone('+62 8');
@@ -83,7 +83,7 @@ export const EmployeeManagementTab: React.FC<EmployeeManagementTabProps> = ({
     setRole('Employee');
     setSystemRole('staff');
     setEmploymentType('TETAP');
-    setAssignedProjectId(projects[0]?.id || 'DMJ-ENG-01');
+    setAssignedProjectId(projects[0]?.id || 'PRIME-ENG-01');
     setBaseSalary(10000000);
     setFixedAllowance(2000000);
     setDailyAllowance(50000);
@@ -188,12 +188,12 @@ export const EmployeeManagementTab: React.FC<EmployeeManagementTabProps> = ({
             </span>
           </div>
           <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-            {isStaff ? 'Profil Data Pribadi Karyawan' : 'User Management & Direktori Karyawan PT Dwi Martha Jaya'}
+            {isStaff ? 'Profil Data Pribadi Karyawan' : 'User Management & Direktori Karyawan PRIME Enterprise'}
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 mt-0.5">
             {isStaff
               ? 'Berikut rincian master profil Anda: NIK resmi, alokasi kuota cuti tahunan, nomor rekening payroll, dan binding MAC WiFi.'
-              : 'Database pengguna resmi, pengaturan struktur gaji, tracking saldo cuti, dan binding keamanan perangkat WiFi PT Dwi Martha Jaya.'}
+              : 'Database pengguna resmi, pengaturan struktur gaji, tracking saldo cuti, dan binding keamanan perangkat WiFi PRIME Enterprise.'}
           </p>
         </div>
 

@@ -135,7 +135,7 @@ export const SalaryRulesTab: React.FC<SalaryRulesTabProps> = ({
             <div>
               <p className="font-bold">Mode Terkunci (Read-Only) • Hak Akses Terbatas</p>
               <p className="text-[11px] text-amber-800">
-                Formula lembur Depnaker RI, persentase BPJS, dan registry IP Gateway kantor hanya dapat diubah oleh <b>Superuser (Direktur PT Dwi Martha Jaya)</b>.
+                Formula lembur Depnaker RI, persentase BPJS, dan registry IP Gateway kantor hanya dapat diubah oleh <b>Superuser (Direksi / Super Admin)</b>.
               </p>
             </div>
           </div>

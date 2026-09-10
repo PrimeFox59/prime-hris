@@ -73,7 +73,7 @@ export const UserPerformanceTab: React.FC<UserPerformanceTabProps> = ({
   const [reimbCategory, setReimbCategory] = useState<ReimbursementCategory>('TRANSPORT_BBM');
   const [reimbAmount, setReimbAmount] = useState<number>(250000);
   const [reimbDesc, setReimbDesc] = useState('');
-  const [reimbProjectId, setReimbProjectId] = useState(currentUser.assignedProjectId || 'DMJ-ENG-01');
+  const [reimbProjectId, setReimbProjectId] = useState(currentUser.assignedProjectId || 'PRIME-ENG-01');
 
   // Filter personal data for currentUser
   const personalAttendances = useMemo(() => {
@@ -133,7 +133,7 @@ export const UserPerformanceTab: React.FC<UserPerformanceTabProps> = ({
       amount: reimbAmount,
       date: new Date().toISOString().split('T')[0],
       projectId: reimbProjectId,
-      projectName: selectedProj ? selectedProj.name : 'Workshop DMJ',
+      projectName: selectedProj ? selectedProj.name : 'Workshop & Head Office',
       status: 'SUBMITTED',
       submittedAt: new Date().toISOString().replace('T', ' ').substring(0, 19)
     };
@@ -393,7 +393,7 @@ export const UserPerformanceTab: React.FC<UserPerformanceTabProps> = ({
               ) : (
                 <div className="p-6 rounded-2xl bg-amber-50/70 border border-amber-200 text-center text-xs space-y-2">
                   <p className="font-bold text-amber-900">Anda belum melakukan presensi kamera hari ini.</p>
-                  <p className="text-amber-700">Pastikan terhubung ke WiFi DMJ-Corporate-5G sebelum melakukan selfie check-in.</p>
+                  <p className="text-amber-700">Pastikan terhubung ke WiFi PRIME-Corporate-5G sebelum melakukan selfie check-in.</p>
                   <button
                     onClick={() => onNavigateToTab('attendance')}
                     className="px-4 py-2 rounded-xl bg-[#FF6B00] text-white font-bold text-xs shadow-md cursor-pointer"
@@ -430,7 +430,7 @@ export const UserPerformanceTab: React.FC<UserPerformanceTabProps> = ({
                 </div>
                 <div className="flex justify-between text-[11px] text-slate-500">
                   <span>Alokasi Beban Proyek:</span>
-                  <span className="font-mono-code text-orange-700 font-bold">{assignedProject?.code || 'DMJ-ENG-01'}</span>
+                  <span className="font-mono-code text-orange-700 font-bold">{assignedProject?.code || 'PRIME-ENG-01'}</span>
                 </div>
               </div>
             </div>
@@ -450,7 +450,7 @@ export const UserPerformanceTab: React.FC<UserPerformanceTabProps> = ({
                 Rincian Penghasilan & Slip Gaji Karyawan
               </h2>
               <p className="text-xs text-slate-500">
-                Periode: <strong>September 2026</strong> • Berdasarkan regulasi ketenagakerjaan Depnaker RI & SOP PT Dwi Martha Jaya.
+                Periode: <strong>September 2026</strong> • Berdasarkan regulasi ketenagakerjaan Depnaker RI & SOP PT Prime Infinity Systems.
               </p>
             </div>
 
@@ -459,7 +459,7 @@ export const UserPerformanceTab: React.FC<UserPerformanceTabProps> = ({
               className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#FF6B00] to-[#FF8533] text-white text-xs font-bold shadow-md shadow-orange-500/25 flex items-center gap-2 cursor-pointer active:scale-95"
             >
               <Printer className="w-3.5 h-3.5" />
-              Cetak Slip Gaji Resmi DMJ
+              Cetak Slip Gaji Resmi PRIME
             </button>
           </div>
 
@@ -559,7 +559,7 @@ export const UserPerformanceTab: React.FC<UserPerformanceTabProps> = ({
                 Log Riwayat Presensi & Verifikasi Kehadiran
               </h2>
               <p className="text-xs text-slate-500">
-                Data sinkronisasi kamera selfie, WiFi gate DMJ, dan koordinat GPS.
+                Data sinkronisasi kamera selfie, WiFi gate PRIME, dan koordinat GPS.
               </p>
             </div>
             <button
@@ -635,7 +635,7 @@ export const UserPerformanceTab: React.FC<UserPerformanceTabProps> = ({
                 Manajemen Saldo Cuti & Izin Karyawan
               </h2>
               <p className="text-xs text-slate-500">
-                Hak cuti tahunan PT Dwi Martha Jaya tahun kalender 2026.
+                Hak cuti tahunan PT Prime Infinity Systems tahun kalender 2026.
               </p>
             </div>
             <button
@@ -675,7 +675,7 @@ export const UserPerformanceTab: React.FC<UserPerformanceTabProps> = ({
                 Klaim Reimbursement Operasional & Biaya Proyek
               </h2>
               <p className="text-xs text-slate-500">
-                Penggantian biaya transport, bensin, konsumsi lembur, dan kebutuhan teknis site DMJ.
+                Penggantian biaya transport, bensin, konsumsi lembur, dan kebutuhan teknis operasional.
               </p>
             </div>
 
@@ -840,7 +840,7 @@ export const UserPerformanceTab: React.FC<UserPerformanceTabProps> = ({
               <span className="px-2.5 py-0.5 rounded-md bg-[#FF6B00] text-white text-[10px] font-black uppercase font-mono-code">
                 FORM KLAIM REIMBURSE
               </span>
-              <span className="text-xs text-slate-500 font-mono-code">PT Dwi Martha Jaya</span>
+              <span className="text-xs text-slate-500 font-mono-code">PT Prime Infinity Systems</span>
             </div>
 
             <h3 className="text-base font-black text-slate-900 mb-4">Pengajuan Klaim Biaya Operasional Baru</h3>
@@ -890,7 +890,7 @@ export const UserPerformanceTab: React.FC<UserPerformanceTabProps> = ({
               </div>
 
               <div>
-                <label className="block text-slate-700 font-bold mb-1">Bebankan ke Proyek DMJ:</label>
+                <label className="block text-slate-700 font-bold mb-1">Bebankan ke Proyek:</label>
                 <select
                   value={reimbProjectId}
                   onChange={e => setReimbProjectId(e.target.value)}
@@ -940,7 +940,7 @@ export const UserPerformanceTab: React.FC<UserPerformanceTabProps> = ({
       )}
 
       {/* =========================================================================
-          MODAL: CETAK SLIP GAJI RESMI DMJ
+          MODAL: CETAK SLIP GAJI RESMI PRIME
          ========================================================================= */}
       {isSlipModalOpen && (
         <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
@@ -957,20 +957,20 @@ export const UserPerformanceTab: React.FC<UserPerformanceTabProps> = ({
               <div className="flex items-start justify-between">
                 <div>
                   <div className="flex items-center gap-2">
-                    <div className="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center font-mono-code font-black text-sm tracking-tighter">
-                      DM<span className="text-[#FF6B00]">J</span>
+                    <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#FF6B00] to-[#FF8533] text-white flex items-center justify-center font-mono-code font-black text-sm tracking-tighter shadow-sm shadow-orange-500/30">
+                      PRIME
                     </div>
                     <div>
                       <h2 className="text-base sm:text-lg font-black tracking-tight text-slate-900 font-mono-code leading-none">
-                        PT DWI MARTHA JAYA
+                        PRIME HRIS ENTERPRISE
                       </h2>
                       <p className="text-[10px] text-slate-500 font-semibold tracking-wider uppercase mt-0.5">
-                        General Contractor, Mining Services & Industrial Engineering
+                        PT Prime Infinity Systems • Advanced HR & Payroll Engineering Platform
                       </p>
                     </div>
                   </div>
                   <p className="text-[9px] text-slate-400 mt-1 font-mono-code">
-                    NPWP: 01.892.411.2-054.000 • Komp. Industri Terpadu Blok A1-A4 • finance@dwimarthajaya.co.id
+                    NPWP: 01.892.411.2-054.000 • Komp. Perkantoran & Innovation Hub • Email: payroll@primeprojectx.net
                   </p>
                 </div>
 

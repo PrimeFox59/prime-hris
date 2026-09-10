@@ -488,7 +488,7 @@ export function saveAttendance(record) {
   return { success: true, record };
 }
 
-export function updateApproval(id, status, reviewNote, reviewedBy = 'Direksi / HR DMJ') {
+export function updateApproval(id, status, reviewNote, reviewedBy = 'Direksi / HR Lead') {
   const db = getDatabase();
   const row = db.prepare('SELECT data_json FROM approvals WHERE id = ?;').get(id);
   if (!row) throw new Error(`Approval item with ID ${id} not found`);

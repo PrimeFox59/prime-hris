@@ -66,16 +66,16 @@ export function App() {
 
   // WiFi simulation state
   const [isWifiConnected, setIsWifiConnected] = useState<boolean>(true);
-  const [currentWifiSsid, setCurrentWifiSsid] = useState<string>('DMJ-Corporate-5G');
+  const [currentWifiSsid, setCurrentWifiSsid] = useState<string>('PRIME-Corporate-5G');
 
   // Real IP Network Detection & Smart Mapping state (Opsi 2: Status Kantor vs Luar Kantor)
   const [realDetectedIp, setRealDetectedIp] = useState<string>('103.31.205.218');
   const [realDetectedIsp, setRealDetectedIsp] = useState<string>('PT Biznet Gio Nusantara');
-  const [realDetectedCity, setRealDetectedCity] = useState<string>('Surabaya / Manyar Site');
+  const [realDetectedCity, setRealDetectedCity] = useState<string>('Surabaya / Head Office');
   const [simulatedNetworkMode, setSimulatedNetworkMode] = useState<'auto' | 'office' | 'remote'>('auto');
   const [customIpWhitelist, setCustomIpWhitelist] = useState<string[]>([]);
 
-  // Calculate whether client is inside DMJ Office Network based on IP whitelist or simulation
+  // Calculate whether client is inside Office Network based on IP whitelist or simulation
   const isOfficeNetwork = useMemo(() => {
     if (simulatedNetworkMode === 'office') return true;
     if (simulatedNetworkMode === 'remote') return false;
@@ -85,10 +85,10 @@ export function App() {
 
     // Check against authorized office IP networks
     const networks = salaryRules?.authorizedIpNetworks || [
-      { ipOrSubnet: '103.31.205.218', label: 'Gateway DMJ', isp: 'Biznet', isRegisteredOffice: true },
-      { ipOrSubnet: '103.31.205.0/24', label: 'Subnet DMJ', isp: 'Biznet', isRegisteredOffice: true },
-      { ipOrSubnet: '180.252.0.0/16', label: 'Telkom Astinet Dedicated Site Manyar DMJ', isp: 'PT Telkom Indonesia', isRegisteredOffice: true },
-      { ipOrSubnet: '192.168.10.0/24', label: 'Local Intranet Subnet DMJ Workshop & Engineering', isp: 'LAN DHCP Subnet', isRegisteredOffice: true }
+      { ipOrSubnet: '103.31.205.218', label: 'Gateway Utama PRIME', isp: 'Biznet', isRegisteredOffice: true },
+      { ipOrSubnet: '103.31.205.0/24', label: 'Subnet Enterprise PRIME', isp: 'Biznet', isRegisteredOffice: true },
+      { ipOrSubnet: '180.252.0.0/16', label: 'Telkom Astinet Dedicated Site Manyar', isp: 'PT Telkom Indonesia', isRegisteredOffice: true },
+      { ipOrSubnet: '192.168.10.0/24', label: 'Local Intranet Subnet Workshop & Engineering', isp: 'LAN DHCP Subnet', isRegisteredOffice: true }
     ];
 
     return networks.some(net => {
@@ -339,11 +339,6 @@ export function App() {
   };
 
   const handleNavigateToTab = (tabId: string, projectIdFilter?: string) => {
-    if (tabId === 'approvals') {
-      setIsNotificationModalOpen(true);
-      return;
-    }
-
     // Sync URL with tabId query parameter without full reload
     if (typeof window !== 'undefined') {
       try {
@@ -641,16 +636,17 @@ export function App() {
           ? [
               { id: 'dashboard', label: 'Kinerja Saya' },
               { id: 'attendance', label: 'Presensi Kamera' },
-              { id: 'users', label: 'Profil Saya' },
-              { id: 'payroll', label: 'Slip Gaji Saya' },
-              { id: 'proposal', label: 'Proposal Prime' }
+              { id: 'approvals', label: 'Pengajuan' },
+              { id: 'payroll', label: 'Slip Gaji' },
+              { id: 'users', label: 'Profil Saya' }
             ]
           : [
               { id: 'dashboard', label: 'Dashboard' },
               { id: 'attendance', label: 'Presensi' },
-              { id: 'users', label: 'User Management' },
-              { id: 'payroll', label: 'Payroll & Proyek' },
-              { id: 'proposal', label: 'Proposal Prime' }
+              { id: 'approvals', label: 'Approval SDM' },
+              { id: 'users', label: 'Karyawan' },
+              { id: 'payroll', label: 'Payroll' },
+              { id: 'salary_rules', label: 'Pengaturan' }
             ]
         ).map(tab => {
           const isTabActive = activeTab === tab.id || (tab.id === 'dashboard' && (activeTab === 'dashboard_hris' || activeTab === 'dashboard_finance' || activeTab === 'user_performance'));
@@ -707,6 +703,18 @@ export function App() {
           />
         )}
 
+        {activeTab === 'approvals' && (
+          <ApprovalHubTab
+            approvals={approvals}
+            employees={employees}
+            currentUser={currentUser}
+            onApprove={handleApprove}
+            onReject={handleReject}
+            onRequestRevision={handleRequestRevision}
+            onSubmitNewLeaveRequest={handleSubmitNewLeaveRequest}
+          />
+        )}
+
         {activeTab === 'users' && (
           <EmployeeManagementTab
             currentUser={currentUser}
@@ -746,10 +754,17 @@ export function App() {
       {/* Footer */}
       <footer className="mt-auto py-6 border-t border-slate-200/80 bg-white/40 text-center text-xs text-slate-500 font-mono-code no-print">
         <p>
-          Prime HRIS Enterprise • Custom Tailored for <b className="text-slate-800">PT Dwi Martha Jaya</b>
+          PRIME HRIS Enterprise • Production-Grade Human Resource Information System
         </p>
-        <p className="text-[10px] text-slate-400 mt-1">
-          Developed by PT Prime Infinity Systems (Prime ProjectX) • Attendance by Cam, Sequential WiFi Gateway & Project Payroll System
+        <p className="text-[10px] text-slate-400 mt-1 flex items-center justify-center gap-3">
+          <span>Developed by PT Prime Infinity Systems (Prime ProjectX)</span>
+          <span>•</span>
+          <button
+            onClick={() => handleNavigateToTab('proposal')}
+            className="text-[#FF6B00] hover:underline cursor-pointer"
+          >
+            Spesifikasi & Proposal Sistem
+          </button>
         </p>
       </footer>
 

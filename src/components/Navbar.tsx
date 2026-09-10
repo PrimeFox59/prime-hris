@@ -137,7 +137,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                   </span>
                   <Wifi className="w-3.5 h-3.5 text-emerald-600" />
-                  <span className="font-bold tracking-tight">DMJ Corporate Network</span>
+                  <span className="font-bold tracking-tight">PRIME Corporate Network</span>
                   <span className="text-emerald-300">•</span>
                   <span className="px-1.5 py-0.2 rounded-full bg-emerald-200/80 text-[9.5px] font-black text-emerald-900">
                     WFO SAH
@@ -177,7 +177,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         Smart Gateway & Network Audit
                       </h4>
                       <p className="text-[11px] text-slate-500 font-mono-code">
-                        PT Dwi Martha Jaya • Zero-Trust Geofence
+                        PRIME Enterprise • Zero-Trust Geofence
                       </p>
                     </div>
                   </div>
@@ -198,7 +198,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         <span>Jaringan Kantor Terverifikasi (WFO Sah)</span>
                       </div>
                       <p className="text-[11.5px] text-emerald-800/90 leading-relaxed font-sans">
-                        Koneksi Anda cocok dengan Whitelist Gateway Resmi PT DMJ. Presensi mandiri dinyatakan sah sebagai jam kerja WFO tanpa memerlukan disposisi persetujuan manajer.
+                        Koneksi Anda cocok dengan Whitelist Gateway Resmi PRIME Enterprise. Presensi mandiri dinyatakan sah sebagai jam kerja WFO tanpa memerlukan disposisi persetujuan manajer.
                       </p>
                     </div>
                   ) : (

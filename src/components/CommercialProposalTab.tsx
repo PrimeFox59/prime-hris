@@ -90,7 +90,7 @@ export const CommercialProposalTab: React.FC = () => {
   // Proposal URL - when scanned, redirects straight to ?tab=proposal
   const proposalUrl = typeof window !== 'undefined' && window.location.origin
     ? `${window.location.origin}/?tab=proposal`
-    : 'https://dmj.primeprojectx.net/?tab=proposal';
+    : 'https://hris.primeprojectx.net/?tab=proposal';
 
   useEffect(() => {
     // Generate high-resolution scannable QR Code
@@ -109,7 +109,7 @@ export const CommercialProposalTab: React.FC = () => {
 
   const handlePrint = () => {
     const originalTitle = document.title;
-    document.title = 'dmj';
+    document.title = 'PRIME_HRIS_Enterprise_Proposal_2026';
     window.print();
     setTimeout(() => {
       document.title = originalTitle;

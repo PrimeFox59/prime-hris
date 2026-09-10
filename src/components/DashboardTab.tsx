@@ -104,7 +104,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
           </div>
           <div>
             <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 font-mono-code block">
-              SISTEM MONITORING TERPADU • PT DWI MARTHA JAYA
+              SISTEM MONITORING TERPADU • PRIME HRIS ENTERPRISE
             </span>
             <span className="text-xs font-bold text-slate-900">
               Pilih Sudut Pandang Dashboard:
@@ -190,7 +190,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
               <div className="space-y-2 max-w-2xl">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="prime-cut-corner bg-emerald-600 text-white text-[10px] font-black px-2.5 py-0.5 tracking-wider uppercase font-mono-code">
-                    PORTAL OPERASIONAL SDM • PT DWI MARTHA JAYA
+                    PORTAL OPERASIONAL SDM • PRIME HRIS ENTERPRISE
                   </span>
                   <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[11px] font-semibold flex items-center gap-1 border border-emerald-500/30 font-mono-code">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
@@ -201,7 +201,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                   Dashboard HRIS & Manajemen Tenaga Kerja
                 </h1>
                 <p className="text-sm text-slate-300 leading-relaxed">
-                  Monitoring terpusat kehadiran presensi kamera, shift timeline 24 jam, verifikasi jaringan resmi WiFi kantor (<code className="text-[#00E2B0] font-mono-code">DMJ-Corporate-5G</code>), serta alur persetujuan dinas luar untuk seluruh staf <strong className="text-white">PT Dwi Martha Jaya</strong>.
+                  Monitoring terpusat kehadiran presensi kamera, shift timeline 24 jam, verifikasi jaringan resmi WiFi kantor (<code className="text-[#00E2B0] font-mono-code">PRIME-Corporate-5G</code>), serta alur persetujuan dinas luar untuk seluruh staf <strong className="text-white">PRIME Enterprise</strong>.
                 </p>
               </div>
 
@@ -270,7 +270,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
             <div className="glass-card rounded-2xl p-5 hover:shadow-lg transition-all border border-slate-200/80 card-interactive">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono-code">
-                  Kepatuhan Lokasi DMJ
+                  Kepatuhan Geofence & Jaringan
                 </span>
                 <div className="w-9 h-9 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center">
                   <Wifi className="w-4 h-4" />
@@ -324,7 +324,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                 <div>
                   <h3 className="text-base font-black text-slate-900 tracking-tight flex items-center gap-2">
                     <Users className="w-4 h-4 text-[#FF6B00]" />
-                    Sebaran Tenaga Kerja & Penugasan Divisi PT Dwi Martha Jaya
+                    Sebaran Tenaga Kerja & Penugasan Divisi Perusahaan
                   </h3>
                   <p className="text-xs text-slate-500">
                     Alokasi personel aktif di Workshop Pusat Manyar dan Site Luar Pomalaa.
@@ -476,7 +476,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
               <div className="space-y-2 max-w-2xl">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="prime-cut-corner bg-[#FF6B00] text-white text-[10px] font-black px-2.5 py-0.5 tracking-wider uppercase font-mono-code">
-                    PORTAL FINANCE & COST ACCOUNTING • PT DWI MARTHA JAYA
+                    PORTAL FINANCE & COST ACCOUNTING • PRIME ENTERPRISE
                   </span>
                   <span className="px-2.5 py-0.5 rounded-full bg-orange-500/20 text-orange-400 text-[11px] font-semibold flex items-center gap-1 border border-orange-500/30 font-mono-code">
                     <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-ping"></span>
@@ -487,7 +487,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                   Dashboard Finance, Payroll & Anggaran Proyek
                 </h1>
                 <p className="text-sm text-slate-300 leading-relaxed">
-                  Pemantauan realisasi gaji bersih (THP), beban upah lembur regulasi Depnaker RI, estimasi burn-rate anggaran proyek DMJ, serta timeline arus kas pencairan bank rekanan.
+                  Pemantauan realisasi gaji bersih (THP), beban upah lembur regulasi Depnaker RI, estimasi burn-rate anggaran proyek, serta timeline arus kas pencairan bank rekanan.
                 </p>
               </div>
 
@@ -497,7 +497,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                   className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#FF6B00] to-[#FF8533] hover:from-[#e56000] text-white text-xs font-bold shadow-lg shadow-orange-500/30 transition-all active:scale-95 flex items-center gap-2 cursor-pointer"
                 >
                   <Banknote className="w-4 h-4" />
-                  Buka Payroll Hub DMJ
+                  Buka Payroll Hub PRIME
                 </button>
                 <button
                   onClick={() => onNavigateToTab('salary_rules')}
@@ -550,7 +550,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
               </div>
             </div>
 
-            {/* Metric 3: Total Budget Tenaga Kerja Proyek DMJ */}
+            {/* Metric 3: Total Budget Tenaga Kerja Proyek */}
             <div className="glass-card rounded-2xl p-5 hover:shadow-lg transition-all border border-slate-200/80 card-interactive">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono-code">
@@ -564,7 +564,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                 {formatIDR(totalAllocatedBudget)}
               </div>
               <div className="mt-2 text-xs text-slate-500">
-                Terbagi ke 4 Proyek Aktif DMJ
+                Terbagi ke 4 Proyek Operasional Aktif
               </div>
             </div>
 
@@ -605,10 +605,10 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                 <div>
                   <h3 className="text-base font-black text-slate-900 tracking-tight flex items-center gap-2">
                     <Layers className="w-4 h-4 text-[#FF6B00]" />
-                    Status Realisasi Gaji & Proyeksi Anggaran EAC Proyek DMJ
+                    Status Realisasi Gaji & Proyeksi Anggaran EAC Proyek
                   </h3>
                   <p className="text-xs text-slate-500">
-                    Alokasi biaya tenaga kerja langsung terhadap pagu anggaran kontrak proyek PT Dwi Martha Jaya.
+                    Alokasi biaya tenaga kerja langsung terhadap pagu anggaran kontrak proyek perusahaan.
                   </p>
                 </div>
                 <button

@@ -145,7 +145,7 @@ export const api = {
     id: string,
     status: 'APPROVED' | 'REJECTED',
     reviewNote?: string,
-    reviewedBy: string = 'Direksi / HR DMJ'
+    reviewedBy: string = 'Direksi / HR Lead'
   ): Promise<{ success: boolean; item: ApprovalItem }> {
     const res = await fetch('/api/approval', {
       method: 'PUT',

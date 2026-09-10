@@ -48,12 +48,12 @@ export const TOUR_STEPS: TourStep[] = [
     tab: 'dashboard',
     subview: 'hris',
     targetSelector: '#tour-brand-logo',
-    title: 'Selamat Datang di Prime HRIS Enterprise',
-    subtitle: 'Sample Project & Prototipe Sistem Khusus PT Dwi Martha Jaya',
-    badge: 'Sample Project • Overview',
+    title: 'Selamat Datang di PRIME HRIS Enterprise',
+    subtitle: 'Human Resource Information System Terpadu & Berstandar Industri',
+    badge: 'Platform Enterprise • Overview',
     module: 'Navigasi',
     icon: Sparkles,
-    text: 'Aplikasi ini merupakan Sample Project & Prototipe Sistem Terpadu yang dibangun secara khusus sebagai studi solusi dan demonstrasi interaktif (Proof of Concept) untuk PT Dwi Martha Jaya. Sistem ini mengintegrasikan presensi kamera pintar ber-watermark digital, verifikasi jaringan WiFi/GPS anti-fraud, database master SDM & MAC hardware, penggajian otomatis formula Depnaker per proyek, hingga proposal penawaran komersial resmi. Mari kita jelajahi seluruh kapabilitasnya secara berurutan!'
+    text: 'Selamat datang di PRIME HRIS Enterprise — sistem manajemen kepegawaian dan penggajian terintegrasi rancangan PT Prime Infinity Systems. Sistem ini mengintegrasikan presensi kamera pintar ber-watermark digital, verifikasi jaringan WiFi/GPS anti-fraud, pusat approval SDM, database master personil & MAC hardware, penggajian otomatis formula Depnaker, hingga simulasi proyeksi payroll real-time. Mari kita jelajahi seluruh kapabilitasnya!'
   },
   {
     id: 'rbac-switcher',
@@ -77,7 +77,7 @@ export const TOUR_STEPS: TourStep[] = [
     badge: 'Navigasi • Smart Gateway',
     module: 'Navigasi',
     icon: Wifi,
-    text: 'Indikator pintar ini secara real-time memetakan koneksi pengguna: jika IP publik terdaftar di Whitelist Gateway DMJ (Biznet Dedicated / Astinet), status tervalidasi sebagai DMJ Corporate Network (WFO Sah). Jika Anda mengakses dari jaringan seluler pribadi (Telkomsel/Indihome/iForte), sistem otomatis menandainya sebagai Jaringan Luar (Luar Kantor) yang mewajibkan justifikasi Dinas Luar. Klik indikator ini untuk melihat audit koneksi & mengganti simulasi pengujian!'
+    text: 'Indikator pintar ini secara real-time memetakan koneksi pengguna: jika IP publik terdaftar di Whitelist Gateway PRIME (Biznet Dedicated / Astinet), status tervalidasi sebagai PRIME Corporate Network (WFO Sah). Jika Anda mengakses dari jaringan seluler pribadi (Telkomsel/Indihome/iForte), sistem otomatis menandainya sebagai Jaringan Luar (Luar Kantor) yang mewajibkan justifikasi Dinas Luar. Klik indikator ini untuk melihat audit koneksi & mengganti simulasi pengujian!'
   },
   {
     id: 'sidebar-nav',
@@ -117,7 +117,7 @@ export const TOUR_STEPS: TourStep[] = [
     badge: 'Menu 1 • Tren Analitik',
     module: 'Dashboard',
     icon: Sliders,
-    text: 'Visualisasi interaktif menyajikan tren ketepatan waktu vs keterlambatan harian serta diagram komposisi penempatan tenaga kerja di berbagai divisi dan proyek konstruksi aktif PT Dwi Martha Jaya.'
+    text: 'Visualisasi interaktif menyajikan tren ketepatan waktu vs keterlambatan harian serta diagram komposisi penempatan tenaga kerja di berbagai divisi dan proyek operasional aktif.'
   },
   {
     id: 'dashboard-finance',
@@ -166,7 +166,7 @@ export const TOUR_STEPS: TourStep[] = [
     badge: 'Menu 2 • Network Gate',
     module: 'Presensi',
     icon: Wifi,
-    text: 'Sistem memeriksa apakah koneksi perangkat terhubung ke WiFi kantor terdaftar (SSID DMJ-Corporate-5G), jaringan seluler dinas luar resmi, atau mendeteksi penggunaan VPN / Fake GPS fiktif. Presensi akan diblokir otomatis jika terdeteksi manipulasi jaringan.'
+    text: 'Sistem memeriksa apakah koneksi perangkat terhubung ke WiFi kantor terdaftar (SSID PRIME-Corporate-5G), jaringan seluler dinas luar resmi, atau mendeteksi penggunaan VPN / Fake GPS fiktif. Presensi akan diblokir otomatis jika terdeteksi manipulasi jaringan.'
   },
   {
     id: 'attendance-gps',
@@ -177,7 +177,7 @@ export const TOUR_STEPS: TourStep[] = [
     badge: 'Menu 2 • Geofencing Satelit',
     module: 'Presensi',
     icon: MapPin,
-    text: 'Modul GPS menghitung jarak matematis real-time antara posisi karyawan dengan titik kantor pusat PT DMJ (radius toleransi maksimal 100 meter) atau lokasi proyek yang ditugaskan, memastikan karyawan berada di titik fisik yang sah.'
+    text: 'Modul GPS menghitung jarak matematis real-time antara posisi karyawan dengan titik kantor pusat & tech hub PRIME (radius toleransi maksimal 100 meter) atau lokasi proyek yang ditugaskan, memastikan karyawan berada di titik fisik yang sah.'
   },
   {
     id: 'attendance-form',
@@ -210,7 +210,7 @@ export const TOUR_STEPS: TourStep[] = [
     tab: 'users',
     targetSelector: '#tour-employee-header',
     title: 'Menu 3: Direktori Master Data Karyawan',
-    subtitle: 'Sentralisasi Profil SDM PT Dwi Martha Jaya',
+    subtitle: 'Sentralisasi Profil SDM Enterprise',
     badge: 'Menu 3 • Direktori SDM',
     module: 'Karyawan',
     icon: Users,
@@ -251,7 +251,7 @@ export const TOUR_STEPS: TourStep[] = [
     badge: 'Menu 4 • Payroll Proyek',
     module: 'Payroll',
     icon: Banknote,
-    text: 'Modul penggajian yang dirancang khusus untuk ritme kerja industri konstruksi dan workshop PT DMJ. Admin dapat memilih periode cut-off penggajian dan memfilter data per proyek lapangan secara instan.'
+    text: 'Modul penggajian yang dirancang khusus untuk ritme kerja industri operasional dan engineering enterprise. Admin dapat memilih periode cut-off penggajian dan memfilter data per proyek lapangan secara instan.'
   },
   {
     id: 'payroll-subviews',
@@ -284,7 +284,7 @@ export const TOUR_STEPS: TourStep[] = [
     badge: 'Menu 4 • Slip Gaji',
     module: 'Payroll',
     icon: FileSpreadsheet,
-    text: 'Daftar slip penggajian individu lengkap dengan rincian komponen pendapatan dan potongan. Dilengkapi tombol "Cetak Slip" untuk menghasilkan dokumen slip gaji resmi berlogo DMJ lengkap dengan QR Code validasi dokumen.'
+    text: 'Daftar slip penggajian individu lengkap dengan rincian komponen pendapatan dan potongan. Dilengkapi tombol "Cetak Slip" untuk menghasilkan dokumen slip gaji resmi berlogo PRIME lengkap dengan QR Code validasi dokumen.'
   },
 
   // ==========================================
@@ -314,7 +314,7 @@ export const TOUR_STEPS: TourStep[] = [
     badge: 'Menu 5 • Proposal Resmi',
     module: 'Proposal',
     icon: FileSpreadsheet,
-    text: 'Puncak dari platform ini: Dokumen Proposal Penawaran Komersial Resmi yang ditujukan kepada jajaran Direksi & Manajemen PT Dwi Martha Jaya. Berisi executive summary, analisis problem vs solution, arsitektur teknis, dan timeline implementasi.'
+    text: 'Dokumen Spesifikasi & Proposal Sistem Resmi yang memuat arsitektur teknis, kepatuhan regulasi Depnaker, model deployment cloud/on-premise, dan panduan implementasi enterprise.'
   },
   {
     id: 'proposal-packages',

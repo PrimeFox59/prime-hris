@@ -388,7 +388,7 @@ export function seedInitialData(db: DatabaseSync) {
     'INIT_DATABASE',
     'DATABASE',
     'hris.sqlite',
-    'Initial database seeding executed successfully for PT Dwi Martha Jaya'
+    'Initial database seeding executed successfully for PRIME HRIS Enterprise'
   );
 
   console.log('[SQLite] Seeding selesai! Database hris.sqlite siap digunakan.');
@@ -527,7 +527,7 @@ export function updateApproval(
   id: string,
   status: 'APPROVED' | 'REJECTED',
   reviewNote?: string,
-  reviewedBy: string = 'Direksi / HR DMJ'
+  reviewedBy: string = 'Direksi / HR Lead'
 ) {
   const db = getDatabase();
   const row = db.prepare('SELECT data_json FROM approvals WHERE id = ?;').get(id) as any;

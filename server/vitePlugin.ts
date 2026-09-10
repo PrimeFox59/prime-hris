@@ -63,7 +63,7 @@ export function sqliteApiPlugin(): Plugin {
           if (cleanUrl === '/api/health' && method === 'GET') {
             return sendJson(200, {
               status: 'online',
-              message: 'SQLite Database Connected (PT Dwi Martha Jaya)',
+              message: 'SQLite Database Connected (PRIME HRIS Enterprise)',
               ...getDbInfo()
             });
           }
@@ -122,7 +122,7 @@ export function sqliteApiPlugin(): Plugin {
             }
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/x-sqlite3');
-            res.setHeader('Content-Disposition', 'attachment; filename="dmj_hris.sqlite"');
+            res.setHeader('Content-Disposition', 'attachment; filename="prime_hris.sqlite"');
             const fileStream = fs.createReadStream(dbPath);
             fileStream.pipe(res);
             return;

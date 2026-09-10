@@ -149,7 +149,7 @@ export const PayrollTab: React.FC<PayrollTabProps> = ({
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `Payroll_DMJ_${currentProjectFilter}_${selectedPeriod.replace(/\s+/g, '_')}.csv`);
+    link.setAttribute('download', `Payroll_PRIME_${currentProjectFilter}_${selectedPeriod.replace(/\s+/g, '_')}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -161,14 +161,14 @@ export const PayrollTab: React.FC<PayrollTabProps> = ({
 
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
-      {/* Header Banner - PT Dwi Martha Jaya */}
+      {/* Header Banner - PRIME Enterprise */}
       <div id="tour-payroll-header" className="glass-card rounded-3xl p-5 sm:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border border-slate-200/80 shadow-md motion-fade-in-down">
         <div>
           <div className="flex flex-wrap items-center gap-2 mb-1">
             <span className="prime-cut-corner bg-[#FF6B00] text-white text-[10px] font-black px-2.5 py-0.5 tracking-wider uppercase font-mono-code">
               {isStaff ? 'SLIP GAJI PERSONAL' : 'PAYROLL & PROJECT ACCOUNTING'}
             </span>
-            <span className="text-xs font-bold text-slate-500">PT DWI MARTHA JAYA</span>
+            <span className="text-xs font-bold text-slate-500">PRIME ENTERPRISE</span>
             <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-mono-code">
               Periode: {selectedPeriod}
             </span>
@@ -179,7 +179,7 @@ export const PayrollTab: React.FC<PayrollTabProps> = ({
           <p className="text-xs sm:text-sm text-slate-600 mt-0.5">
             {isStaff
               ? 'Rincian resmi kalkulasi upah pokok, tunjangan kerja harian, upah lembur, potongan BPJS & Take Home Pay (THP) Anda.'
-              : 'Kalkulasi komprehensif gaji pokok, formula lembur Depnaker RI, tunjangan site, serta pembebanan biaya ke proyek PT Dwi Martha Jaya.'}
+              : 'Kalkulasi komprehensif gaji pokok, formula lembur Depnaker RI, tunjangan site, serta pembebanan biaya ke proyek PRIME Enterprise.'}
           </p>
         </div>
 
@@ -214,14 +214,14 @@ export const PayrollTab: React.FC<PayrollTabProps> = ({
               </div>
               <div className="flex-1">
                 <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400 font-mono-code">
-                  Filter Berdasarkan Proyek PT Dwi Martha Jaya:
+                  Filter Berdasarkan Proyek Kontrak:
                 </label>
                 <select
                   value={currentProjectFilter}
                   onChange={e => handleFilterChange(e.target.value)}
                   className="w-full bg-slate-50 hover:bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#FF6B00]/30 transition-all cursor-pointer"
                 >
-                  <option value="ALL">📁 Semua Proyek (Konsolidasi Total PT Dwi Martha Jaya)</option>
+                  <option value="ALL">📁 Semua Proyek (Konsolidasi Total Perusahaan)</option>
                   {projects.map(prj => (
                     <option key={prj.id} value={prj.id}>
                       ⚡ [{prj.code}] {prj.name}
@@ -378,11 +378,11 @@ export const PayrollTab: React.FC<PayrollTabProps> = ({
           <div className="p-4 sm:p-5 border-b border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
             <div>
               <h2 className="text-base font-black text-slate-900 tracking-tight">
-                Rekapitulasi Gaji Karyawan PT Dwi Martha Jaya
+                Rekapitulasi Gaji Karyawan PRIME Enterprise
               </h2>
               <p className="text-xs text-slate-500">
                 {currentProjectFilter === 'ALL'
-                  ? 'Menampilkan seluruh karyawan PT Dwi Martha Jaya'
+                  ? 'Menampilkan seluruh staf karyawan perusahaan'
                   : `Menampilkan personel yang teralokasi pada proyek ${selectedProjectObj?.code || ''}`}
               </p>
             </div>
@@ -485,7 +485,7 @@ export const PayrollTab: React.FC<PayrollTabProps> = ({
               Alokasi Biaya Tenaga Kerja Antar-Proyek (Cost Accounting)
             </h2>
             <p className="text-xs text-slate-500">
-              Rincian jam kerja operasional dan pembagian proporsi gaji yang dibebankan langsung ke anggaran proyek PT Dwi Martha Jaya.
+              Rincian jam kerja operasional dan pembagian proporsi gaji yang dibebankan langsung ke anggaran proyek PRIME Enterprise.
             </p>
           </div>
 
@@ -542,7 +542,7 @@ export const PayrollTab: React.FC<PayrollTabProps> = ({
           <div>
             <h2 className="text-base font-black text-slate-900 tracking-tight flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-[#FF6B00]" />
-              Proyeksi Anggaran & Estimate at Completion (EAC) Proyek DMJ
+              Proyeksi Anggaran & Estimate at Completion (EAC) Proyek Operasional
             </h2>
             <p className="text-xs text-slate-500">
               Model estimasi biaya tenaga kerja hingga proyek selesai, monitoring burn-rate, dan deteksi dini risiko pembengkakan anggaran.
@@ -603,7 +603,7 @@ export const PayrollTab: React.FC<PayrollTabProps> = ({
       )}
 
       {/* ========================================================================= */}
-      {/* OFFICIAL SLIP GAJI MODAL FOR PT DWI MARTHA JAYA                           */}
+      {/* OFFICIAL SLIP GAJI MODAL FOR PRIME ENTERPRISE                               */}
       {/* ========================================================================= */}
       {selectedSlip && (
         <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 animate-in fade-in overflow-y-auto">
@@ -617,25 +617,25 @@ export const PayrollTab: React.FC<PayrollTabProps> = ({
               <X className="w-4 h-4" />
             </button>
 
-            {/* Official Letterhead - PT Dwi Martha Jaya */}
+            {/* Official Letterhead - PRIME HRIS Enterprise */}
             <div className="border-b-2 border-slate-900 pb-4 mb-4">
               <div className="flex items-start justify-between">
                 <div>
                   <div className="flex items-center gap-2">
-                    <div className="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center font-mono-code font-black text-sm tracking-tighter">
-                      DM<span className="text-[#FF6B00]">J</span>
+                    <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#FF6B00] to-[#FF8533] text-white flex items-center justify-center font-mono-code font-black text-sm tracking-tighter shadow-sm shadow-orange-500/30">
+                      PRIME
                     </div>
                     <div>
                       <h2 className="text-base sm:text-lg font-black tracking-tight text-slate-900 font-mono-code leading-none">
-                        PT DWI MARTHA JAYA
+                        PRIME HRIS ENTERPRISE
                       </h2>
                       <p className="text-[10px] text-slate-500 font-semibold tracking-wider uppercase mt-0.5">
-                        General Contractor, Mining Services & Industrial Engineering
+                        PT Prime Infinity Systems • Advanced HR & Payroll Engineering Platform
                       </p>
                     </div>
                   </div>
                   <p className="text-[9px] text-slate-400 mt-1 font-mono-code">
-                    NPWP: 01.892.411.2-054.000 • Komp. Industri & Perkantoran Terpadu Blok A1-A4 • Email: finance@dwimarthajaya.co.id
+                    NPWP: 01.892.411.2-054.000 • Komp. Perkantoran & Innovation Hub • Email: payroll@primeprojectx.net
                   </p>
                 </div>
                 <div className="text-right">
@@ -734,7 +734,7 @@ export const PayrollTab: React.FC<PayrollTabProps> = ({
                 <span className="text-[10px] font-black uppercase tracking-wider text-emerald-800 font-mono-code">
                   TOTAL GAJI BERSIH DITERIMA (TAKE HOME PAY)
                 </span>
-                <p className="text-xs text-emerald-700">Ditransfer ke rekening resmi payroll PT Dwi Martha Jaya</p>
+                <p className="text-xs text-emerald-700">Ditransfer ke rekening resmi payroll karyawan</p>
               </div>
               <span className="text-xl sm:text-2xl font-black text-emerald-800 font-mono-code">
                 {formatIDR(selectedSlip.netSalary)}
@@ -749,14 +749,14 @@ export const PayrollTab: React.FC<PayrollTabProps> = ({
                 </div>
                 <div>
                   <span className="text-[9px] font-bold text-slate-400 font-mono-code block">DIGITAL VERIFICATION CODE</span>
-                  <span className="text-[10px] font-mono-code font-bold text-slate-700">DMJ-VERIFIED-2026-PAYROLL</span>
-                  <p className="text-[9px] text-slate-500 mt-0.5">Sistem Dokumen Sah PT Dwi Martha Jaya</p>
+                  <span className="text-[10px] font-mono-code font-bold text-slate-700">PRIME-VERIFIED-2026-PAYROLL</span>
+                  <p className="text-[9px] text-slate-500 mt-0.5">Sistem Dokumen Sah PRIME HRIS Enterprise</p>
                 </div>
               </div>
 
               <div className="text-right">
-                <p className="text-[10px] text-slate-400 font-mono-code">Sidoarjo, 08 September 2026</p>
-                <p className="text-xs font-bold text-slate-800 mt-4">Direksi PT Dwi Martha Jaya</p>
+                <p className="text-[10px] text-slate-400 font-mono-code">Surabaya, 08 September 2026</p>
+                <p className="text-xs font-bold text-slate-800 mt-4">Direksi PT Prime Infinity Systems</p>
                 <span className="text-[9px] text-emerald-600 font-semibold font-mono-code">✓ Digitally Signed & Stamped</span>
               </div>
             </div>

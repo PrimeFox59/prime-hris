@@ -68,18 +68,18 @@ export const FinanceTimelineChart: React.FC<FinanceTimelineChartProps> = ({
       estAmount: 0,
       status: 'COMPLETED',
       description: 'Rekonsiliasi awal rekaman check-in kamera, verifikasi WiFi gate kantor, dan penyesuaian dinas luar site Pomalaa.',
-      parties: ['HR People Operations', 'Site Supervisor DMJ']
+      parties: ['HR People Operations', 'Site Supervisor']
     },
     {
       day: 8,
       dateStr: '8 September 2026 (HARI INI)',
-      title: 'Cutoff Interim & Simulasi Payroll DMJ',
+      title: 'Cutoff Interim & Simulasi Payroll Bulanan',
       phase: 'Interim Payroll Run',
       category: 'SIMULATION',
       estAmount: totalNetPayrollDisbursement,
       status: 'ACTIVE_TODAY',
       description: 'Kalkulasi interim gaji pokok, tunjangan penugasan proyek, serta simulasi pembebanan biaya tenaga kerja antar-proyek.',
-      parties: ['Finance DMJ Lead', 'HR Manager']
+      parties: ['Finance Lead', 'HR Manager']
     },
     {
       day: 15,
@@ -89,8 +89,8 @@ export const FinanceTimelineChart: React.FC<FinanceTimelineChartProps> = ({
       category: 'PREPARATION',
       estAmount: totalEstimatedOvertime,
       status: 'SCHEDULED',
-      description: 'Verifikasi lembur teknisi dan mekanik DMJ sesuai formula Depnaker 1/173 Upah Pokok.',
-      parties: ['Project Manager Divisi DMJ', 'Payroll Officer']
+      description: 'Verifikasi lembur teknisi dan personil lapangan sesuai formula Depnaker 1/173 Upah Pokok.',
+      parties: ['Project Manager Divisi', 'Payroll Officer']
     },
     {
       day: 20,
@@ -111,8 +111,8 @@ export const FinanceTimelineChart: React.FC<FinanceTimelineChartProps> = ({
       category: 'DISBURSEMENT',
       estAmount: totalNetPayrollDisbursement,
       status: 'SCHEDULED',
-      description: 'Pencairan gaji bersih (THP) seluruh tenaga kerja PT Dwi Martha Jaya serentak via Auto-Debit Bank Mandiri, BCA, BNI & BSI.',
-      parties: ['Managing Director DMJ', 'Bank Mitra Cash Management']
+      description: 'Pencairan gaji bersih (THP) seluruh tenaga kerja PRIME Enterprise serentak via Auto-Debit Bank Mandiri, BCA, BNI & BSI.',
+      parties: ['Managing Director', 'Bank Mitra Cash Management']
     },
     {
       day: 28,
@@ -122,7 +122,7 @@ export const FinanceTimelineChart: React.FC<FinanceTimelineChartProps> = ({
       category: 'BILLING',
       estAmount: totalEstimatedGross,
       status: 'SCHEDULED',
-      description: 'Jurnal akuntansi pembebanan biaya tenaga kerja langsung (Direct Labor Cost) ke kode akun proyek PT Dwi Martha Jaya.',
+      description: 'Jurnal akuntansi pembebanan biaya tenaga kerja langsung (Direct Labor Cost) ke kode akun proyek PRIME Enterprise.',
       parties: ['Project Accounting Lead', 'Client Representative']
     }
   ];
@@ -187,7 +187,7 @@ export const FinanceTimelineChart: React.FC<FinanceTimelineChartProps> = ({
               TIMELINE INTERAKTIF FINANCE
             </span>
             <span className="text-xs font-bold text-slate-500 font-mono-code">
-              Siklus Penggajian & Arus Kas • PT Dwi Martha Jaya
+              Siklus Penggajian & Arus Kas • PRIME Enterprise
             </span>
           </div>
           <h2 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight flex items-center gap-2">
@@ -195,7 +195,7 @@ export const FinanceTimelineChart: React.FC<FinanceTimelineChartProps> = ({
             Timeline Arus Kas Penggajian & Anggaran Proyek (30 Hari)
           </h2>
           <p className="text-xs text-slate-500 mt-0.5">
-            Simulasi komitmen arus kas pencairan gaji, akumulasi lembur Depnaker, serta pembebanan biaya ke proyek PT Dwi Martha Jaya.
+            Simulasi komitmen arus kas pencairan gaji, akumulasi lembur Depnaker, serta pembebanan biaya ke proyek PRIME Enterprise.
           </p>
         </div>
 
@@ -209,7 +209,7 @@ export const FinanceTimelineChart: React.FC<FinanceTimelineChartProps> = ({
               onChange={e => setSelectedProjectId(e.target.value)}
               className="bg-white rounded-lg px-2 py-1 font-bold text-slate-800 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#FF6B00]/30 cursor-pointer"
             >
-              <option value="ALL">📁 Semua Proyek (Konsolidasi Total DMJ)</option>
+              <option value="ALL">📁 Semua Proyek (Konsolidasi Total Enterprise)</option>
               {projects.map(p => (
                 <option key={p.id} value={p.id}>
                   ⚡ [{p.code}] {p.name}
@@ -236,7 +236,7 @@ export const FinanceTimelineChart: React.FC<FinanceTimelineChartProps> = ({
 
         <div className="p-3 rounded-2xl bg-emerald-50/70 border border-emerald-200/60">
           <span className="text-[10px] font-black uppercase tracking-wider text-emerald-800 font-mono-code block">
-            Budget Tenaga Kerja DMJ
+            Budget Tenaga Kerja Proyek
           </span>
           <div className="text-lg font-black text-emerald-900 font-mono-code mt-0.5">
             {formatIDR(activeProject ? activeProject.allocatedBudget : totalAllocatedBudget)}
@@ -492,7 +492,7 @@ export const FinanceTimelineChart: React.FC<FinanceTimelineChartProps> = ({
               <Banknote className="w-4 h-4 text-emerald-600" />
               Jalur Distribusi Pencairan Bank Payroll (Disbursement Run Tgl 25)
             </h4>
-            <span className="text-[10px] text-slate-400 font-mono-code">Total 4 Bank Rekanan DMJ</span>
+            <span className="text-[10px] text-slate-400 font-mono-code">Total 4 Bank Rekanan Payroll</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
