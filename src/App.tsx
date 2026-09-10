@@ -802,7 +802,7 @@ export function App() {
       </div>
 
       {/* Main Content Area with Dynamic Key for Tab Transition Animation */}
-      <main key={activeTab} className="flex-1 max-w-7xl w-full mx-auto pl-4 sm:pl-6 md:pl-24 lg:pl-28 pr-4 sm:pr-6 lg:pr-8 py-6 pb-28 md:pb-8 transition-all motion-fade-in-up min-w-0 max-w-full">
+      <main key={activeTab} className="flex-1 max-w-7xl w-full mx-auto pl-4 sm:pl-6 md:pl-24 lg:pl-28 xl:px-8 pr-4 sm:pr-6 lg:pr-8 py-6 pb-28 md:pb-8 transition-all motion-fade-in-up min-w-0">
         {(activeTab === 'dashboard' || activeTab === 'dashboard_hris' || activeTab === 'dashboard_finance' || activeTab === 'user_performance') && (
           <DashboardTab
             currentUser={currentUser}
