@@ -99,31 +99,24 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
       {/* Dual Dashboard Segmented Switcher Header */}
       {/* Perspective Switcher */}
       {!isStaff && (
-        <div className="bg-white/95 backdrop-blur-md p-2.5 sm:p-3 rounded-2xl border border-slate-200/90 shadow-xs motion-fade-in-down w-full max-w-full min-w-0">
+        <div className="bg-white/90 backdrop-blur-md px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-2xl border border-slate-200/80 shadow-xs motion-fade-in-down w-full max-w-full min-w-0">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 sm:gap-3">
-            <div className="flex items-center justify-between px-1">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#FF6B00] animate-pulse"></span>
-                <span className="text-[11px] sm:text-xs font-black uppercase tracking-wider text-slate-800 font-mono-code">
-                  Sudut Pandang:
-                </span>
-              </div>
-              <span className="sm:hidden text-[10px] font-bold text-slate-400 font-mono-code">
-                {subView === 'hris' ? 'Monitoring SDM' : subView === 'finance' ? 'Finansial Kas' : 'Evaluasi Diri'}
-              </span>
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#FF6B00]"></span>
+              <span className="text-xs font-bold text-slate-700">Sudut Pandang:</span>
             </div>
 
             <div
               id="tour-dashboard-subview"
-              className="grid grid-cols-3 gap-1 sm:gap-1.5 bg-slate-100/90 p-1 rounded-xl border border-slate-200/70 w-full sm:w-auto min-w-0"
+              className="grid grid-cols-3 sm:flex sm:items-center gap-1 sm:gap-1.5 bg-slate-100/90 p-1 rounded-xl border border-slate-200/70 w-full sm:w-auto min-w-0"
             >
               {/* Button 1: Operasional SDM */}
               <button
                 onClick={() => setSubView('hris')}
-                className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3.5 py-2 sm:py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-center ${
+                className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer text-center ${
                   subView === 'hris'
-                    ? 'bg-emerald-600 text-white shadow-xs font-black ring-1 sm:ring-2 ring-emerald-400/40'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+                    ? 'bg-emerald-600 text-white shadow-xs font-bold'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 font-semibold'
                 }`}
               >
                 <Users className="w-3.5 h-3.5 shrink-0" />
@@ -136,10 +129,10 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
               {/* Button 2: Finance & Payroll */}
               <button
                 onClick={() => setSubView('finance')}
-                className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3.5 py-2 sm:py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-center ${
+                className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer text-center ${
                   subView === 'finance'
-                    ? 'bg-[#FF6B00] text-white shadow-xs font-black ring-1 sm:ring-2 ring-orange-400/40'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+                    ? 'bg-[#FF6B00] text-white shadow-xs font-bold'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 font-semibold'
                 }`}
               >
                 <Banknote className="w-3.5 h-3.5 shrink-0" />
@@ -149,19 +142,18 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                 </span>
               </button>
 
-              {/* Button 3: Kinerja Saya (MENONJOL & HIGHLIGHTED) */}
+              {/* Button 3: Kinerja Saya (MENONJOL DENGAN AKSEN BIRU) */}
               <button
                 onClick={() => setSubView('performance')}
-                className={`relative flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3.5 py-2 sm:py-1.5 rounded-lg text-xs font-black transition-all cursor-pointer text-center ${
+                className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer text-center ${
                   subView === 'performance'
-                    ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white shadow-md ring-2 ring-blue-400/50'
-                    : 'text-blue-700 bg-blue-50/90 hover:bg-blue-100 border border-blue-200/90 shadow-2xs hover:text-blue-900'
+                    ? 'bg-blue-600 text-white shadow-xs font-bold'
+                    : 'text-blue-700 bg-blue-50/90 hover:bg-blue-100 border border-blue-200/80 shadow-2xs hover:text-blue-900 font-extrabold'
                 }`}
                 title="Buka Portal Kinerja Saya"
               >
                 <User className="w-3.5 h-3.5 shrink-0" />
                 <span className="truncate">Kinerja Saya</span>
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-ping absolute -top-0.5 -right-0.5 hidden xs:block" />
               </button>
             </div>
           </div>
