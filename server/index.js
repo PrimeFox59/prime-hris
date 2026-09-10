@@ -35,7 +35,9 @@ const MIME_TYPES = {
   '.jpg': 'image/jpeg',
   '.svg': 'image/svg+xml',
   '.ico': 'image/x-icon',
-  '.woff2': 'font/woff2'
+  '.woff2': 'font/woff2',
+  '.mp4': 'video/mp4',
+  '.webm': 'video/webm'
 };
 
 // ==========================================
@@ -328,6 +330,45 @@ const server = http.createServer(async (req, res) => {
   const ext = path.extname(filePath).toLowerCase();
   const contentType = MIME_TYPES[ext] || 'application/octet-stream';
 
+  // Video Streaming with HTTP 206 Partial Content (Range requests)
+  if (ext === '.mp4' || ext === '.webm') {
+    try {
+      const stat = fs.statSync(filePath);
+      const fileSize = stat.size;
+      const range = req.headers.range;
+
+      if (range) {
+        const parts = range.replace(/bytes=/, "").split("-");
+        const start = parseInt(parts[0], 10);
+        const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+        const chunksize = (end - start) + 1;
+        const fileStream = fs.createReadStream(filePath, { start, end });
+        res.writeHead(206, {
+          'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+          'Accept-Ranges': 'bytes',
+          'Content-Length': chunksize,
+          'Content-Type': contentType,
+          'Cache-Control': 'public, max-age=31536000, immutable'
+        });
+        fileStream.pipe(res);
+        return;
+      } else {
+        res.writeHead(200, {
+          'Content-Length': fileSize,
+          'Accept-Ranges': 'bytes',
+          'Content-Type': contentType,
+          'Cache-Control': 'public, max-age=31536000, immutable'
+        });
+        fs.createReadStream(filePath).pipe(res);
+        return;
+      }
+    } catch (err) {
+      res.writeHead(500);
+      res.end('Server Error streaming media');
+      return;
+    }
+  }
+
   fs.readFile(filePath, (err, content) => {
     if (err) {
       res.writeHead(500);
@@ -343,7 +384,7 @@ const server = http.createServer(async (req, res) => {
       headers['Cache-Control'] = 'public, max-age=31536000, immutable';
     }
     res.writeHead(200, headers);
-    res.end(content, 'utf-8');
+    res.end(content);
   });
 });
 

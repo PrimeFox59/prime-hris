@@ -11,11 +11,11 @@ import {
   Users,
   AlertCircle,
   X,
-  Zap
+  Play,
+  Pause
 } from 'lucide-react';
 import { AuthUser } from '../types';
 import { api } from '../services/api';
-import { EcosystemMotionOverlay } from './EcosystemMotionOverlay';
 
 interface LoginPageProps {
   onLoginSuccess: (user: AuthUser, token: string) => void;
@@ -35,8 +35,20 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoginOpen, setIsLoginOpen] = useState<boolean>(true);
-  const [isMotionActive, setIsMotionActive] = useState<boolean>(true);
-  const [hoveredRole, setHoveredRole] = useState<string | null>(null);
+  const [isVideoPlaying, setIsVideoPlaying] = useState<boolean>(true);
+  const videoRef = React.useRef<HTMLVideoElement>(null);
+
+  const toggleVideo = () => {
+    if (videoRef.current) {
+      if (videoRef.current.paused) {
+        videoRef.current.play();
+        setIsVideoPlaying(true);
+      } else {
+        videoRef.current.pause();
+        setIsVideoPlaying(false);
+      }
+    }
+  };
 
   const handleLogin = async (e?: React.FormEvent, customUser?: string, customPass?: string) => {
     if (e) e.preventDefault();
@@ -79,20 +91,19 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
   return (
     <div className="h-screen w-screen overflow-hidden relative flex flex-col justify-between bg-[#F4F8FE] selection:bg-[#0066FF] selection:text-white">
       
-      {/* FULLSCREEN PANORAMIC 3D ECOSYSTEM HERO WITH LIVE FLOW MOTION */}
+      {/* FULLSCREEN PANORAMIC 3D ECOSYSTEM VIDEO ANIMATION */}
       <div className="absolute inset-0 w-full h-full flex items-center justify-center overflow-hidden pointer-events-none z-0">
         <div className="relative w-full h-full flex items-center justify-center">
-          {/* High-definition Image 5 Master Artwork spanning fullscreen */}
-          <img
-            src="/ecosystem_hero.png"
-            alt="PRIME hris Ecosystem Operational"
+          {/* High-definition 16:9 MP4 Video Animation spanning fullscreen */}
+          <video
+            ref={videoRef}
+            src="/ecosystem_hero.mp4"
+            poster="/ecosystem_hero.png"
+            autoPlay
+            loop
+            muted
+            playsInline
             className="w-full h-full object-cover lg:object-contain object-center select-none pointer-events-none"
-          />
-
-          {/* SVG Live Data Flow Motion Layer (1672 x 941) */}
-          <EcosystemMotionOverlay
-            activeRole={hoveredRole}
-            isMotionActive={isMotionActive}
           />
         </div>
       </div>
@@ -120,19 +131,28 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
             <span>DEV20 : 8567</span>
           </div>
 
-          {/* Motion Effect Toggle Button */}
+          {/* Video Animation Play/Pause Toggle Button */}
           <button
             type="button"
-            onClick={() => setIsMotionActive(!isMotionActive)}
+            onClick={toggleVideo}
             className={`hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold transition cursor-pointer border backdrop-blur-md ${
-              isMotionActive
+              isVideoPlaying
                 ? 'bg-blue-50/90 text-[#0066FF] border-blue-200 shadow-2xs hover:bg-blue-100/80'
-                : 'bg-white/80 text-slate-400 border-slate-200 hover:bg-slate-100'
+                : 'bg-white/80 text-slate-500 border-slate-200 hover:bg-slate-100'
             }`}
-            title="Nyalakan / Matikan Efek Aliran Data Motion"
+            title={isVideoPlaying ? 'Jeda Video Animasi' : 'Putar Video Animasi'}
           >
-            <Zap className={`w-3 h-3 ${isMotionActive ? 'fill-[#0066FF] text-[#0066FF]' : 'text-slate-400'}`} />
-            <span>Aliran Data: {isMotionActive ? 'Live' : 'Jeda'}</span>
+            {isVideoPlaying ? (
+              <>
+                <Pause className="w-3 h-3 fill-[#0066FF] text-[#0066FF]" />
+                <span>Video: Live</span>
+              </>
+            ) : (
+              <>
+                <Play className="w-3 h-3 fill-slate-500 text-slate-500" />
+                <span>Video: Jeda</span>
+              </>
+            )}
           </button>
 
           {/* Toggle Login Button */}
@@ -259,8 +279,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                       key={p.id}
                       type="button"
                       onClick={() => applyPreset(p)}
-                      onMouseEnter={() => setHoveredRole(p.id)}
-                      onMouseLeave={() => setHoveredRole(null)}
                       disabled={isLoading}
                       className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg border border-slate-200 bg-slate-50/80 hover:bg-blue-50 hover:border-blue-300 text-slate-700 text-[11px] font-semibold transition cursor-pointer active:scale-95"
                     >
