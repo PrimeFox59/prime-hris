@@ -10,10 +10,12 @@ import {
   HardHat,
   Users,
   AlertCircle,
-  X
+  X,
+  Zap
 } from 'lucide-react';
 import { AuthUser } from '../types';
 import { api } from '../services/api';
+import { EcosystemMotionOverlay } from './EcosystemMotionOverlay';
 
 interface LoginPageProps {
   onLoginSuccess: (user: AuthUser, token: string) => void;
@@ -33,6 +35,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoginOpen, setIsLoginOpen] = useState<boolean>(true);
+  const [isMotionActive, setIsMotionActive] = useState<boolean>(true);
+  const [hoveredRole, setHoveredRole] = useState<string | null>(null);
 
   const handleLogin = async (e?: React.FormEvent, customUser?: string, customPass?: string) => {
     if (e) e.preventDefault();
@@ -98,6 +102,21 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
             <span>DEV20 : 8567</span>
           </div>
 
+          {/* Motion Effect Toggle Button */}
+          <button
+            type="button"
+            onClick={() => setIsMotionActive(!isMotionActive)}
+            className={`hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold transition cursor-pointer border ${
+              isMotionActive
+                ? 'bg-blue-50 text-[#0066FF] border-blue-200 shadow-2xs hover:bg-blue-100/70'
+                : 'bg-slate-100 text-slate-400 border-slate-200 hover:bg-slate-200'
+            }`}
+            title="Nyalakan / Matikan Efek Aliran Data Motion"
+          >
+            <Zap className={`w-3 h-3 ${isMotionActive ? 'fill-[#0066FF] text-[#0066FF]' : 'text-slate-400'}`} />
+            <span>Aliran Data: {isMotionActive ? 'Live' : 'Jeda'}</span>
+          </button>
+
           {/* Toggle Login Button */}
           <button
             onClick={() => setIsLoginOpen(!isLoginOpen)}
@@ -122,16 +141,36 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
         </div>
       </header>
 
-      {/* CENTER STAGE: THE PRISTINE SLIDE (16:9) WITH FLOATING MINIMALIST LOGIN WIDGET */}
-      <main className="flex-1 w-full max-w-6xl mx-auto px-2 sm:px-6 flex items-center justify-center relative my-auto">
+      {/* CENTER STAGE: THE PRISTINE SLIDE (16:9) WITH SEAMLESS BLEND & LIVE FLOW MOTION */}
+      <main className="flex-1 w-full max-w-6xl mx-auto px-2 sm:px-6 flex items-center justify-center relative my-auto py-2">
         
-        {/* THE 16:9 ECOSYSTEM OPERATIONAL SLIDE */}
+        {/* SEAMLESS 16:9 ECOSYSTEM OPERATIONAL HERO WITH LIVE FLOW MOTION */}
         <div className="w-full relative flex items-center justify-center">
-          <img
-            src="/ecosystem_hero.png"
-            alt="PRIME hris Ecosystem Operational"
-            className="w-full h-auto max-h-[85vh] object-contain rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-200/60"
-          />
+          
+          {/* Ambient Radial Lighting for Seamless Immersion */}
+          <div className="absolute inset-0 bg-radial from-blue-100/40 via-blue-50/10 to-transparent blur-2xl -z-10 pointer-events-none scale-105" />
+
+          {/* Canvas Wrapper with exact 939:533 aspect ratio & feathered edges */}
+          <div
+            className="w-full relative aspect-[939/533] flex items-center justify-center"
+            style={{
+              WebkitMaskImage: 'radial-gradient(ellipse 99% 98% at 50% 50%, black 86%, transparent 100%)',
+              maskImage: 'radial-gradient(ellipse 99% 98% at 50% 50%, black 86%, transparent 100%)',
+            }}
+          >
+            {/* The Cleaned Pristine Graphic */}
+            <img
+              src="/ecosystem_hero.png"
+              alt="PRIME hris Ecosystem Operational"
+              className="w-full h-full object-contain pointer-events-none select-none"
+            />
+
+            {/* SVG Live Data Flow Motion Layer */}
+            <EcosystemMotionOverlay
+              activeRole={hoveredRole}
+              isMotionActive={isMotionActive}
+            />
+          </div>
 
           {/* FLOATING FROSTED GLASS LOGIN CARD (TOP-RIGHT OVERLAY) */}
           {isLoginOpen && (
@@ -232,6 +271,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                       key={p.id}
                       type="button"
                       onClick={() => applyPreset(p)}
+                      onMouseEnter={() => setHoveredRole(p.id)}
+                      onMouseLeave={() => setHoveredRole(null)}
                       disabled={isLoading}
                       className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg border border-slate-200 bg-slate-50/80 hover:bg-blue-50 hover:border-blue-300 text-slate-700 text-[11px] font-semibold transition cursor-pointer active:scale-95"
                     >

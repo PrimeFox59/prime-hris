@@ -406,3 +406,14 @@ body {
   }
 }
 
+/* Ecosystem Data Flow Motion Animation */
+@keyframes dashFlow {
+  0% {
+    stroke-dashoffset: 64;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+
