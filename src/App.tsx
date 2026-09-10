@@ -1,0 +1,758 @@
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { Zap } from 'lucide-react';
+import { Navbar } from './components/Navbar';
+import { Sidebar } from './components/Sidebar';
+import { DashboardTab } from './components/DashboardTab';
+import { PresensiCameraTab } from './components/PresensiCameraTab';
+import { ApprovalHubTab } from './components/ApprovalHubTab';
+import { EmployeeManagementTab } from './components/EmployeeManagementTab';
+import { SalaryRulesTab } from './components/SalaryRulesTab';
+import { PayrollTab } from './components/PayrollTab';
+import { CommercialProposalTab } from './components/CommercialProposalTab';
+import { UserPerformanceTab } from './components/UserPerformanceTab';
+import { NotificationApprovalModal } from './components/NotificationApprovalModal';
+import { TourDemoModal } from './components/TourDemoModal';
+
+import {
+  INITIAL_EMPLOYEES,
+  INITIAL_PROJECTS,
+  INITIAL_ATTENDANCE,
+  INITIAL_APPROVALS,
+  INITIAL_SALARY_RULES,
+  INITIAL_REIMBURSEMENTS
+} from './data/mockData';
+import { Employee, AttendanceRecord, ApprovalItem, Project, SalaryRuleConfig, ReimbursementClaim, getEffectiveSystemRole } from './types';
+import { api } from './services/api';
+import { rtcService } from './services/rtcService';
+
+export function App() {
+  // Global States
+  const [employees, setEmployees] = useState<Employee[]>(INITIAL_EMPLOYEES);
+  const [currentUser, setCurrentUser] = useState<Employee>(INITIAL_EMPLOYEES[0]); // Galih Primananda
+  const [projects, setProjects] = useState<Project[]>(INITIAL_PROJECTS);
+  const [attendances, setAttendances] = useState<AttendanceRecord[]>(INITIAL_ATTENDANCE);
+  const [approvals, setApprovals] = useState<ApprovalItem[]>(INITIAL_APPROVALS);
+  const [salaryRules, setSalaryRules] = useState<SalaryRuleConfig>(INITIAL_SALARY_RULES);
+  const [reimbursements, setReimbursements] = useState<ReimbursementClaim[]>(INITIAL_REIMBURSEMENTS);
+
+  // Notification & Approval Modal Popup State
+  const [isNotificationModalOpen, setIsNotificationModalOpen] = useState<boolean>(false);
+  const [isTourOpen, setIsTourOpen] = useState<boolean>(false);
+
+  // SQLite Database Sync State
+  const [isDbLoading, setIsDbLoading] = useState<boolean>(true);
+  const [dbInfo, setDbInfo] = useState<any>(null);
+
+  // Active Tab - Default to URL query (?tab=...) or hash (#...) or 'dashboard'
+  const [activeTab, setActiveTab] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      const queryTab = searchParams.get('tab');
+      if (queryTab) return queryTab;
+      const hash = window.location.hash.replace('#', '');
+      if (hash) return hash;
+    }
+    return 'dashboard';
+  });
+  
+  // Project Filter state for Payroll
+  const [selectedProjectId, setSelectedProjectId] = useState<string>('ALL');
+
+  // SubView state for Unified Dashboard (hris, finance, performance)
+  const [dashboardSubView, setDashboardSubView] = useState<'hris' | 'finance' | 'performance'>('hris');
+
+  // WiFi simulation state
+  const [isWifiConnected, setIsWifiConnected] = useState<boolean>(true);
+  const [currentWifiSsid, setCurrentWifiSsid] = useState<string>('DMJ-Corporate-5G');
+
+  // Real IP Network Detection & Smart Mapping state (Opsi 2: Status Kantor vs Luar Kantor)
+  const [realDetectedIp, setRealDetectedIp] = useState<string>('103.31.205.218');
+  const [realDetectedIsp, setRealDetectedIsp] = useState<string>('PT Biznet Gio Nusantara');
+  const [realDetectedCity, setRealDetectedCity] = useState<string>('Surabaya / Manyar Site');
+  const [simulatedNetworkMode, setSimulatedNetworkMode] = useState<'auto' | 'office' | 'remote'>('auto');
+  const [customIpWhitelist, setCustomIpWhitelist] = useState<string[]>([]);
+
+  // Calculate whether client is inside DMJ Office Network based on IP whitelist or simulation
+  const isOfficeNetwork = useMemo(() => {
+    if (simulatedNetworkMode === 'office') return true;
+    if (simulatedNetworkMode === 'remote') return false;
+
+    // 'auto' mode: check custom whitelist first
+    if (customIpWhitelist.includes(realDetectedIp)) return true;
+
+    // Check against authorized office IP networks
+    const networks = salaryRules?.authorizedIpNetworks || [
+      { ipOrSubnet: '103.31.205.218', label: 'Gateway DMJ', isp: 'Biznet', isRegisteredOffice: true },
+      { ipOrSubnet: '103.31.205.0/24', label: 'Subnet DMJ', isp: 'Biznet', isRegisteredOffice: true },
+      { ipOrSubnet: '180.252.0.0/16', label: 'Telkom Astinet Dedicated Site Manyar DMJ', isp: 'PT Telkom Indonesia', isRegisteredOffice: true },
+      { ipOrSubnet: '192.168.10.0/24', label: 'Local Intranet Subnet DMJ Workshop & Engineering', isp: 'LAN DHCP Subnet', isRegisteredOffice: true }
+    ];
+
+    return networks.some(net => {
+      if (net.ipOrSubnet === realDetectedIp) return true;
+      if (net.ipOrSubnet.includes('/')) {
+        const prefix = net.ipOrSubnet.split('/')[0].split('.').slice(0, 3).join('.');
+        return realDetectedIp.startsWith(prefix);
+      }
+      return false;
+    });
+  }, [simulatedNetworkMode, customIpWhitelist, realDetectedIp, salaryRules?.authorizedIpNetworks]);
+
+  const handleWhitelistCurrentIp = () => {
+    if (realDetectedIp && !customIpWhitelist.includes(realDetectedIp)) {
+      setCustomIpWhitelist(prev => [...prev, realDetectedIp]);
+    }
+  };
+
+  useEffect(() => {
+    const detectClientIp = async () => {
+      let clientIp = '';
+      
+      // Step 1: Detect client IP via internal backend (as received by Cloudflare Tunnel)
+      try {
+        const netRes = await fetch('/api/my-network');
+        if (netRes.ok) {
+          const netData = await netRes.json();
+          if (netData.ip && netData.ip !== '127.0.0.1' && netData.ip !== '::1') {
+            clientIp = netData.ip;
+            setRealDetectedIp(clientIp);
+          }
+        }
+      } catch (e) {
+        console.warn('Backend network lookup fallback', e);
+      }
+
+      // Step 2: Query ipwho.is for ISP name and geographic location
+      try {
+        const targetUrl = clientIp ? `https://ipwho.is/${clientIp}` : 'https://ipwho.is/';
+        const res = await fetch(targetUrl);
+        const data = await res.json();
+        if (data && data.success) {
+          setRealDetectedIp(data.ip);
+          setRealDetectedIsp(data.connection?.isp || data.connection?.org || 'Provider Internet');
+          setRealDetectedCity(`${data.city || 'Surabaya'}, ${data.region || 'Jawa Timur'}`);
+          return;
+        }
+      } catch (err) {
+        console.warn('IP detection primary failed, fallback', err);
+      }
+
+      // Step 3: Fallback to ipify if ipwho.is is blocked
+      try {
+        if (!clientIp) {
+          const res2 = await fetch('https://api.ipify.org?format=json');
+          const data2 = await res2.json();
+          if (data2 && data2.ip) {
+            setRealDetectedIp(data2.ip);
+          }
+        }
+      } catch (err2) {
+        console.warn('IP detection fallback failed', err2);
+      }
+    };
+    detectClientIp();
+  }, []);
+
+  // Load initial dataset directly from SQLite Database
+  useEffect(() => {
+    const loadFromSqlite = async () => {
+      try {
+        const data = await api.getBootstrapData();
+        if (data.employees && data.employees.length > 0) {
+          setEmployees(data.employees);
+          setCurrentUser(data.employees[0]);
+        }
+        if (data.projects && data.projects.length > 0) {
+          setProjects(data.projects);
+        }
+        if (data.attendances && data.attendances.length > 0) {
+          setAttendances(data.attendances);
+        }
+        if (data.approvals && data.approvals.length > 0) {
+          setApprovals(data.approvals);
+        }
+        if (data.salaryRules) {
+          setSalaryRules(data.salaryRules);
+        }
+        if (data.reimbursements && data.reimbursements.length > 0) {
+          setReimbursements(data.reimbursements);
+        }
+        if (data.dbInfo) {
+          setDbInfo(data.dbInfo);
+        }
+      } catch (err) {
+        console.warn('Fallback to local mock data (SQLite loading error)', err);
+      } finally {
+        setIsDbLoading(false);
+      }
+    };
+    loadFromSqlite();
+  }, []);
+
+  // Floating Live Notification Toast (SSE Multi-device Sync)
+  const [liveToast, setLiveToast] = useState<{ message: string; type?: 'info' | 'success' | 'warn' } | null>(null);
+  const liveToastTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const showLiveToast = (message: string, type: 'info' | 'success' | 'warn' = 'success') => {
+    setLiveToast({ message, type });
+    if (liveToastTimerRef.current) clearTimeout(liveToastTimerRef.current);
+    liveToastTimerRef.current = setTimeout(() => setLiveToast(null), 4500);
+  };
+
+  // Real-Time Communication (SSE) multi-device live sync
+  useEffect(() => {
+    const unsub = rtcService.subscribe('*', (packet) => {
+      console.log('[RTC Live Event Received]', packet);
+      if (packet.type === 'ATTENDANCE_SAVED') {
+        const newAtt: AttendanceRecord = packet.payload;
+        setAttendances(prev => {
+          if (prev.some(a => a.id === newAtt.id)) return prev;
+          return [newAtt, ...prev];
+        });
+        showLiveToast(`Presensi Baru Masuk: ${newAtt.employeeName} (${newAtt.checkInTime} • ${newAtt.mode})`, 'success');
+      } else if (packet.type === 'APPROVAL_UPDATED') {
+        const { id, status, reviewNote, reviewedBy } = packet.payload;
+        setApprovals(prev => prev.map(a => a.id === id ? { ...a, status, reviewNote, reviewedBy } : a));
+        showLiveToast(`Status Pengajuan Diperbarui: ${status}`, 'info');
+      } else if (packet.type === 'REIMBURSEMENT_SAVED') {
+        const newClaim: ReimbursementClaim = packet.payload;
+        setReimbursements(prev => {
+          if (prev.some(r => r.id === newClaim.id)) return prev;
+          return [newClaim, ...prev];
+        });
+        showLiveToast(`Klaim Biaya Baru: ${newClaim.title}`, 'info');
+      } else if (packet.type === 'EMPLOYEE_SAVED') {
+        const newEmp: Employee = packet.payload;
+        setEmployees(prev => {
+          const idx = prev.findIndex(e => e.id === newEmp.id);
+          if (idx >= 0) {
+            const next = [...prev];
+            next[idx] = newEmp;
+            return next;
+          }
+          return [newEmp, ...prev];
+        });
+      } else if (packet.type === 'DATABASE_RESET') {
+        api.getBootstrapData().then(data => {
+          if (data.employees) setEmployees(data.employees);
+          if (data.projects) setProjects(data.projects);
+          if (data.attendances) setAttendances(data.attendances);
+          if (data.approvals) setApprovals(data.approvals);
+          if (data.reimbursements) setReimbursements(data.reimbursements);
+        });
+        showLiveToast(`Database di-reset ke data awal`, 'warn');
+      }
+    });
+
+    return () => unsub();
+  }, []);
+
+  // Auto-launch Tour Demo immediately on page access (hands-free onboarding)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      // Bypass auto-tour if explicitly disabled via query parameter
+      if (
+        searchParams.get('tour') === 'false' || 
+        searchParams.get('notour') === '1' || 
+        searchParams.get('autotour') === '0'
+      ) {
+        return;
+      }
+    }
+    // Slight 450ms delay for DOM nodes & SQLite bootstrap to cleanly mount
+    const timer = setTimeout(() => {
+      setIsTourOpen(true);
+    }, 450);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const toggleWifi = () => {
+    setIsWifiConnected(prev => !prev);
+  };
+
+  const handleSwitchUser = (newEmp: Employee) => {
+    setCurrentUser(newEmp);
+    const role = getEffectiveSystemRole(newEmp);
+    if (role === 'staff') {
+      if (activeTab === 'salary_rules') {
+        setActiveTab('dashboard');
+        setDashboardSubView('performance');
+      } else if (activeTab === 'dashboard') {
+        setDashboardSubView('performance');
+      }
+    }
+  };
+
+  const handleNavigateToTab = (tabId: string, projectIdFilter?: string) => {
+    if (tabId === 'approvals') {
+      setIsNotificationModalOpen(true);
+      return;
+    }
+
+    // Sync URL with tabId query parameter without full reload
+    if (typeof window !== 'undefined') {
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set('tab', tabId);
+        window.history.replaceState({}, '', url.toString());
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    const role = getEffectiveSystemRole(currentUser);
+    if (role === 'staff') {
+      if (tabId === 'dashboard' || tabId === 'dashboard_hris' || tabId === 'dashboard_finance') {
+        setActiveTab('dashboard');
+        setDashboardSubView('performance');
+        return;
+      }
+      if (tabId === 'salary_rules') {
+        setActiveTab('dashboard');
+        setDashboardSubView('performance');
+        return;
+      }
+    }
+
+    if (tabId === 'dashboard' || tabId === 'dashboard_hris') {
+      setActiveTab('dashboard');
+      setDashboardSubView('hris');
+    } else if (tabId === 'dashboard_finance') {
+      setActiveTab('dashboard');
+      setDashboardSubView('finance');
+    } else if (tabId === 'user_performance') {
+      setActiveTab('dashboard');
+      setDashboardSubView('performance');
+    } else {
+      setActiveTab(tabId);
+    }
+    if (projectIdFilter) {
+      setSelectedProjectId(projectIdFilter);
+    }
+  };
+
+  // Sync browser back/forward or hash changes
+  useEffect(() => {
+    const handleUrlSync = () => {
+      const searchParams = new URLSearchParams(window.location.search);
+      const queryTab = searchParams.get('tab');
+      if (queryTab) {
+        handleNavigateToTab(queryTab);
+      } else if (window.location.hash) {
+        handleNavigateToTab(window.location.hash.replace('#', ''));
+      }
+    };
+    window.addEventListener('popstate', handleUrlSync);
+    window.addEventListener('hashchange', handleUrlSync);
+    return () => {
+      window.removeEventListener('popstate', handleUrlSync);
+      window.removeEventListener('hashchange', handleUrlSync);
+    };
+  }, [currentUser]);
+
+  // Submit new attendance record
+  const handleAttendanceSubmit = (record: AttendanceRecord) => {
+    setAttendances(prev => [record, ...prev]);
+
+    // Save to SQLite asynchronously
+    api.saveAttendance(record).catch(err => console.error('Failed to save attendance to SQLite', err));
+
+    // If Late or Dinas Luar, automatically register into Approval queue
+    if (record.isLate) {
+      const lateApproval: ApprovalItem = {
+        id: `APP-LATE-${Date.now()}`,
+        type: 'LATE_JUSTIFICATION',
+        employeeId: record.employeeId,
+        employeeName: record.employeeName,
+        employeeNik: record.employeeNik,
+        department: record.department,
+        title: `Justifikasi Keterlambatan Presensi (${record.lateMinutes} Menit)`,
+        description: record.lateReason || 'Keterlambatan masuk shift kerja.',
+        startDate: record.date,
+        lateMinutes: record.lateMinutes,
+        attendanceRecordId: record.id,
+        status: 'PENDING',
+        submittedAt: `${record.date} ${record.checkInTime}`
+      };
+      setApprovals(prev => [lateApproval, ...prev]);
+    } else if (record.mode === 'DINAS_LUAR' && record.dinasLuarDetails) {
+      const dinasApproval: ApprovalItem = {
+        id: `APP-DINAS-${Date.now()}`,
+        type: 'DINAS_LUAR',
+        employeeId: record.employeeId,
+        employeeName: record.employeeName,
+        employeeNik: record.employeeNik,
+        department: record.department,
+        title: `Persetujuan Dinas Luar Mendadak - ${record.dinasLuarDetails.clientName}`,
+        description: `Tujuan: ${record.dinasLuarDetails.destination}. Proyek: ${record.dinasLuarDetails.projectCode}. Alasan: ${record.dinasLuarDetails.purpose}`,
+        startDate: record.date,
+        daysCount: 1,
+        attendanceRecordId: record.id,
+        status: 'PENDING',
+        submittedAt: `${record.date} ${record.checkInTime}`
+      };
+      setApprovals(prev => [dinasApproval, ...prev]);
+    }
+  };
+
+  // Approval actions
+  const handleApprove = (id: string, reviewerNote?: string) => {
+    api.updateApproval(id, 'APPROVED', reviewerNote, `${currentUser.name} (${currentUser.role})`)
+      .catch(err => console.error('Failed to update approval in SQLite', err));
+
+    setApprovals(prev =>
+      prev.map(item => {
+        if (item.id === id) {
+          // If this is a leave request, deduct from employee quota!
+          if (item.type === 'LEAVE' && item.daysCount) {
+            setEmployees(empList =>
+              empList.map(e => {
+                if (e.id === item.employeeId) {
+                  return { ...e, usedLeave: e.usedLeave + (item.daysCount || 1) };
+                }
+                return e;
+              })
+            );
+          }
+
+          // If this is a late justification, mark the corresponding attendance as approved
+          if (item.attendanceRecordId) {
+            setAttendances(attList =>
+              attList.map(a => {
+                if (a.id === item.attendanceRecordId) {
+                  return { ...a, approvalStatus: 'APPROVED' };
+                }
+                return a;
+              })
+            );
+          }
+
+          return {
+            ...item,
+            status: 'APPROVED',
+            reviewedBy: `${currentUser.name} (${currentUser.role})`,
+            reviewedAt: new Date().toISOString().replace('T', ' ').substring(0, 19),
+            reviewNote: reviewerNote || 'Disetujui.'
+          };
+        }
+        return item;
+      })
+    );
+  };
+
+  const handleReject = (id: string, reviewerNote?: string) => {
+    api.updateApproval(id, 'REJECTED', reviewerNote, `${currentUser.name} (${currentUser.role})`)
+      .catch(err => console.error('Failed to update approval in SQLite', err));
+
+    setApprovals(prev =>
+      prev.map(item => {
+        if (item.id === id) {
+          if (item.attendanceRecordId) {
+            setAttendances(attList =>
+              attList.map(a => {
+                if (a.id === item.attendanceRecordId) {
+                  return { ...a, approvalStatus: 'REJECTED' };
+                }
+                return a;
+              })
+            );
+          }
+          return {
+            ...item,
+            status: 'REJECTED',
+            reviewedBy: `${currentUser.name} (${currentUser.role})`,
+            reviewedAt: new Date().toISOString().replace('T', ' ').substring(0, 19),
+            reviewNote: reviewerNote || 'Ditolak.'
+          };
+        }
+        return item;
+      })
+    );
+  };
+
+  const handleRequestRevision = (id: string, reviewerNote?: string) => {
+    setApprovals(prev =>
+      prev.map(item => {
+        if (item.id === id) {
+          return {
+            ...item,
+            status: 'REVISION_REQUESTED',
+            reviewedBy: `${currentUser.name} (${currentUser.role})`,
+            reviewedAt: new Date().toISOString().replace('T', ' ').substring(0, 19),
+            reviewNote: reviewerNote || 'Mohon melengkapi berkas pendukung.'
+          };
+        }
+        return item;
+      })
+    );
+  };
+
+  const handleSubmitNewLeaveRequest = (item: ApprovalItem) => {
+    setApprovals(prev => [item, ...prev]);
+  };
+
+  // Employee CRUD (User Management)
+  const handleAddEmployee = (emp: Employee) => {
+    setEmployees(prev => [...prev, emp]);
+    api.saveEmployee(emp).catch(err => console.error('Failed to save employee to SQLite', err));
+  };
+
+  const handleUpdateEmployee = (emp: Employee) => {
+    setEmployees(prev => prev.map(e => (e.id === emp.id ? emp : e)));
+    if (currentUser.id === emp.id) {
+      setCurrentUser(emp);
+    }
+    api.saveEmployee(emp).catch(err => console.error('Failed to update employee in SQLite', err));
+  };
+
+  const handleDeleteEmployee = (id: string) => {
+    setEmployees(prev => prev.filter(e => e.id !== id));
+  };
+
+  const handleAddReimbursement = (claim: ReimbursementClaim) => {
+    setReimbursements(prev => [claim, ...prev]);
+    api.saveReimbursement(claim).catch(err => console.error('Failed to save reimbursement in SQLite', err));
+  };
+
+  const handleUpdateSalaryRules = (newRules: SalaryRuleConfig) => {
+    setSalaryRules(newRules);
+    api.saveSalaryRules(newRules).catch(err => console.error('Failed to update salary rules in SQLite', err));
+  };
+
+  const pendingApprovalsCount = approvals.filter(a => a.status === 'PENDING').length;
+
+  const userSystemRole = getEffectiveSystemRole(currentUser);
+  const effectiveNotificationCount = userSystemRole === 'staff'
+    ? approvals.filter(a => a.employeeId === currentUser.id && (a.status === 'PENDING' || a.status === 'REVISION_REQUESTED' || a.status === 'REJECTED')).length +
+      reimbursements.filter(r => r.employeeId === currentUser.id && r.status === 'REJECTED').length
+    : pendingApprovalsCount;
+
+  return (
+    <div className="min-h-screen flex flex-col selection:bg-orange-500 selection:text-white">
+      
+      {/* Top Glass Navigation Bar */}
+      <Navbar
+        currentUser={currentUser}
+        allUsers={employees}
+        onSwitchUser={handleSwitchUser}
+        isWifiConnected={isWifiConnected}
+        onToggleWifi={toggleWifi}
+        currentWifiSsid={currentWifiSsid}
+        pendingApprovalsCount={effectiveNotificationCount}
+        onNavigateToTab={handleNavigateToTab}
+        onOpenNotificationModal={() => setIsNotificationModalOpen(true)}
+        onStartTour={() => setIsTourOpen(true)}
+        realDetectedIp={realDetectedIp}
+        realDetectedIsp={realDetectedIsp}
+        realDetectedCity={realDetectedCity}
+        isOfficeNetwork={isOfficeNetwork}
+        simulatedNetworkMode={simulatedNetworkMode}
+        onSetSimulatedNetworkMode={setSimulatedNetworkMode}
+        onWhitelistCurrentIp={handleWhitelistCurrentIp}
+      />
+
+      {/* Floating Pill Sidebar Dock (Desktop) */}
+      <Sidebar
+        activeTab={activeTab}
+        onSelectTab={handleNavigateToTab}
+        userRole={currentUser.role}
+        systemRole={userSystemRole}
+        pendingApprovalsCount={effectiveNotificationCount}
+      />
+
+      {/* Mobile Navigation Tabs (Screens < 768px) */}
+      <div className="md:hidden sticky top-16 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 px-3 py-2 flex items-center gap-2 overflow-x-auto no-print">
+        {(getEffectiveSystemRole(currentUser) === 'staff'
+          ? [
+              { id: 'dashboard', label: 'Kinerja Saya' },
+              { id: 'attendance', label: 'Presensi Kamera' },
+              { id: 'users', label: 'Profil Saya' },
+              { id: 'payroll', label: 'Slip Gaji Saya' },
+              { id: 'proposal', label: 'Proposal DMJ' }
+            ]
+          : [
+              { id: 'dashboard', label: 'Dashboard' },
+              { id: 'attendance', label: 'Presensi' },
+              { id: 'users', label: 'User Management' },
+              { id: 'payroll', label: 'Payroll & Proyek' },
+              { id: 'proposal', label: 'Proposal DMJ' }
+            ]
+        ).map(tab => {
+          const isTabActive = activeTab === tab.id || (tab.id === 'dashboard' && (activeTab === 'dashboard_hris' || activeTab === 'dashboard_finance' || activeTab === 'user_performance'));
+          return (
+            <button
+              key={tab.id}
+              onClick={() => handleNavigateToTab(tab.id)}
+              className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap cursor-pointer transition-all ${
+                isTabActive
+                  ? 'bg-[#FF6B00] text-white shadow-xs'
+                  : 'bg-slate-100 text-slate-700'
+              }`}
+            >
+              {tab.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Main Content Area with Dynamic Key for Tab Transition Animation */}
+      <main key={activeTab} className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 md:pl-24 transition-all motion-fade-in-up">
+        {(activeTab === 'dashboard' || activeTab === 'dashboard_hris' || activeTab === 'dashboard_finance' || activeTab === 'user_performance') && (
+          <DashboardTab
+            currentUser={currentUser}
+            employees={employees}
+            projects={projects}
+            attendances={attendances}
+            approvals={approvals}
+            salaryRules={salaryRules}
+            reimbursements={reimbursements}
+            onAddReimbursement={handleAddReimbursement}
+            onSubmitNewLeaveRequest={handleSubmitNewLeaveRequest}
+            onNavigateToTab={handleNavigateToTab}
+            currentWifiSsid={currentWifiSsid}
+            initialSubView={dashboardSubView}
+          />
+        )}
+
+        {activeTab === 'attendance' && (
+          <PresensiCameraTab
+            currentUser={currentUser}
+            salaryRules={salaryRules}
+            isWifiConnected={isWifiConnected}
+            currentWifiSsid={currentWifiSsid}
+            onToggleWifi={toggleWifi}
+            attendanceHistory={attendances}
+            onSubmitAttendance={handleAttendanceSubmit}
+            onNavigateToTab={handleNavigateToTab}
+            realDetectedIp={realDetectedIp}
+            realDetectedIsp={realDetectedIsp}
+            realDetectedCity={realDetectedCity}
+            onUpdateRealIp={setRealDetectedIp}
+            onUpdateSalaryRules={handleUpdateSalaryRules}
+          />
+        )}
+
+        {activeTab === 'users' && (
+          <EmployeeManagementTab
+            currentUser={currentUser}
+            employees={employees}
+            projects={projects}
+            onAddEmployee={handleAddEmployee}
+            onUpdateEmployee={handleUpdateEmployee}
+            onDeleteEmployee={handleDeleteEmployee}
+          />
+        )}
+
+        {activeTab === 'payroll' && (
+          <PayrollTab
+            currentUser={currentUser}
+            employees={employees}
+            projects={projects}
+            attendances={attendances}
+            salaryRules={salaryRules}
+            selectedProjectId={selectedProjectId}
+            onSelectProjectId={setSelectedProjectId}
+          />
+        )}
+
+        {activeTab === 'salary_rules' && (
+          <SalaryRulesTab
+            currentUser={currentUser}
+            salaryRules={salaryRules}
+            onUpdateSalaryRules={handleUpdateSalaryRules}
+          />
+        )}
+
+        {activeTab === 'proposal' && (
+          <CommercialProposalTab />
+        )}
+      </main>
+
+      {/* Footer */}
+      <footer className="mt-auto py-6 border-t border-slate-200/80 bg-white/40 text-center text-xs text-slate-500 font-mono-code no-print">
+        <p>
+          Prime HRIS Enterprise • Custom Tailored for <b className="text-slate-800">PT Dwi Martha Jaya</b>
+        </p>
+        <p className="text-[10px] text-slate-400 mt-1">
+          Developed by PT Prime Infinity Systems (Prime ProjectX) • Attendance by Cam, Sequential WiFi Gateway & Project Payroll System
+        </p>
+      </footer>
+
+      {/* Pop-up Window: Pusat Notifikasi & Approval Terpadu */}
+
+      {/* Interactive Typewriter Tour Demo Modal */}
+      <TourDemoModal
+        isOpen={isTourOpen}
+        onClose={() => setIsTourOpen(false)}
+        onNavigateToTab={handleNavigateToTab}
+        onSetDashboardSubView={setDashboardSubView}
+        activeTab={activeTab}
+      />
+
+      {/* Floating Quick Tour Launcher */}
+      {!isTourOpen && (
+        <div className="fixed bottom-5 right-5 z-40 no-print">
+          <button
+            onClick={() => setIsTourOpen(true)}
+            className="flex items-center gap-2 px-3.5 py-2 rounded-full bg-slate-950/92 hover:bg-slate-900 text-white text-xs font-bold shadow-xl shadow-orange-950/30 border border-orange-500/40 hover:border-orange-500 transition-all hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md group"
+            title="Mulai Panduan Tour Demo Interaktif Komponen & Menu"
+          >
+            <span className="w-2 h-2 rounded-full bg-[#FF6B00] animate-ping" />
+            <span className="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent font-mono-code font-black">
+              Tour Demo
+            </span>
+          </button>
+        </div>
+      )}
+
+      <NotificationApprovalModal
+        isOpen={isNotificationModalOpen}
+        onClose={() => setIsNotificationModalOpen(false)}
+        approvals={approvals}
+        reimbursements={reimbursements}
+        employees={employees}
+        currentUser={currentUser}
+        onApprove={handleApprove}
+        onReject={handleReject}
+        onRequestRevision={handleRequestRevision}
+        onSubmitNewLeaveRequest={handleSubmitNewLeaveRequest}
+        onNavigateToTab={handleNavigateToTab}
+      />
+
+      {/* Floating Real-Time Sync Notification Toast */}
+      {liveToast && (
+        <div className="fixed bottom-6 left-6 z-50 animate-in fade-in slide-in-from-bottom-5 duration-300 max-w-sm font-sans no-print">
+          <div className={`p-3.5 rounded-2xl shadow-2xl flex items-center gap-3 border backdrop-blur-md ${
+            liveToast.type === 'warn' 
+              ? 'bg-amber-950/95 text-amber-100 border-amber-500/60'
+              : liveToast.type === 'info'
+              ? 'bg-slate-900/95 text-slate-100 border-sky-500/50'
+              : 'bg-slate-950/95 text-emerald-100 border-emerald-500/60'
+          }`}>
+            <span className="p-2 rounded-xl bg-white/10 text-emerald-400 shrink-0">
+              <Zap className="w-4 h-4 text-emerald-400 animate-pulse" />
+            </span>
+            <div className="flex-1 text-xs">
+              <div className="font-mono-code font-black text-[9.5px] text-emerald-400 uppercase tracking-widest flex items-center gap-1.5 mb-0.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                <span>RTC LIVE SYNC</span>
+              </div>
+              <div className="font-semibold text-white leading-tight">{liveToast.message}</div>
+            </div>
+            <button 
+              onClick={() => setLiveToast(null)} 
+              className="p-1 rounded-lg text-slate-400 hover:text-white transition-colors cursor-pointer text-xs"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+}
+
+export default App;
