@@ -268,133 +268,150 @@ export const ProjectManagementTab: React.FC<ProjectManagementTabProps> = ({
 
   return (
     <div className="space-y-6 pb-20 motion-fade-in-up">
-      {/* Top Banner & KPI Header */}
-      <div className="glass-card rounded-3xl p-6 sm:p-8 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white relative overflow-hidden border border-slate-800 shadow-2xl">
-        <div className="absolute -right-16 -top-16 w-80 h-80 bg-orange-500/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div className="absolute right-1/4 -bottom-16 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
-
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      {/* Executive Header Bar */}
+      <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-2xl bg-orange-50 text-[#FF6B00] flex items-center justify-center border border-orange-200/60 shrink-0">
+            <Briefcase className="w-6 h-6" />
+          </div>
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/20 text-orange-300 text-xs font-semibold border border-orange-500/30 mb-3">
-              <Briefcase className="w-3.5 h-3.5 text-orange-400" />
-              <span>SISTEM MANAJEMEN PROYEK & SITE LAPANGAN</span>
+            <div className="flex items-center gap-2 mb-0.5">
+              <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                Manajemen Proyek & Site Lapangan
+              </h1>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase font-mono-code">
+                {stats.activeProjects} Aktif
+              </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-              Manajemen Proyek & Penempatan Personel
-            </h1>
-            <p className="text-slate-300 text-sm mt-1.5 max-w-2xl leading-relaxed">
-              Otorisasi penempatan teknisi & engineer ke proyek, atur jam kerja in/out site khusus, serta tetapkan kebijakan cuti roster lapangan independen per lokasi kerja.
+            <p className="text-xs text-slate-500">
+              Penempatan teknisi & engineer, aturan jam kerja site in/out, serta kebijakan cuti roster proyek
             </p>
           </div>
-
-          {canManage && (
-            <button
-              onClick={handleOpenCreate}
-              className="inline-flex items-center justify-center gap-2.5 px-5 py-3 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold text-sm shadow-lg shadow-orange-500/25 hover:from-orange-600 hover:to-amber-600 transition-all transform active:scale-95 cursor-pointer whitespace-nowrap"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Tambah Proyek Baru</span>
-            </button>
-          )}
         </div>
 
-        {/* 4 Quick Stat Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8 pt-6 border-t border-slate-800/80">
-          <div className="bg-slate-800/40 backdrop-blur-md rounded-2xl p-4 border border-slate-700/50">
-            <div className="flex items-center justify-between text-slate-400 text-xs font-medium">
-              <span>Proyek Aktif / Berjalan</span>
-              <Building2 className="w-4 h-4 text-emerald-400" />
-            </div>
-            <div className="text-2xl font-black text-white mt-1.5">
-              {stats.activeProjects} <span className="text-xs font-normal text-slate-400">/ {stats.totalProjects} Proyek</span>
-            </div>
-            <div className="text-xs text-emerald-400 font-medium mt-1 flex items-center gap-1">
-              <TrendingUp className="w-3 h-3" />
-              <span>High-Priority Sites</span>
+        {canManage && (
+          <button
+            onClick={handleOpenCreate}
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#FF6B00] hover:bg-[#e56000] text-white font-bold text-xs shadow-sm transition-all transform active:scale-95 cursor-pointer whitespace-nowrap"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Tambah Proyek Baru</span>
+          </button>
+        )}
+      </div>
+
+      {/* 4 Crisp Stat Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 font-mono-code">
+              Proyek Aktif
+            </span>
+            <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+              <Building2 className="w-4 h-4" />
             </div>
           </div>
+          <div className="text-2xl font-black text-slate-900 font-mono-code">
+            {stats.activeProjects} <span className="text-xs font-normal text-slate-400">/ {stats.totalProjects} Proyek</span>
+          </div>
+          <div className="mt-2 text-xs text-emerald-700 font-semibold flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            <span>Semua Operasional Aktif</span>
+          </div>
+        </div>
 
-          <div className="bg-slate-800/40 backdrop-blur-md rounded-2xl p-4 border border-slate-700/50">
-            <div className="flex items-center justify-between text-slate-400 text-xs font-medium">
-              <span>Pagu Anggaran Disetujui</span>
-              <DollarSign className="w-4 h-4 text-blue-400" />
-            </div>
-            <div className="text-lg sm:text-xl font-black text-white mt-1.5 truncate">
-              {formatIDR(stats.totalBudget)}
-            </div>
-            <div className="text-xs text-blue-400 font-medium mt-1">
-              Alokasi Tenaga Kerja
+        <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 font-mono-code">
+              Pagu Anggaran
+            </span>
+            <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+              <DollarSign className="w-4 h-4" />
             </div>
           </div>
+          <div className="text-xl sm:text-2xl font-black text-slate-900 font-mono-code truncate">
+            {formatIDR(stats.totalBudget)}
+          </div>
+          <div className="mt-2 text-xs text-slate-500">
+            Alokasi Tenaga Kerja Disetujui
+          </div>
+        </div>
 
-          <div className="bg-slate-800/40 backdrop-blur-md rounded-2xl p-4 border border-slate-700/50">
-            <div className="flex items-center justify-between text-slate-400 text-xs font-medium">
-              <span>Realisasi Upah Tenaga Kerja</span>
-              <Award className="w-4 h-4 text-amber-400" />
-            </div>
-            <div className="text-lg sm:text-xl font-black text-amber-300 mt-1.5 truncate">
-              {formatIDR(stats.totalLaborCost)}
-            </div>
-            <div className="text-xs text-slate-400 font-medium mt-1">
-              {((stats.totalLaborCost / (stats.totalBudget || 1)) * 100).toFixed(1)}% Penyerapan Anggaran
+        <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 font-mono-code">
+              Realisasi Upah
+            </span>
+            <div className="w-8 h-8 rounded-xl bg-orange-50 text-[#FF6B00] flex items-center justify-center">
+              <Award className="w-4 h-4" />
             </div>
           </div>
+          <div className="text-xl sm:text-2xl font-black text-[#FF6B00] font-mono-code truncate">
+            {formatIDR(stats.totalLaborCost)}
+          </div>
+          <div className="mt-2 text-xs text-emerald-600 font-semibold">
+            {((stats.totalLaborCost / (stats.totalBudget || 1)) * 100).toFixed(1)}% Penyerapan Anggaran
+          </div>
+        </div>
 
-          <div className="bg-slate-800/40 backdrop-blur-md rounded-2xl p-4 border border-slate-700/50">
-            <div className="flex items-center justify-between text-slate-400 text-xs font-medium">
-              <span>Teknisi & Staf Lapangan</span>
-              <Users className="w-4 h-4 text-orange-400" />
+        <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 font-mono-code">
+              Personel di Site
+            </span>
+            <div className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+              <Users className="w-4 h-4" />
             </div>
-            <div className="text-2xl font-black text-white mt-1.5">
-              {stats.assignedCount} <span className="text-xs font-normal text-slate-400">/ {employees.length} Personel</span>
-            </div>
-            <div className="text-xs text-orange-400 font-medium mt-1">
-              Terdistribusi di Site
-            </div>
+          </div>
+          <div className="text-2xl font-black text-slate-900 font-mono-code">
+            {stats.assignedCount} <span className="text-xs font-normal text-slate-400">/ {employees.length} Staf</span>
+          </div>
+          <div className="mt-2 text-xs text-slate-500">
+            Terdistribusi Penuh di Lapangan
           </div>
         </div>
       </div>
 
       {/* Control Bar: Filters & Search */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
         {/* Status Filter Tabs */}
-        <div className="flex items-center p-1 bg-slate-100 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700 w-full sm:w-auto overflow-x-auto">
+        <div className="bg-slate-100/90 p-1 rounded-2xl flex items-center gap-1 border border-slate-200/80 w-full sm:w-auto overflow-x-auto text-xs">
           {(
             [
-              { id: 'ALL', label: 'Semua Proyek' },
-              { id: 'ACTIVE', label: 'Aktif / Berjalan' },
-              { id: 'PLANNING', label: 'Perencanaan' },
-              { id: 'COMPLETED', label: 'Selesai' }
+              { id: 'ALL', label: 'Semua Proyek', count: stats.totalProjects },
+              { id: 'ACTIVE', label: 'Aktif / Berjalan', count: stats.activeProjects },
+              { id: 'PLANNING', label: 'Perencanaan', count: stats.totalProjects - stats.activeProjects },
+              { id: 'COMPLETED', label: 'Selesai', count: 0 }
             ] as const
           ).map(tab => (
             <button
               key={tab.id}
-              onClick={() => setStatusFilter(tab.id)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+              onClick={() => setStatusFilter(tab.id as any)}
+              className={`px-3.5 py-1.5 rounded-xl font-bold transition-all whitespace-nowrap cursor-pointer ${
                 statusFilter === tab.id
-                  ? 'bg-white dark:bg-slate-900 text-orange-600 dark:text-orange-400 shadow-sm'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-white text-slate-900 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              {tab.label}
+              {tab.label} ({tab.count})
             </button>
           ))}
         </div>
 
         {/* Search Input */}
-        <div className="relative w-full sm:w-72">
+        <div className="relative w-full sm:w-80">
           <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
             type="text"
-            placeholder="Cari nama, klien, kode site..."
+            placeholder="Cari nama proyek, klien, kode site..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/50 text-slate-800 dark:text-slate-100"
+            className="w-full pl-9 pr-8 py-2 rounded-xl bg-white border border-slate-200 text-xs font-medium focus:outline-none focus:border-[#FF6B00] text-slate-800 shadow-2xs"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -404,9 +421,9 @@ export const ProjectManagementTab: React.FC<ProjectManagementTabProps> = ({
 
       {/* Project Cards Grid */}
       {filteredProjects.length === 0 ? (
-        <div className="glass-card rounded-3xl p-12 text-center border border-dashed border-slate-300 dark:border-slate-700 bg-white/50 dark:bg-slate-800/40">
+        <div className="rounded-3xl p-12 text-center border border-dashed border-slate-300 bg-white/70">
           <Briefcase className="w-12 h-12 text-slate-400 mx-auto mb-3" />
-          <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200">Tidak ada proyek yang sesuai kriteria</h3>
+          <h3 className="text-lg font-bold text-slate-800">Tidak ada proyek yang sesuai kriteria</h3>
           <p className="text-sm text-slate-500 mt-1 max-w-sm mx-auto">
             Coba ubah kata kunci pencarian atau ganti filter status proyek di atas.
           </p>
@@ -416,6 +433,14 @@ export const ProjectManagementTab: React.FC<ProjectManagementTabProps> = ({
           {filteredProjects.map(proj => {
             const assignedPeople = getProjectPersonnel(proj.id);
             const budgetUsedPct = Math.min(100, Math.round(((proj.actualLaborCost || 0) / (proj.allocatedBudget || 1)) * 100));
+
+            // Sanitize display fields to PRIME standard
+            const cleanCode = proj.code.replace(/^DMJ-/i, 'PRIME-');
+            const cleanName = proj.name.replace(/\bDMJ\b/gi, 'PRIME').replace(/Smelter PRIME/gi, 'Smelter Smelting');
+            const cleanClient = proj.client
+              ? proj.client.replace(/PT Dwi Martha Jaya/gi, 'PT Prime Infinity Systems').replace(/\bDMJ\b/gi, 'PRIME')
+              : 'PT Prime Infinity Systems';
+            const cleanLocation = proj.location ? proj.location.replace(/\bDMJ\b/gi, 'PRIME') : 'Site Proyek';
 
             // Custom Rule Flags
             const hasCustomSchedule = proj.customRules?.workSchedule?.enabled;
@@ -428,22 +453,22 @@ export const ProjectManagementTab: React.FC<ProjectManagementTabProps> = ({
             return (
               <div
                 key={proj.id}
-                className="glass-card rounded-3xl p-6 bg-white dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between group"
+                className="rounded-3xl p-6 bg-white border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between group"
               >
                 <div>
-                  {/* Card Top: Code, Status & Client */}
-                  <div className="flex items-start justify-between gap-3 mb-3">
+                  {/* Card Top: Code, Status & Pagu Anggaran */}
+                  <div className="flex items-start justify-between gap-3 mb-2">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="px-3 py-1 rounded-xl bg-orange-100 dark:bg-orange-950/60 text-orange-700 dark:text-orange-300 text-xs font-black tracking-wider border border-orange-200 dark:border-orange-800/50">
-                        {proj.code}
+                      <span className="px-2.5 py-1 rounded-lg bg-orange-50 text-[#FF6B00] text-xs font-black tracking-wider border border-orange-200 font-mono-code">
+                        {cleanCode}
                       </span>
                       <span
                         className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
                           proj.status === 'ACTIVE'
-                            ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
+                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                             : proj.status === 'PLANNING'
-                            ? 'bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800'
-                            : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
+                            ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                            : 'bg-slate-100 text-slate-600'
                         }`}
                       >
                         {proj.status === 'ACTIVE' ? 'BERJALAN / AKTIF' : proj.status === 'PLANNING' ? 'PERENCANAAN' : 'SELESAI'}
@@ -451,45 +476,46 @@ export const ProjectManagementTab: React.FC<ProjectManagementTabProps> = ({
                     </div>
 
                     <div className="text-right">
-                      <div className="text-xs text-slate-400 font-medium">Pagu Anggaran</div>
-                      <div className="text-sm font-black text-slate-800 dark:text-slate-100">
+                      <div className="text-[10px] text-slate-400 font-mono-code font-bold uppercase">Pagu Anggaran</div>
+                      <div className="text-base font-black text-slate-900 font-mono-code">
                         {formatIDR(proj.allocatedBudget)}
                       </div>
                     </div>
                   </div>
 
-                  {/* Project Name & Client */}
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors leading-snug">
-                    {proj.name}
+                  {/* Project Name */}
+                  <h3 className="text-base sm:text-lg font-black text-slate-900 group-hover:text-[#FF6B00] transition-colors leading-snug my-2">
+                    {cleanName}
                   </h3>
 
-                  <div className="flex flex-col gap-1.5 mt-2.5 text-xs text-slate-600 dark:text-slate-400">
+                  {/* Metadata: Client, Location, Schedule */}
+                  <div className="flex flex-col gap-1.5 mt-2.5 text-xs text-slate-600">
                     <div className="flex items-center gap-1.5">
                       <Building2 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      <span className="font-semibold text-slate-700 dark:text-slate-300">{proj.client}</span>
+                      <span className="font-semibold text-slate-700">{cleanClient}</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      <span className="truncate">{proj.location}</span>
+                      <span className="truncate">{cleanLocation}</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      <span>
+                      <span className="font-mono-code text-slate-500">
                         {proj.startDate} s/d {proj.targetEndDate}
                       </span>
                     </div>
                   </div>
 
                   {/* Budget & Cost Progress Bar */}
-                  <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700/60">
+                  <div className="mt-4 pt-3 border-t border-slate-100">
                     <div className="flex justify-between items-center text-xs mb-1.5">
                       <span className="text-slate-500">Realisasi Biaya Upah:</span>
-                      <span className="font-bold text-slate-800 dark:text-slate-200">
+                      <span className="font-bold text-slate-900 font-mono-code">
                         {formatIDR(proj.actualLaborCost || 0)}{' '}
                         <span className="text-slate-400 font-normal">({budgetUsedPct}%)</span>
                       </span>
                     </div>
-                    <div className="w-full h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+                    <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                       <div
                         className={`h-full rounded-full transition-all duration-500 ${
                           budgetUsedPct > 85 ? 'bg-rose-500' : budgetUsedPct > 60 ? 'bg-amber-500' : 'bg-emerald-500'
@@ -505,11 +531,11 @@ export const ProjectManagementTab: React.FC<ProjectManagementTabProps> = ({
                     <div
                       className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-semibold ${
                         hasCustomSchedule
-                          ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60'
-                          : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700'
+                          ? 'bg-amber-50 text-amber-900 border border-amber-200/80'
+                          : 'bg-slate-100 text-slate-600 border border-slate-200'
                       }`}
                     >
-                      <Clock className="w-3.5 h-3.5 text-amber-500" />
+                      <Clock className="w-3.5 h-3.5 text-amber-600" />
                       {hasCustomSchedule ? (
                         <span>
                           Site In/Out: <strong>{customSchedule?.checkInTime} - {customSchedule?.checkOutTime}</strong>{' '}
@@ -524,11 +550,11 @@ export const ProjectManagementTab: React.FC<ProjectManagementTabProps> = ({
                     <div
                       className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-semibold ${
                         hasCustomLeave
-                          ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60'
-                          : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700'
+                          ? 'bg-emerald-50 text-emerald-900 border border-emerald-200/80'
+                          : 'bg-slate-100 text-slate-600 border border-slate-200'
                       }`}
                     >
-                      <Palmtree className="w-3.5 h-3.5 text-emerald-500" />
+                      <Palmtree className="w-3.5 h-3.5 text-emerald-600" />
                       {hasCustomLeave ? (
                         <span>
                           Roster:{' '}
@@ -550,24 +576,24 @@ export const ProjectManagementTab: React.FC<ProjectManagementTabProps> = ({
 
                     {/* Geofence / Wifi Site */}
                     {hasGeofence && (
-                      <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-semibold bg-blue-50 dark:bg-blue-950/40 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800/60">
-                        <Wifi className="w-3.5 h-3.5 text-blue-500" />
+                      <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-semibold bg-blue-50 text-blue-900 border border-blue-200/80">
+                        <Wifi className="w-3.5 h-3.5 text-blue-600" />
                         <span>Site Geofence Aktif</span>
                       </div>
                     )}
                   </div>
 
                   {/* Assigned Personnel Previews */}
-                  <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700/60">
+                  <div className="mt-4 pt-3 border-t border-slate-100">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                        <Users className="w-3.5 h-3.5 text-orange-500" />
+                      <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                        <Users className="w-3.5 h-3.5 text-[#FF6B00]" />
                         <span>Personel Bertugas ({assignedPeople.length} Orang):</span>
                       </span>
                       {canManage && (
                         <button
                           onClick={() => handleOpenEdit(proj, 'personnel')}
-                          className="text-[11px] font-semibold text-orange-600 dark:text-orange-400 hover:underline cursor-pointer"
+                          className="text-[11px] font-bold text-[#FF6B00] hover:underline cursor-pointer"
                         >
                           + Atur Personel
                         </button>
@@ -581,8 +607,8 @@ export const ProjectManagementTab: React.FC<ProjectManagementTabProps> = ({
                         {assignedPeople.slice(0, 5).map(emp => (
                           <div
                             key={emp.id}
-                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-700/60 text-slate-800 dark:text-slate-200 text-xs font-medium border border-slate-200 dark:border-slate-600"
-                            title={`${emp.name} - ${emp.position} (${emp.nik})`}
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-50 text-slate-800 text-xs font-medium border border-slate-200"
+                            title={`${emp.name} - ${emp.position} (${emp.nik.replace(/^DMJ-/i, 'PRIME-')})`}
                           >
                             <img
                               src={emp.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(emp.name)}&background=random`}
@@ -593,7 +619,7 @@ export const ProjectManagementTab: React.FC<ProjectManagementTabProps> = ({
                           </div>
                         ))}
                         {assignedPeople.length > 5 && (
-                          <span className="inline-flex items-center px-2 py-1 rounded-full bg-orange-100 dark:bg-orange-950/60 text-orange-700 dark:text-orange-300 text-xs font-bold">
+                          <span className="inline-flex items-center px-2 py-1 rounded-full bg-orange-50 text-[#FF6B00] border border-orange-200 text-xs font-bold font-mono-code">
                             +{assignedPeople.length - 5} lainnya
                           </span>
                         )}
@@ -603,14 +629,14 @@ export const ProjectManagementTab: React.FC<ProjectManagementTabProps> = ({
                 </div>
 
                 {/* Card Action Buttons */}
-                <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between gap-3">
+                <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
                   <button
                     onClick={() => {
                       if (onNavigateToTab) {
                         onNavigateToTab('payroll', proj.id);
                       }
                     }}
-                    className="text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center gap-1 cursor-pointer transition-colors"
+                    className="text-xs font-bold text-slate-600 hover:text-[#FF6B00] flex items-center gap-1 cursor-pointer transition-colors"
                   >
                     <span>Lihat Payroll Site</span>
                     <ChevronRight className="w-3.5 h-3.5" />
@@ -620,7 +646,7 @@ export const ProjectManagementTab: React.FC<ProjectManagementTabProps> = ({
                     {canManage ? (
                       <button
                         onClick={() => handleOpenEdit(proj, 'schedule')}
-                        className="px-3.5 py-2 rounded-xl bg-orange-50 dark:bg-orange-950/50 hover:bg-orange-100 dark:hover:bg-orange-900/60 text-orange-600 dark:text-orange-300 font-bold text-xs border border-orange-200 dark:border-orange-800/60 flex items-center gap-1.5 transition-all cursor-pointer"
+                        className="px-3.5 py-2 rounded-xl bg-orange-50 hover:bg-[#FF6B00] text-[#FF6B00] hover:text-white font-bold text-xs border border-orange-200 shadow-2xs flex items-center gap-1.5 transition-all cursor-pointer"
                       >
                         <Sliders className="w-3.5 h-3.5" />
                         <span>Kelola Personel & Aturan</span>

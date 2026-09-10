@@ -54,7 +54,7 @@
     },
     {
       "id": "EMP-003",
-      "nik": "DMJ-2024-045",
+      "nik": "PRIME-2024-045",
       "name": "Siti Rahmawati, S.Psi.",
       "email": "siti.rahmawati@primeprojectx.net",
       "phone": "+62 813 9988 1234",
@@ -80,7 +80,7 @@
     },
     {
       "id": "EMP-004",
-      "nik": "DMJ-2024-089",
+      "nik": "PRIME-2024-089",
       "name": "Hendra Wijaya, A.Md.T.",
       "email": "hendra.wijaya@primeprojectx.net",
       "phone": "+62 857 1122 3344",
@@ -106,7 +106,7 @@
     },
     {
       "id": "EMP-005",
-      "nik": "DMJ-2025-012",
+      "nik": "PRIME-2025-012",
       "name": "Dian Lestari, S.Kom.",
       "email": "dian.lestari@primeprojectx.net",
       "phone": "+62 878 5544 3322",
@@ -117,7 +117,7 @@
       "position": "Project Quality & Safety Document Controller",
       "employmentType": "TETAP",
       "joinDate": "2023-09-01",
-      "assignedProjectId": "DMJ-PLANT-04",
+      "assignedProjectId": "PRIME-PLANT-04",
       "baseSalary": 8500000,
       "fixedAllowance": 1800000,
       "dailyAllowance": 50000,
@@ -135,7 +135,7 @@
     {
       "id": "PRIME-ENG-01",
       "code": "PRIME-ENG-01",
-      "name": "Konstruksi Pabrik & Instalasi Mekanikal Smelter DMJ",
+      "name": "Konstruksi Pabrik & Instalasi Mekanikal Smelter PRIME",
       "client": "PRIME Enterprise (Divisi Engineering)",
       "location": "Kawasan Industri Terpadu Manyar, Gresik",
       "status": "ACTIVE",
@@ -167,9 +167,9 @@
     {
       "id": "PRIME-CIVIL-03",
       "code": "PRIME-CIVIL-03",
-      "name": "Pembangunan Pergudangan & Workshop Logistik DMJ",
+      "name": "Pembangunan Pergudangan & Workshop Logistik PRIME",
       "client": "PRIME Enterprise (Divisi Infrastruktur)",
-      "location": "Kawasan Workshop Utama DMJ, Jawa Timur",
+      "location": "Kawasan Workshop Utama PRIME, Jawa Timur",
       "status": "ACTIVE",
       "startDate": "2026-05-15",
       "targetEndDate": "2026-12-15",
@@ -181,11 +181,11 @@
       "hourlyRateMultiplier": 1.3
     },
     {
-      "id": "DMJ-PLANT-04",
-      "code": "DMJ-PLANT-04",
-      "name": "Fabrikasi Struktur Baja & Piping System Pabrik DMJ",
+      "id": "PRIME-PLANT-04",
+      "code": "PRIME-PLANT-04",
+      "name": "Fabrikasi Struktur Baja & Piping System Pabrik PRIME",
       "client": "PRIME Enterprise (Divisi Industrial Plant)",
-      "location": "Workshop Fabrikasi Pusat DMJ",
+      "location": "Workshop Fabrikasi Pusat PRIME",
       "status": "ACTIVE",
       "startDate": "2026-01-01",
       "targetEndDate": "2026-12-31",
@@ -219,12 +219,12 @@
       },
       "wifi": {
         "connected": true,
-        "ssid": "DMJ-Corporate-5G",
+        "ssid": "PRIME-Corporate-5G",
         "bssid": "74:83:C2:AA:01:9F",
         "isAuthorized": true,
         "ipAddress": "192.168.10.45"
       },
-      "note": "Dandori alat ukur & calibrator mesin CNC Fabrikasi DMJ Line A",
+      "note": "Dandori alat ukur & calibrator mesin CNC Fabrikasi PRIME Line A",
       "isLate": false,
       "lateMinutes": 0,
       "approvalStatus": "NOT_REQUIRED"
@@ -250,7 +250,7 @@
       },
       "wifi": {
         "connected": true,
-        "ssid": "DMJ-Corporate-5G",
+        "ssid": "PRIME-Corporate-5G",
         "bssid": "74:83:C2:AA:01:9F",
         "isAuthorized": true,
         "ipAddress": "192.168.10.58"
@@ -258,14 +258,14 @@
       "note": "Inspeksi safety morning briefing terlambat akibat antrean gerbang barat",
       "isLate": true,
       "lateMinutes": 22,
-      "lateReason": "Kemacetan parah di jembatan akses tol Manyar dan screening APD di gate 1 DMJ",
+      "lateReason": "Kemacetan parah di jembatan akses tol Manyar dan screening APD di gate 1 PRIME",
       "approvalStatus": "PENDING"
     },
     {
       "id": "ATT-20260908-03",
       "employeeId": "EMP-004",
       "employeeName": "Hendra Wijaya, A.Md.T.",
-      "employeeNik": "DMJ-2024-089",
+      "employeeNik": "PRIME-2024-089",
       "department": "Mechanical & Field Service",
       "date": "2026-09-08",
       "checkInTime": "08:15:00",
@@ -291,7 +291,7 @@
       "isLate": false,
       "lateMinutes": 0,
       "dinasLuarDetails": {
-        "destination": "Site Pomalaa DMJ, Kolaka",
+        "destination": "Site Pomalaa PRIME, Kolaka",
         "clientName": "PRIME Enterprise (Mining Service)",
         "projectCode": "PRIME-MINING-02",
         "purpose": "Penggantian darurat sleeve bearing & balancing unit",
@@ -321,9 +321,9 @@
       "type": "DINAS_LUAR",
       "employeeId": "EMP-004",
       "employeeName": "Hendra Wijaya, A.Md.T.",
-      "employeeNik": "DMJ-2024-089",
+      "employeeNik": "PRIME-2024-089",
       "department": "Mechanical & Field Service",
-      "title": "Persetujuan Dinas Luar Mendadak - Site Pomalaa DMJ",
+      "title": "Persetujuan Dinas Luar Mendadak - Site Pomalaa PRIME",
       "description": "Permintaan darurat penanganan getaran mesin alat berat di site Pomalaa. Berangkat pagi ini dengan jaringan seluler.",
       "startDate": "2026-09-08",
       "endDate": "2026-09-12",
@@ -337,7 +337,7 @@
       "type": "LEAVE",
       "employeeId": "EMP-005",
       "employeeName": "Dian Lestari, S.Kom.",
-      "employeeNik": "DMJ-2025-012",
+      "employeeNik": "PRIME-2025-012",
       "department": "QA/QC & Document Control",
       "title": "Permohonan Cuti Tahunan (2 Hari Kerja)",
       "description": "Pengajuan cuti tahunan untuk keperluan keluarga. Jatah cuti tersisa saat ini 12 hari.",
@@ -375,12 +375,12 @@
       "employeeNik": "PRIME-2024-001",
       "department": "Engineering & Digital Transformation",
       "title": "Justifikasi Dispensasi Telat 35 Menit (Inspeksi Lapangan)",
-      "description": "Keterlambatan masuk akibat inspeksi rute logistik material baja menuju workshop DMJ Manyar.",
+      "description": "Keterlambatan masuk akibat inspeksi rute logistik material baja menuju workshop PRIME Manyar.",
       "startDate": "2026-08-14",
       "lateMinutes": 35,
       "status": "REJECTED",
       "submittedAt": "2026-08-14 09:10:00",
-      "reviewedBy": "Direksi Operasional DMJ",
+      "reviewedBy": "Direksi Operasional PRIME",
       "reviewedAt": "2026-08-14 11:30:00",
       "reviewNote": "DITOLAK: Jadwal inspeksi vendor seharusnya dijadwalkan setelah briefing pagi shift kerja dan tidak ada surat tugas tertulis pendukung."
     }
@@ -403,46 +403,46 @@
     "remoteProjectAllowance": 1500000,
     "authorizedWifiNetworks": [
       {
-        "ssid": "DMJ-Corporate-5G",
+        "ssid": "PRIME-Corporate-5G",
         "bssid": "74:83:C2:AA:01:9F",
         "locationName": "PRIME Enterprise - Kantor Pusat & Workshop",
         "description": "Jaringan Resmi High-Speed 5G PRIME Enterprise"
       },
       {
-        "ssid": "DMJ-SiteOffice-Manyar",
+        "ssid": "PRIME-SiteOffice-Manyar",
         "bssid": "18:E8:29:FE:44:12",
-        "locationName": "Site Office & Workshop Manyar DMJ",
-        "description": "Jaringan Lapangan Proyek Konstruksi & Fabrikasi DMJ"
+        "locationName": "Site Office & Workshop Manyar PRIME",
+        "description": "Jaringan Lapangan Proyek Konstruksi & Fabrikasi PRIME"
       },
       {
-        "ssid": "DMJ-Mining-Pomalaa",
+        "ssid": "PRIME-Mining-Pomalaa",
         "bssid": "00:25:9C:12:88:BB",
-        "locationName": "Field Camp & Basecamp Mining Pomalaa DMJ",
-        "description": "Jaringan Khusus Service Alat Berat Tambang DMJ"
+        "locationName": "Field Camp & Basecamp Mining Pomalaa PRIME",
+        "description": "Jaringan Khusus Service Alat Berat Tambang PRIME"
       }
     ],
     "authorizedIpNetworks": [
       {
         "ipOrSubnet": "103.31.205.218",
-        "label": "Gateway Utama DMJ (Biznet Fiber Dedicated)",
+        "label": "Gateway Utama PRIME (Biznet Fiber Dedicated)",
         "isp": "PT Biznet Gio Nusantara",
         "isRegisteredOffice": true
       },
       {
         "ipOrSubnet": "103.31.205.0/24",
-        "label": "Subnet Enterprise Kantor Pusat & Workshop DMJ",
+        "label": "Subnet Enterprise Kantor Pusat & Workshop PRIME",
         "isp": "PT Biznet Gio Nusantara",
         "isRegisteredOffice": true
       },
       {
         "ipOrSubnet": "180.252.0.0/16",
-        "label": "Telkom Astinet Dedicated Site Manyar DMJ",
+        "label": "Telkom Astinet Dedicated Site Manyar PRIME",
         "isp": "PT Telkom Indonesia",
         "isRegisteredOffice": true
       },
       {
         "ipOrSubnet": "192.168.10.0/24",
-        "label": "Local Intranet Subnet DMJ Workshop & Engineering",
+        "label": "Local Intranet Subnet PRIME Workshop & Engineering",
         "isp": "LAN DHCP Subnet",
         "isRegisteredOffice": true
       }
@@ -452,7 +452,7 @@
       "lat": -7.118942,
       "lng": 112.584319,
       "radiusMeters": 350,
-      "address": "Kawasan Industri Terpadu, Jl. Raya Utama DMJ Blok A1-A4, Jawa Timur"
+      "address": "Kawasan Industri Terpadu, Jl. Raya Utama PRIME Blok A1-A4, Jawa Timur"
     }
   },
   "INITIAL_REIMBURSEMENTS": [
@@ -462,12 +462,12 @@
       "employeeName": "Galih Primananda, S.E.",
       "employeeNik": "PRIME-2024-001",
       "category": "TRANSPORT_BBM",
-      "title": "BBM & Tol Mobil Operasional Inspeksi Smelter DMJ",
+      "title": "BBM & Tol Mobil Operasional Inspeksi Smelter PRIME",
       "description": "Pembelian Pertamax & e-Toll untuk monitoring instalasi mekanikal di Manyar Gresik.",
       "amount": 450000,
       "date": "2026-09-04",
       "projectId": "PRIME-ENG-01",
-      "projectName": "Konstruksi Pabrik & Instalasi Mekanikal Smelter DMJ",
+      "projectName": "Konstruksi Pabrik & Instalasi Mekanikal Smelter PRIME",
       "status": "APPROVED",
       "submittedAt": "2026-09-04 17:30:00",
       "reviewedBy": "Finance PRIME Lead",
@@ -484,7 +484,7 @@
       "amount": 275000,
       "date": "2026-09-06",
       "projectId": "PRIME-ENG-01",
-      "projectName": "Konstruksi Pabrik & Instalasi Mekanikal Smelter DMJ",
+      "projectName": "Konstruksi Pabrik & Instalasi Mekanikal Smelter PRIME",
       "status": "REJECTED",
       "submittedAt": "2026-09-06 22:00:00",
       "reviewedBy": "Siti Rahmawati (HR) & Finance",
@@ -513,7 +513,7 @@
       "id": "REIMB-2026-004",
       "employeeId": "EMP-004",
       "employeeName": "Hendra Wijaya, A.Md.T.",
-      "employeeNik": "DMJ-2024-089",
+      "employeeNik": "PRIME-2024-089",
       "category": "PENGINAPAN_SITE",
       "title": "Penginapan Darurat Transit Kendari - Pomalaa",
       "description": "Akomodasi semalam saat perjalanan dinas mendadak overhaul bearing Pomalaa.",
@@ -528,14 +528,14 @@
       "id": "REIMB-2026-005",
       "employeeId": "EMP-005",
       "employeeName": "Dian Lestari, S.Kom.",
-      "employeeNik": "DMJ-2025-012",
+      "employeeNik": "PRIME-2025-012",
       "category": "ALAT_MATERIAL",
       "title": "Pengadaan Kertas Form QC & Toner Printer Workshop",
-      "description": "Pengadaan kertas sertifikat uji tarik dan dokumen safety QA/QC DMJ.",
+      "description": "Pengadaan kertas sertifikat uji tarik dan dokumen safety QA/QC PRIME.",
       "amount": 380000,
       "date": "2026-09-02",
-      "projectId": "DMJ-PLANT-04",
-      "projectName": "Fabrikasi Struktur Baja & Piping System Pabrik DMJ",
+      "projectId": "PRIME-PLANT-04",
+      "projectName": "Fabrikasi Struktur Baja & Piping System Pabrik PRIME",
       "status": "DISBURSED",
       "submittedAt": "2026-09-02 11:00:00",
       "reviewedBy": "Finance PRIME Lead",

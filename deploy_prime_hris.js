@@ -75,14 +75,9 @@ process.stdin.on('end', () => {
       console.log('[DEV20] Updated data/seedData.json (' + fs.statSync(seedDataDest).size + ' bytes)');
     }
 
-    // Sanitize DB to PRIME-
+    // Sanitize DEV20 DB to PRIME- standard
     try {
-      const dbModule = require(serverDbJsDest);
-      const db = dbModule.getDb ? dbModule.getDb() : null;
-      if (db) {
-        db.prepare("UPDATE employees SET nik = REPLACE(nik, 'DMJ-', 'PRIME-'), email = REPLACE(email, '@dwimarthajaya.co.id', '@primeprojectx.net') WHERE nik LIKE 'DMJ-%' OR email LIKE '%@dwimarthajaya.co.id%'").run();
-        console.log('[DEV20] Sanitized SQLite employees NIK & email to PRIME-');
-      }
+      execSync('node -e "import(\\'./server/db.js\\').then(m => { const db = m.getDatabase(); db.exec(\`UPDATE projects SET id = REPLACE(id, \\'DMJ-\\', \\'PRIME-\\'), code = REPLACE(code, \\'DMJ-\\', \\'PRIME-\\'), name = REPLACE(REPLACE(name, \\'DMJ\\', \\'PRIME\\'), \\'Smelter PRIME\\', \\'Smelter Smelting\\'), client = REPLACE(client, \\'PT Dwi Martha Jaya\\', \\'PT Prime Infinity Systems\\'), location = REPLACE(location, \\'DMJ\\', \\'PRIME\\'); UPDATE employees SET nik = REPLACE(nik, \\'DMJ-\\', \\'PRIME-\\'), assignedProjectId = REPLACE(assignedProjectId, \\'DMJ-\\', \\'PRIME-\\'), email = REPLACE(email, \\'@dwimarthajaya.co.id\\', \\'@primeprojectx.net\\'); UPDATE attendances SET employeeNik = REPLACE(employeeNik, \\'DMJ-\\', \\'PRIME-\\'); UPDATE approvals SET employeeNik = REPLACE(employeeNik, \\'DMJ-\\', \\'PRIME-\\'); UPDATE reimbursements SET employeeNik = REPLACE(employeeNik, \\'DMJ-\\', \\'PRIME-\\'), projectId = REPLACE(projectId, \\'DMJ-\\', \\'PRIME-\\'), projectName = REPLACE(projectName, \\'DMJ\\', \\'PRIME\\');\`); console.log(\\'[DEV20] SQLite database sanitized to PRIME- successfully\\'); });"', { cwd: appDir, stdio: 'inherit' });
     } catch (dbErr) {
       console.log('[DEV20 DB Note]', dbErr.message);
     }
