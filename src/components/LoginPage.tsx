@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Lock,
   User,
@@ -10,17 +10,10 @@ import {
   HardHat,
   Users,
   AlertCircle,
-  Play,
-  Pause,
-  Maximize2,
-  Minimize2,
-  Sparkle,
-  Film,
   ShieldCheck
 } from 'lucide-react';
 import { AuthUser } from '../types';
 import { api } from '../services/api';
-import { EcosystemMotionOverlay } from './EcosystemMotionOverlay';
 
 interface LoginPageProps {
   onLoginSuccess: (user: AuthUser, token: string) => void;
@@ -40,23 +33,15 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   
-  // Showcase view mode: 'hd' (crystal sharp vector + SVG motion) or 'video' (MP4 full-motion)
-  const [showcaseMode, setShowcaseMode] = useState<'hd' | 'video'>('hd');
-  const [isVideoPlaying, setIsVideoPlaying] = useState<boolean>(true);
-  const [isFullscreenShowcase, setIsFullscreenShowcase] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const toggleVideo = () => {
+  useEffect(() => {
     if (videoRef.current) {
-      if (videoRef.current.paused) {
-        videoRef.current.play();
-        setIsVideoPlaying(true);
-      } else {
-        videoRef.current.pause();
-        setIsVideoPlaying(false);
-      }
+      videoRef.current.play().catch(() => {
+        // Autoplay handled by muted property
+      });
     }
-  };
+  }, []);
 
   const handleLogin = async (e?: React.FormEvent, customUser?: string, customPass?: string) => {
     if (e) e.preventDefault();
@@ -132,118 +117,44 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
       <main className="flex-1 w-full max-w-[1540px] mx-auto px-4 sm:px-6 lg:px-10 py-6 sm:py-8 flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12 my-auto">
         
         {/* ----------------------------------------------------------------------- */}
-        {/* LEFT COLUMN: THE 3D ECOSYSTEM OPERATIONAL SHOWCASE (PROPORTIONAL 16:9)  */}
+        {/* LEFT COLUMN: THE 3D ECOSYSTEM OPERATIONAL SHOWCASE (SEAMLESS VIDEO)     */}
         {/* ----------------------------------------------------------------------- */}
-        <div className="w-full lg:flex-1 flex flex-col items-center justify-center">
-          
-          {/* Showcase Stage Wrapper */}
-          <div className="w-full relative rounded-3xl overflow-hidden shadow-2xl shadow-blue-900/8 border border-slate-200/90 bg-white aspect-[1672/941] flex items-center justify-center group">
-            
-            {/* Ambient Radial Glow */}
-            <div className="absolute inset-0 bg-radial from-blue-50/60 via-transparent to-transparent pointer-events-none -z-10" />
+        <div className="w-full lg:flex-1 flex items-center justify-center relative select-none">
+          {/* Ambient Radial Soft Glow */}
+          <div className="absolute inset-0 bg-radial from-blue-100/40 via-blue-50/10 to-transparent -z-10 blur-2xl pointer-events-none" />
 
-            {/* Mode 1: Crystal Sharp HD Artwork + SVG Flow Motion */}
-            {showcaseMode === 'hd' ? (
-              <div className="relative w-full h-full flex items-center justify-center">
-                <img
-                  src="/ecosystem_hero.png"
-                  alt="PRIME hris Ecosystem Operational"
-                  className="w-full h-full object-contain pointer-events-none select-none"
-                />
-                <EcosystemMotionOverlay isMotionActive={true} />
-              </div>
-            ) : (
-              /* Mode 2: MP4 Full-Motion Animation Video */
-              <div className="relative w-full h-full flex items-center justify-center bg-slate-900">
-                <video
-                  ref={videoRef}
-                  src="/ecosystem_hero.mp4"
-                  poster="/ecosystem_hero.png"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-full object-contain select-none"
-                />
-              </div>
-            )}
+          {/* Seamless Video Stage (No border, No shadow, No buttons) */}
+          <div className="relative w-full max-w-[960px] aspect-video flex items-center justify-center overflow-hidden">
+            {/* Background Base matching page */}
+            <div className="absolute inset-0 bg-[#F4F8FE] -z-10" />
 
-            {/* Top Showcase Toolbar */}
-            <div className="absolute top-3 left-3 right-3 flex items-center justify-between z-20 pointer-events-none">
-              
-              {/* Mode Switcher Pill */}
-              <div className="pointer-events-auto flex items-center gap-1 p-1 rounded-2xl bg-white/90 backdrop-blur-md border border-slate-200 shadow-sm text-xs font-semibold">
-                <button
-                  type="button"
-                  onClick={() => setShowcaseMode('hd')}
-                  className={`flex items-center gap-1.5 px-3 py-1 rounded-xl transition cursor-pointer ${
-                    showcaseMode === 'hd'
-                      ? 'bg-[#0066FF] text-white shadow-xs font-bold'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                  }`}
-                  title="Tampilan Gambar HD Kristal dengan Aliran Vektor Tajam 100%"
-                >
-                  <Sparkle className="w-3.5 h-3.5" />
-                  <span>Mode HD Kristal</span>
-                </button>
+            {/* Loop Video with feathered radial mask */}
+            <video
+              ref={videoRef}
+              src="/ecosystem_hero.mp4"
+              poster="/ecosystem_hero.png"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-contain pointer-events-none select-none"
+              style={{
+                maskImage: 'radial-gradient(ellipse 96% 92% at 50% 50%, black 80%, transparent 100%)',
+                WebkitMaskImage: 'radial-gradient(ellipse 96% 92% at 50% 50%, black 80%, transparent 100%)',
+              }}
+            />
 
-                <button
-                  type="button"
-                  onClick={() => setShowcaseMode('video')}
-                  className={`flex items-center gap-1.5 px-3 py-1 rounded-xl transition cursor-pointer ${
-                    showcaseMode === 'video'
-                      ? 'bg-[#0066FF] text-white shadow-xs font-bold'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                  }`}
-                  title="Tampilan Video Animasi MP4 Penuh"
-                >
-                  <Film className="w-3.5 h-3.5" />
-                  <span>Mode Video Animasi</span>
-                </button>
-              </div>
+            {/* Seamless Edge Dissolves (Direct into page background #F4F8FE) */}
+            <div className="absolute inset-x-0 top-0 h-14 bg-gradient-to-b from-[#F4F8FE] via-[#F4F8FE]/80 to-transparent pointer-events-none z-10" />
+            <div className="absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-[#F4F8FE] via-[#F4F8FE]/80 to-transparent pointer-events-none z-10" />
+            <div className="absolute inset-y-0 left-0 w-14 bg-gradient-to-r from-[#F4F8FE] via-[#F4F8FE]/80 to-transparent pointer-events-none z-10" />
+            <div className="absolute inset-y-0 right-0 w-14 bg-gradient-to-l from-[#F4F8FE] via-[#F4F8FE]/80 to-transparent pointer-events-none z-10" />
 
-              {/* Right Action Buttons */}
-              <div className="pointer-events-auto flex items-center gap-2">
-                {/* Play/Pause toggle if in video mode */}
-                {showcaseMode === 'video' && (
-                  <button
-                    type="button"
-                    onClick={toggleVideo}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/90 hover:bg-white text-slate-700 text-xs font-semibold backdrop-blur-md border border-slate-200 shadow-sm transition cursor-pointer"
-                  >
-                    {isVideoPlaying ? (
-                      <>
-                        <Pause className="w-3.5 h-3.5 text-[#0066FF]" />
-                        <span>Jeda</span>
-                      </>
-                    ) : (
-                      <>
-                        <Play className="w-3.5 h-3.5 text-slate-600" />
-                        <span>Putar</span>
-                      </>
-                    )}
-                  </button>
-                )}
-
-                {/* Fullscreen Showcase Trigger */}
-                <button
-                  type="button"
-                  onClick={() => setIsFullscreenShowcase(true)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/90 hover:bg-white text-slate-700 text-xs font-semibold backdrop-blur-md border border-slate-200 shadow-sm transition cursor-pointer"
-                  title="Tampilkan 3D Ecosystem Layar Penuh"
-                >
-                  <Maximize2 className="w-3.5 h-3.5 text-slate-600" />
-                  <span className="hidden sm:inline">Layar Penuh</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Bottom Caption Badge */}
-            <div className="absolute bottom-3 left-4 z-20 pointer-events-none hidden sm:block">
-              <span className="px-3 py-1 rounded-full bg-white/85 backdrop-blur-md border border-slate-200 text-[11px] font-medium text-slate-600 shadow-2xs">
-                Satu Ekosistem untuk Operasional HR • Terintegrasi, Real-Time, Aman
-              </span>
-            </div>
+            {/* 4 Seamless Corner Dissolves for 100% borderless blend */}
+            <div className="absolute top-0 left-0 w-20 h-20 bg-radial from-[#F4F8FE] to-transparent pointer-events-none z-10" />
+            <div className="absolute top-0 right-0 w-20 h-20 bg-radial from-[#F4F8FE] to-transparent pointer-events-none z-10" />
+            <div className="absolute bottom-0 left-0 w-20 h-20 bg-radial from-[#F4F8FE] to-transparent pointer-events-none z-10" />
+            <div className="absolute bottom-0 right-0 w-20 h-20 bg-radial from-[#F4F8FE] to-transparent pointer-events-none z-10" />
           </div>
         </div>
 
@@ -379,51 +290,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
       </main>
 
       {/* ========================================================================= */}
-      {/* 3. FULLSCREEN SHOWCASE MODAL (IF TRIGGERED)                                */}
-      {/* ========================================================================= */}
-      {isFullscreenShowcase && (
-        <div className="fixed inset-0 z-50 bg-[#F4F8FE] flex flex-col items-center justify-center p-2 sm:p-6 animate-in fade-in duration-200">
-          
-          {/* Close Fullscreen Floating Toolbar */}
-          <div className="absolute top-4 right-4 z-50 flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => setIsFullscreenShowcase(false)}
-              className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/95 text-slate-700 hover:text-slate-900 border border-slate-200 shadow-lg text-xs font-bold backdrop-blur-md transition cursor-pointer"
-            >
-              <Minimize2 className="w-4 h-4" />
-              <span>Kembali ke Halaman Login</span>
-            </button>
-          </div>
-
-          {/* Fullscreen Canvas Container */}
-          <div className="w-full h-full max-w-[1750px] relative aspect-[1672/941] flex items-center justify-center overflow-hidden rounded-3xl shadow-2xl bg-white border border-slate-200">
-            {showcaseMode === 'hd' ? (
-              <div className="relative w-full h-full flex items-center justify-center">
-                <img
-                  src="/ecosystem_hero.png"
-                  alt="PRIME hris Ecosystem Operational"
-                  className="w-full h-full object-contain pointer-events-none select-none"
-                />
-                <EcosystemMotionOverlay isMotionActive={true} />
-              </div>
-            ) : (
-              <video
-                src="/ecosystem_hero.mp4"
-                poster="/ecosystem_hero.png"
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full h-full object-contain select-none"
-              />
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* ========================================================================= */}
-      {/* 4. FOOTER                                                                 */}
+      {/* 3. FOOTER                                                                 */}
       {/* ========================================================================= */}
       <footer className="w-full py-3 px-4 text-center text-xs text-slate-400 border-t border-slate-200/60 bg-white/50">
         &copy; 2026 PRIME hris • PT Prime Infinity Systems • All Rights Reserved
