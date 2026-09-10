@@ -27,7 +27,7 @@ import {
   Radio,
   ExternalLink
 } from 'lucide-react';
-import { Employee, AttendanceRecord, AttendanceMode, SalaryRuleConfig } from '../types';
+import { Employee, AttendanceRecord, AttendanceMode, SalaryRuleConfig, SystemRole, getEffectiveSystemRole } from '../types';
 import { rtcService } from '../services/rtcService';
 
 // Hitung jarak nyata dari koordinat GPS HP ke Geofence Kantor Pusat (Haversine Formula)
@@ -79,6 +79,22 @@ export const PresensiCameraTab: React.FC<PresensiCameraTabProps> = ({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const currentRole: SystemRole = getEffectiveSystemRole(currentUser);
+  const isSuperOrAdmin = currentRole === 'superuser' || currentRole === 'admin';
+
+  // RBAC Privacy Filter: Superuser & Admin see all workforce logs, staff users only see their own attendance records.
+  const visibleAttendanceHistory = useMemo(() => {
+    if (isSuperOrAdmin) {
+      return attendanceHistory;
+    }
+    return attendanceHistory.filter(item => {
+      const matchId = Boolean(item.employeeId && currentUser.id && item.employeeId === currentUser.id);
+      const matchNik = Boolean(item.employeeNik && currentUser.nik && item.employeeNik.trim().toLowerCase() === currentUser.nik.trim().toLowerCase());
+      const matchName = Boolean(item.employeeName && currentUser.name && item.employeeName.trim().toLowerCase() === currentUser.name.trim().toLowerCase());
+      return matchId || matchNik || matchName;
+    });
+  }, [attendanceHistory, isSuperOrAdmin, currentUser.id, currentUser.nik, currentUser.name]);
 
   const [cameraActive, setCameraActive] = useState(false);
   const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
@@ -1442,10 +1458,12 @@ export const PresensiCameraTab: React.FC<PresensiCameraTabProps> = ({
           <div className="flex items-center gap-2">
             <Clock className="w-4 h-4 text-[#FF6B00]" />
             <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider font-mono-code">
-              Riwayat Log Presensi Terkini
+              {isSuperOrAdmin ? 'Riwayat Log Presensi Terkini' : 'Riwayat Log Presensi Saya'}
             </h2>
           </div>
-          <span className="text-xs text-slate-500 font-medium">Total: {attendanceHistory.length} Rekaman</span>
+          <span className="text-xs text-slate-500 font-medium font-mono-code">
+            Total: {visibleAttendanceHistory.length} Rekaman {isSuperOrAdmin ? '(Semua Karyawan)' : '(Data Mandiri)'}
+          </span>
         </div>
 
         <div className="overflow-x-auto">
@@ -1462,69 +1480,80 @@ export const PresensiCameraTab: React.FC<PresensiCameraTabProps> = ({
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {attendanceHistory.map(item => (
-                <tr key={item.id} className="hover:bg-slate-50/70 transition-colors">
-                  <td className="py-3 px-3">
-                    <div className="font-bold text-slate-900">{item.employeeName}</div>
-                    <div className="text-[10px] text-slate-500 font-mono-code">{item.employeeNik} • {item.department}</div>
-                  </td>
-                  <td className="py-3 px-3">
-                    <div className="font-bold text-slate-800 font-mono-code">{item.checkInTime} WIB</div>
-                    <div className="text-[10px] text-slate-400">{item.date}</div>
-                  </td>
-                  <td className="py-3 px-3">
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                      item.mode === 'DINAS_LUAR'
-                        ? 'bg-amber-100 text-amber-800'
-                        : item.mode === 'WFH'
-                        ? 'bg-blue-100 text-blue-800'
-                        : 'bg-emerald-100 text-emerald-800'
-                    }`}>
-                      {item.mode.replace('_', ' ')}
-                    </span>
-                  </td>
-                  <td className="py-3 px-3">
-                    <div className="font-semibold text-slate-800 font-mono-code text-[11px] truncate max-w-[180px]">
-                      {item.wifi.ssid}
+              {visibleAttendanceHistory.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="py-10 text-center text-slate-400 text-xs">
+                    <div className="flex flex-col items-center justify-center gap-1.5">
+                      <Clock className="w-5 h-5 text-slate-300" />
+                      <span>Belum ada rekaman log presensi untuk akun Anda ({currentUser.name}).</span>
                     </div>
-                    <div className="text-[10px] text-slate-500 truncate max-w-[200px]">
-                      {item.location.address}
-                    </div>
-                  </td>
-                  <td className="py-3 px-3">
-                    <p className="text-slate-700 max-w-xs line-clamp-1">{item.note}</p>
-                    {item.isLate && (
-                      <span className="text-[10px] text-rose-600 font-semibold block">
-                        Terlambat {item.lateMinutes}m ({item.lateReason})
-                      </span>
-                    )}
-                  </td>
-                  <td className="py-3 px-3">
-                    {item.approvalStatus === 'PENDING' ? (
-                      <span className="px-2 py-0.5 rounded-full bg-orange-100 text-orange-800 text-[10px] font-bold animate-pulse">
-                        Menunggu Approval
-                      </span>
-                    ) : item.approvalStatus === 'APPROVED' ? (
-                      <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
-                        Disetujui
-                      </span>
-                    ) : (
-                      <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[10px] font-bold">
-                        Tervalidasi Otomatis
-                      </span>
-                    )}
-                  </td>
-                  <td className="py-3 px-3 text-right">
-                    <button
-                      onClick={() => setSelectedHistoryItem(item)}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[10px] cursor-pointer"
-                    >
-                      <Eye className="w-3 h-3 text-[#FF6B00]" />
-                      <span>Lihat Foto</span>
-                    </button>
                   </td>
                 </tr>
-              ))}
+              ) : (
+                visibleAttendanceHistory.map(item => (
+                  <tr key={item.id} className="hover:bg-slate-50/70 transition-colors">
+                    <td className="py-3 px-3">
+                      <div className="font-bold text-slate-900">{item.employeeName}</div>
+                      <div className="text-[10px] text-slate-500 font-mono-code">{item.employeeNik} • {item.department}</div>
+                    </td>
+                    <td className="py-3 px-3">
+                      <div className="font-bold text-slate-800 font-mono-code">{item.checkInTime} WIB</div>
+                      <div className="text-[10px] text-slate-400">{item.date}</div>
+                    </td>
+                    <td className="py-3 px-3">
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                        item.mode === 'DINAS_LUAR'
+                          ? 'bg-amber-100 text-amber-800'
+                          : item.mode === 'WFH'
+                          ? 'bg-blue-100 text-blue-800'
+                          : 'bg-emerald-100 text-emerald-800'
+                      }`}>
+                        {item.mode.replace('_', ' ')}
+                      </span>
+                    </td>
+                    <td className="py-3 px-3">
+                      <div className="font-semibold text-slate-800 font-mono-code text-[11px] truncate max-w-[180px]">
+                        {item.wifi.ssid}
+                      </div>
+                      <div className="text-[10px] text-slate-500 truncate max-w-[200px]">
+                        {item.location.address}
+                      </div>
+                    </td>
+                    <td className="py-3 px-3">
+                      <p className="text-slate-700 max-w-xs line-clamp-1">{item.note}</p>
+                      {item.isLate && (
+                        <span className="text-[10px] text-rose-600 font-semibold block">
+                          Terlambat {item.lateMinutes}m ({item.lateReason})
+                        </span>
+                      )}
+                    </td>
+                    <td className="py-3 px-3">
+                      {item.approvalStatus === 'PENDING' ? (
+                        <span className="px-2 py-0.5 rounded-full bg-orange-100 text-orange-800 text-[10px] font-bold animate-pulse">
+                          Menunggu Approval
+                        </span>
+                      ) : item.approvalStatus === 'APPROVED' ? (
+                        <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
+                          Disetujui
+                        </span>
+                      ) : (
+                        <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[10px] font-bold">
+                          Tervalidasi Otomatis
+                        </span>
+                      )}
+                    </td>
+                    <td className="py-3 px-3 text-right">
+                      <button
+                        onClick={() => setSelectedHistoryItem(item)}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[10px] cursor-pointer"
+                      >
+                        <Eye className="w-3 h-3 text-[#FF6B00]" />
+                        <span>Lihat Foto</span>
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
