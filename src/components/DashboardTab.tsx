@@ -97,130 +97,92 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
     <div className="space-y-6">
       
       {/* Dual Dashboard Segmented Switcher Header */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white/80 backdrop-blur-md p-2 rounded-3xl border border-slate-200/80 shadow-xs motion-fade-in-down">
-        <div className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-[#FF6B00] to-[#FF8533] text-white flex items-center justify-center font-mono-code font-black text-sm shadow-md shadow-orange-500/20">
-            PX
+      {/* Perspective Switcher */}
+      {!isStaff && (
+        <div className="flex items-center justify-between gap-3 bg-white/90 backdrop-blur-md px-4 py-2 rounded-2xl border border-slate-200/80 shadow-xs motion-fade-in-down">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[#FF6B00]"></span>
+            <span className="text-xs font-bold text-slate-700">Sudut Pandang:</span>
           </div>
-          <div>
-            <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 font-mono-code block">
-              SISTEM MONITORING TERPADU • PRIME HRIS ENTERPRISE
-            </span>
-            <span className="text-xs font-bold text-slate-900">
-              Pilih Sudut Pandang Dashboard:
-            </span>
-          </div>
-        </div>
 
-        {/* Executive Switcher Buttons (Staff is locked to personal performance) */}
-        {isStaff ? (
-          <div className="flex items-center gap-2 bg-emerald-50 px-3 py-1.5 rounded-2xl border border-emerald-200 text-emerald-800">
-            <User className="w-4 h-4 text-emerald-600" />
-            <span className="text-xs font-bold font-mono-code">PORTAL KINERJA PRIBADI</span>
-            <span className="text-[10px] bg-emerald-200 text-emerald-900 font-black px-2 py-0.5 rounded-full font-mono-code uppercase">
-              STAFF BIASA
-            </span>
-          </div>
-        ) : (
-          <div id="tour-dashboard-subview" className="flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-2xl border border-slate-200/80">
+          <div id="tour-dashboard-subview" className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200/70">
             <button
               onClick={() => setSubView('hris')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                 subView === 'hris'
-                  ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-600/20 scale-[1.02]'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <Users className="w-4 h-4" />
-              <span>DASHBOARD HRIS</span>
-              <span className={`text-[10px] px-1.5 py-0.2 rounded-md font-mono-code ${
-                subView === 'hris' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
-              }`}>
-                SDM & Shift
-              </span>
+              <Users className="w-3.5 h-3.5" />
+              <span>Operasional SDM</span>
             </button>
 
             <button
               onClick={() => setSubView('finance')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                 subView === 'finance'
-                  ? 'bg-gradient-to-r from-[#FF6B00] to-[#FF8533] text-white shadow-md shadow-orange-500/20 scale-[1.02]'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+                  ? 'bg-[#FF6B00] text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <Banknote className="w-4 h-4" />
-              <span>DASHBOARD FINANCE</span>
-              <span className={`text-[10px] px-1.5 py-0.2 rounded-md font-mono-code ${
-                subView === 'finance' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
-              }`}>
-                Payroll & Kas
-              </span>
+              <Banknote className="w-3.5 h-3.5" />
+              <span>Finance & Payroll</span>
             </button>
 
             <button
               onClick={() => setSubView('performance')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                 subView === 'performance'
-                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-600/20 scale-[1.02]'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+                  ? 'bg-blue-600 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <User className="w-4 h-4" />
-              <span>KINERJA SAYA</span>
-              <span className={`text-[10px] px-1.5 py-0.2 rounded-md font-mono-code ${
-                subView === 'performance' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
-              }`}>
-                Personal
-              </span>
+              <User className="w-3.5 h-3.5" />
+              <span>Kinerja Saya</span>
             </button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* =========================================================================
           VIEW 1: DASHBOARD HRIS & OPERASIONAL SDM
          ========================================================================= */}
       {subView === 'hris' && (
-        <div className="space-y-6 motion-fade-in-up">
+        <div className="space-y-5 motion-fade-in-up">
           
-          {/* Executive Welcome Banner for HRIS */}
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-950 via-slate-900 to-teal-950 p-6 sm:p-8 text-white shadow-2xl border border-slate-800">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-[#00E2B0]/20 to-teal-600/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20"></div>
-            <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-              <div className="space-y-2 max-w-2xl">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="prime-cut-corner bg-emerald-600 text-white text-[10px] font-black px-2.5 py-0.5 tracking-wider uppercase font-mono-code">
-                    PORTAL OPERASIONAL SDM • PRIME HRIS ENTERPRISE
-                  </span>
-                  <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[11px] font-semibold flex items-center gap-1 border border-emerald-500/30 font-mono-code">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-                    PRESENSI KAMERA LIVE & WIFI GATE AKTIF
-                  </span>
-                </div>
-                <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
-                  Dashboard HRIS & Manajemen Tenaga Kerja
+          {/* Compact HRIS Action Bar */}
+          <div className="rounded-2xl bg-gradient-to-r from-slate-950 via-slate-900 to-teal-950 px-5 py-3.5 text-white shadow-lg border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/30 shrink-0">
+                <Users className="w-4 h-4" />
+              </div>
+              <div>
+                <h1 className="text-base font-black text-white tracking-tight">
+                  Monitoring Operasional SDM
                 </h1>
-                <p className="text-sm text-slate-300 leading-relaxed">
-                  Monitoring terpusat kehadiran presensi kamera, shift timeline 24 jam, verifikasi jaringan resmi WiFi kantor (<code className="text-[#00E2B0] font-mono-code">PRIME-Corporate-5G</code>), serta alur persetujuan dinas luar untuk seluruh staf <strong className="text-white">PRIME Enterprise</strong>.
+                <p className="text-xs text-slate-400 flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span>Presensi Aktif: {attendances.length} dari {employees.length} staf hadir</span>
                 </p>
               </div>
+            </div>
 
-              <div className="flex flex-wrap items-center gap-3">
-                <button
-                  onClick={() => onNavigateToTab('attendance')}
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#FF6B00] to-[#FF8533] hover:from-[#e56000] text-white text-xs font-bold shadow-lg shadow-orange-500/30 transition-all active:scale-95 flex items-center gap-2 cursor-pointer"
-                >
-                  <Clock className="w-4 h-4" />
-                  Presensi Kamera Sekarang
-                </button>
-                <button
-                  onClick={() => onNavigateToTab('approvals')}
-                  className="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-bold border border-white/20 backdrop-blur-md transition-all active:scale-95 flex items-center gap-2 cursor-pointer"
-                >
-                  <ShieldCheck className="w-4 h-4 text-[#00E2B0]" />
-                  Pusat Approval ({pendingApprovals.length})
-                </button>
-              </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => onNavigateToTab('attendance')}
+                className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#FF6B00] to-[#FF8533] hover:from-[#e56000] text-white text-xs font-bold shadow-md shadow-orange-500/20 transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer"
+              >
+                <Clock className="w-3.5 h-3.5" />
+                <span>Presensi Kamera</span>
+              </button>
+              <button
+                onClick={() => onNavigateToTab('approvals')}
+                className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-bold border border-white/20 backdrop-blur-md transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer"
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-[#00E2B0]" />
+                <span>Approval ({pendingApprovals.length})</span>
+              </button>
             </div>
           </div>
 
@@ -228,38 +190,34 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
           <div id="tour-dashboard-metrics" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             
             {/* Metric 1: Total Karyawan */}
-            <div className="glass-card rounded-2xl p-5 hover:shadow-lg transition-all border border-slate-200/80 card-interactive">
+            <div className="glass-card rounded-2xl p-4 sm:p-5 hover:shadow-lg transition-all border border-slate-200/80 card-interactive">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono-code">
                   Total Tenaga Kerja
                 </span>
-                <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
                   <Users className="w-4 h-4" />
                 </div>
               </div>
-              <div className="text-2xl sm:text-3xl font-black text-slate-900 font-mono-code">
-                {employees.length} <span className="text-sm font-normal text-slate-500">Personel</span>
-              </div>
-              <div className="mt-2 flex items-center gap-1.5 text-xs text-slate-600">
-                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                <span>100% data profil, MAC & bank terdata</span>
+              <div className="text-2xl font-black text-slate-900 font-mono-code">
+                {employees.length} <span className="text-xs font-normal text-slate-500">Personel</span>
               </div>
             </div>
 
             {/* Metric 2: Kehadiran Hari Ini */}
-            <div className="glass-card rounded-2xl p-5 hover:shadow-lg transition-all border border-slate-200/80 card-interactive">
+            <div className="glass-card rounded-2xl p-4 sm:p-5 hover:shadow-lg transition-all border border-slate-200/80 card-interactive">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono-code">
                   Kehadiran Terlapor
                 </span>
-                <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
                   <CheckCircle2 className="w-4 h-4" />
                 </div>
               </div>
-              <div className="text-2xl sm:text-3xl font-black text-slate-900 font-mono-code">
+              <div className="text-2xl font-black text-slate-900 font-mono-code">
                 {attendances.length} / {employees.length}
               </div>
-              <div className="mt-2 flex items-center gap-2 text-xs text-emerald-700 font-semibold">
+              <div className="mt-1 flex items-center gap-2 text-xs text-emerald-700 font-semibold">
                 <span>{onTimeCount} Tepat Waktu</span>
                 <span>•</span>
                 <span className="text-blue-700">{dinasCount} Dinas Luar</span>
@@ -267,39 +225,32 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
             </div>
 
             {/* Metric 3: Kepatuhan Geofence & WiFi */}
-            <div className="glass-card rounded-2xl p-5 hover:shadow-lg transition-all border border-slate-200/80 card-interactive">
+            <div className="glass-card rounded-2xl p-4 sm:p-5 hover:shadow-lg transition-all border border-slate-200/80 card-interactive">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono-code">
-                  Kepatuhan Geofence & Jaringan
+                  Kepatuhan Lokasi
                 </span>
-                <div className="w-9 h-9 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center">
                   <Wifi className="w-4 h-4" />
                 </div>
               </div>
-              <div className="text-2xl sm:text-3xl font-black text-teal-700 font-mono-code">
+              <div className="text-2xl font-black text-teal-700 font-mono-code">
                 {attendances.length > 0 ? Math.round((inGeofenceCount / attendances.length) * 100) : 100}%
-              </div>
-              <div className="mt-2 text-xs text-slate-500 flex items-center gap-1 truncate">
-                <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                <span className="truncate">Radius Workshop & Site Pomalaa</span>
               </div>
             </div>
 
             {/* Metric 4: Antrean Approval */}
-            <div className="glass-card rounded-2xl p-5 hover:shadow-lg transition-all border border-slate-200/80 card-interactive">
+            <div className="glass-card rounded-2xl p-4 sm:p-5 hover:shadow-lg transition-all border border-slate-200/80 card-interactive">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono-code">
                   Persetujuan Pending
                 </span>
-                <div className="w-9 h-9 rounded-xl bg-orange-50 text-[#FF6B00] flex items-center justify-center">
+                <div className="w-8 h-8 rounded-xl bg-orange-50 text-[#FF6B00] flex items-center justify-center">
                   <AlertTriangle className="w-4 h-4" />
                 </div>
               </div>
-              <div className="text-2xl sm:text-3xl font-black text-orange-600 font-mono-code">
-                {pendingApprovals.length} <span className="text-sm font-normal text-slate-500">Berkas</span>
-              </div>
-              <div className="mt-2 text-xs text-slate-500">
-                {lateCount > 0 ? `${lateCount} justifikasi keterlambatan` : 'Semua berkas telah ditinjau'}
+              <div className="text-2xl font-black text-orange-600 font-mono-code">
+                {pendingApprovals.length} <span className="text-xs font-normal text-slate-500">Berkas</span>
               </div>
             </div>
 
@@ -324,11 +275,8 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                 <div>
                   <h3 className="text-base font-black text-slate-900 tracking-tight flex items-center gap-2">
                     <Users className="w-4 h-4 text-[#FF6B00]" />
-                    Sebaran Tenaga Kerja & Penugasan Divisi Perusahaan
+                    Penugasan Tim & Karyawan
                   </h3>
-                  <p className="text-xs text-slate-500">
-                    Alokasi personel aktif di Workshop Pusat Manyar dan Site Luar Pomalaa.
-                  </p>
                 </div>
                 <button
                   onClick={() => onNavigateToTab('users')}
@@ -469,44 +417,40 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
       {subView === 'finance' && (
         <div className="space-y-6 motion-fade-in-up">
           
-          {/* Executive Welcome Banner for Finance */}
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-950 via-slate-900 to-amber-950 p-6 sm:p-8 text-white shadow-2xl border border-slate-800">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-[#FF6B00]/25 to-amber-500/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20"></div>
-            <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-              <div className="space-y-2 max-w-2xl">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="prime-cut-corner bg-[#FF6B00] text-white text-[10px] font-black px-2.5 py-0.5 tracking-wider uppercase font-mono-code">
-                    PORTAL FINANCE & COST ACCOUNTING • PRIME ENTERPRISE
+          {/* Executive Compact Action Bar for Finance */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-slate-900 via-slate-800 to-amber-950 text-white shadow-md border border-slate-800">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-black">
+                <Banknote className="w-5 h-5 text-[#FF6B00]" />
+              </div>
+              <div>
+                <h2 className="text-base sm:text-lg font-black tracking-tight text-white flex items-center gap-2">
+                  Finance & Payroll Proyek
+                  <span className="text-[10px] font-mono-code font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                    Live
                   </span>
-                  <span className="px-2.5 py-0.5 rounded-full bg-orange-500/20 text-orange-400 text-[11px] font-semibold flex items-center gap-1 border border-orange-500/30 font-mono-code">
-                    <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-ping"></span>
-                    SIMULASI BEBAN PAYROLL & PROYEK AKTIF
-                  </span>
-                </div>
-                <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
-                  Dashboard Finance, Payroll & Anggaran Proyek
-                </h1>
-                <p className="text-sm text-slate-300 leading-relaxed">
-                  Pemantauan realisasi gaji bersih (THP), beban upah lembur regulasi Depnaker RI, estimasi burn-rate anggaran proyek, serta timeline arus kas pencairan bank rekanan.
+                </h2>
+                <p className="text-xs text-slate-300">
+                  Estimasi THP & realisasi anggaran proyek
                 </p>
               </div>
+            </div>
 
-              <div className="flex flex-wrap items-center gap-3">
-                <button
-                  onClick={() => onNavigateToTab('payroll')}
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#FF6B00] to-[#FF8533] hover:from-[#e56000] text-white text-xs font-bold shadow-lg shadow-orange-500/30 transition-all active:scale-95 flex items-center gap-2 cursor-pointer"
-                >
-                  <Banknote className="w-4 h-4" />
-                  Buka Payroll Hub PRIME
-                </button>
-                <button
-                  onClick={() => onNavigateToTab('salary_rules')}
-                  className="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-bold border border-white/20 backdrop-blur-md transition-all active:scale-95 flex items-center gap-2 cursor-pointer"
-                >
-                  <Sparkles className="w-4 h-4 text-[#00E2B0]" />
-                  Aturan Gaji Depnaker
-                </button>
-              </div>
+            <div className="flex flex-wrap items-center gap-2.5">
+              <button
+                onClick={() => onNavigateToTab('payroll')}
+                className="px-4 py-2 rounded-xl bg-[#FF6B00] hover:bg-[#e56000] text-white text-xs font-bold shadow-sm transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer"
+              >
+                <Banknote className="w-3.5 h-3.5" />
+                Payroll Hub
+              </button>
+              <button
+                onClick={() => onNavigateToTab('salary_rules')}
+                className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-bold border border-white/20 transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-[#00E2B0]" />
+                Aturan Gaji
+              </button>
             </div>
           </div>
 
@@ -605,11 +549,8 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                 <div>
                   <h3 className="text-base font-black text-slate-900 tracking-tight flex items-center gap-2">
                     <Layers className="w-4 h-4 text-[#FF6B00]" />
-                    Status Realisasi Gaji & Proyeksi Anggaran EAC Proyek
+                    Status Anggaran Proyek
                   </h3>
-                  <p className="text-xs text-slate-500">
-                    Alokasi biaya tenaga kerja langsung terhadap pagu anggaran kontrak proyek perusahaan.
-                  </p>
                 </div>
                 <button
                   onClick={() => onNavigateToTab('payroll')}

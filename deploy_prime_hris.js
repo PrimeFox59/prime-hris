@@ -10,12 +10,14 @@ const tarBuffer = fs.readFileSync('dist.tar.gz');
 const serverIndexBuffer = fs.readFileSync('server/index.js');
 const serverDbJsBuffer = fs.readFileSync('server/db.js');
 const serverDbTsBuffer = fs.readFileSync('server/db.ts');
+const seedDataBuffer = fs.readFileSync('data/seedData.json');
 
 const payload = JSON.stringify({
   distB64: tarBuffer.toString('base64'),
   serverIndexB64: serverIndexBuffer.toString('base64'),
   serverDbJsB64: serverDbJsBuffer.toString('base64'),
-  serverDbTsB64: serverDbTsBuffer.toString('base64')
+  serverDbTsB64: serverDbTsBuffer.toString('base64'),
+  seedDataB64: seedDataBuffer.toString('base64')
 });
 
 const b64Data = Buffer.from(payload).toString('base64');
@@ -35,15 +37,20 @@ process.stdin.on('end', () => {
     const destDir = path.join(appDir, 'dist');
     const destTar = path.join(appDir, 'dist_update.tar.gz');
     const serverDir = path.join(appDir, 'server');
+    const dataDir = path.join(appDir, 'data');
     const serverIndexDest = path.join(serverDir, 'index.js');
     const serverDbJsDest = path.join(serverDir, 'db.js');
     const serverDbTsDest = path.join(serverDir, 'db.ts');
+    const seedDataDest = path.join(dataDir, 'seedData.json');
 
     if (!fs.existsSync(destDir)) {
       fs.mkdirSync(destDir, { recursive: true });
     }
     if (!fs.existsSync(serverDir)) {
       fs.mkdirSync(serverDir, { recursive: true });
+    }
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
     }
 
     // 1. Unpack dist
@@ -53,7 +60,7 @@ process.stdin.on('end', () => {
     fs.unlinkSync(destTar);
     console.log('[DEV20] Extracted dist successfully to ' + destDir);
 
-    // 2. Write server files
+    // 2. Write server and data files
     fs.writeFileSync(serverIndexDest, Buffer.from(json.serverIndexB64, 'base64'));
     console.log('[DEV20] Updated server/index.js (' + fs.statSync(serverIndexDest).size + ' bytes)');
 
@@ -62,6 +69,23 @@ process.stdin.on('end', () => {
 
     fs.writeFileSync(serverDbTsDest, Buffer.from(json.serverDbTsB64, 'base64'));
     console.log('[DEV20] Updated server/db.ts (' + fs.statSync(serverDbTsDest).size + ' bytes)');
+
+    if (json.seedDataB64) {
+      fs.writeFileSync(seedDataDest, Buffer.from(json.seedDataB64, 'base64'));
+      console.log('[DEV20] Updated data/seedData.json (' + fs.statSync(seedDataDest).size + ' bytes)');
+    }
+
+    // Sanitize DB to PRIME-
+    try {
+      const dbModule = require(serverDbJsDest);
+      const db = dbModule.getDb ? dbModule.getDb() : null;
+      if (db) {
+        db.prepare("UPDATE employees SET nik = REPLACE(nik, 'DMJ-', 'PRIME-'), email = REPLACE(email, '@dwimarthajaya.co.id', '@primeprojectx.net') WHERE nik LIKE 'DMJ-%' OR email LIKE '%@dwimarthajaya.co.id%'").run();
+        console.log('[DEV20] Sanitized SQLite employees NIK & email to PRIME-');
+      }
+    } catch (dbErr) {
+      console.log('[DEV20 DB Note]', dbErr.message);
+    }
 
     // 3. Restart PM2 prime-hris only
     console.log('[DEV20] Restarting PM2 process: prime-hris...');

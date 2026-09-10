@@ -103,23 +103,19 @@ export const HrisTimelineChart: React.FC<HrisTimelineChartProps> = ({
   return (
     <div className="glass-card rounded-3xl p-5 sm:p-6 border border-slate-200/80 shadow-md space-y-5 motion-fade-in-up">
       {/* Header & Controls */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-100 pb-4">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="prime-cut-corner bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-[10px] font-black px-2.5 py-0.5 tracking-wider uppercase font-mono-code">
-              TIMELINE INTERAKTIF SDM
-            </span>
-            <span className="text-xs font-bold text-slate-500 font-mono-code">
-              Operasional 24 Jam • PRIME Enterprise
-            </span>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+        <div className="flex items-center gap-2.5">
+          <div className="p-2 rounded-xl bg-orange-50 text-[#FF6B00]">
+            <Clock className="w-5 h-5" />
           </div>
-          <h2 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <Clock className="w-5 h-5 text-[#FF6B00]" />
-            Timeline Presensi & Aktivitas Shift Karyawan Hari Ini
-          </h2>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Visualisasi jam masuk riil, verifikasi WiFi kantor, batas cutoff 08:30 WIB, serta pergerakan dinas luar secara realtime.
-          </p>
+          <div>
+            <h2 className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
+              Timeline Presensi Hari Ini
+            </h2>
+            <p className="text-xs text-slate-500">
+              Monitoring kedatangan & aktivitas shift karyawan
+            </p>
+          </div>
         </div>
 
         {/* Filter Pills */}
@@ -174,67 +170,55 @@ export const HrisTimelineChart: React.FC<HrisTimelineChartProps> = ({
 
       {/* Summary KPI Mini Strip */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="p-3 rounded-2xl bg-emerald-50/70 border border-emerald-200/60">
-          <span className="text-[10px] font-black uppercase tracking-wider text-emerald-800 font-mono-code block">
-            Tingkat Kedisiplinan
+        <div className="p-3 rounded-2xl bg-emerald-50/60 border border-emerald-200/50">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 font-mono-code block">
+            Kedisiplinan
           </span>
           <div className="text-lg font-black text-emerald-900 font-mono-code mt-0.5">
             {punctualityRate}%
           </div>
-          <span className="text-[10px] text-emerald-700 font-medium">
-            {onTimeCount} staf tepat sebelum 08:30
-          </span>
         </div>
 
-        <div className="p-3 rounded-2xl bg-orange-50/70 border border-orange-200/60">
-          <span className="text-[10px] font-black uppercase tracking-wider text-[#FF6B00] font-mono-code block">
-            Puncak Jam Masuk (Peak)
+        <div className="p-3 rounded-2xl bg-orange-50/60 border border-orange-200/50">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-[#FF6B00] font-mono-code block">
+            Puncak Masuk
           </span>
           <div className="text-lg font-black text-slate-900 font-mono-code mt-0.5">
             07:45 – 08:15
           </div>
-          <span className="text-[10px] text-slate-600 font-medium">
-            75% total presensi kamera
-          </span>
         </div>
 
-        <div className="p-3 rounded-2xl bg-blue-50/70 border border-blue-200/60">
-          <span className="text-[10px] font-black uppercase tracking-wider text-blue-800 font-mono-code block">
+        <div className="p-3 rounded-2xl bg-blue-50/60 border border-blue-200/50">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-blue-800 font-mono-code block">
             Rata-rata Check-In
           </span>
           <div className="text-lg font-black text-blue-900 font-mono-code mt-0.5">
             08:05 WIB
           </div>
-          <span className="text-[10px] text-blue-700 font-medium">
-            Terkonfirmasi WiFi & Geofence
-          </span>
         </div>
 
-        <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200/80">
-          <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 font-mono-code block">
-            Batas Cutoff Sistem
+        <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200/70">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 font-mono-code block">
+            Batas Cutoff
           </span>
           <div className="text-lg font-black text-rose-600 font-mono-code mt-0.5">
             08:30 WIB
           </div>
-          <span className="text-[10px] text-slate-500 font-medium">
-            Grace period: 10 menit
-          </span>
         </div>
       </div>
 
       {/* Interactive Timeline Canvas / Swimlane */}
-      <div className="relative pt-6 pb-4 bg-slate-900/5 rounded-3xl p-4 sm:p-6 border border-slate-200 overflow-x-auto">
+      <div className="relative pt-5 pb-4 bg-slate-900/5 rounded-3xl p-4 sm:p-5 border border-slate-200 overflow-x-auto">
         
         {/* Timeline Horizontal Axis with Zones */}
         <div className="min-w-[680px]">
           {/* Shift Zones Background Banner */}
-          <div className="relative h-8 rounded-xl overflow-hidden mb-3 border border-slate-200/80 bg-white flex text-[10px] font-mono-code font-bold">
+          <div className="relative h-7 rounded-xl overflow-hidden mb-3 border border-slate-200/80 bg-white flex text-[10px] font-mono-code font-bold">
             {/* Early / Prep Zone */}
             <div
               style={{ width: `${((7 - 6) / totalHours) * 100}%` }}
               className="bg-slate-100 text-slate-500 flex items-center justify-center border-r border-slate-200"
-              title="06:00 - 07:00: Zona Awal"
+              title="06:00 - 07:00: Persiapan"
             >
               06:00 - 07:00
             </div>
@@ -243,11 +227,11 @@ export const HrisTimelineChart: React.FC<HrisTimelineChartProps> = ({
             <div
               style={{ width: `${((8.5 - 7) / totalHours) * 100}%` }}
               className="bg-emerald-100/90 text-emerald-800 flex items-center justify-center border-r-2 border-dashed border-rose-400 relative"
-              title="07:00 - 08:30: Zona Presensi Tepat Waktu"
+              title="07:00 - 08:30: Tepat Waktu"
             >
               <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                Zona Tepat Waktu (07:00 - 08:30)
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                Tepat Waktu (07:00-08:30)
               </span>
             </div>
 
@@ -255,16 +239,16 @@ export const HrisTimelineChart: React.FC<HrisTimelineChartProps> = ({
             <div
               style={{ width: `${((12 - 8.5) / totalHours) * 100}%` }}
               className="bg-rose-50/80 text-rose-700 flex items-center justify-center border-r border-slate-200"
-              title="08:30+: Terkena Penalti Keterlambatan kecuali berizin"
+              title="08:30+: Terlambat"
             >
-              Zona Terlambat
+              Terlambat
             </div>
 
             {/* Lunch: 12:00 - 13:00 */}
             <div
               style={{ width: `${(1 / totalHours) * 100}%` }}
               className="bg-amber-100/80 text-amber-800 flex items-center justify-center border-r border-slate-200"
-              title="12:00 - 13:00: Istirahat Siang"
+              title="12:00 - 13:00: Istirahat"
             >
               Istirahat
             </div>
@@ -273,18 +257,18 @@ export const HrisTimelineChart: React.FC<HrisTimelineChartProps> = ({
             <div
               style={{ width: `${(4 / totalHours) * 100}%` }}
               className="bg-slate-50 text-slate-600 flex items-center justify-center border-r border-slate-200"
-              title="13:00 - 17:00: Jam Kerja Siang"
+              title="13:00 - 17:00: Reguler"
             >
-              Shift Reguler
+              Reguler
             </div>
 
             {/* Overtime Zone: 17:00 - 20:00 */}
             <div
               style={{ width: `${(3 / totalHours) * 100}%` }}
               className="bg-orange-100/90 text-[#FF6B00] flex items-center justify-center font-black"
-              title="17:00 - 20:00: Jam Lembur Depnaker (Formula 1/173)"
+              title="17:00 - 20:00: Lembur"
             >
-              ⚡ Lembur Depnaker
+              ⚡ Lembur
             </div>
           </div>
 
@@ -341,7 +325,7 @@ export const HrisTimelineChart: React.FC<HrisTimelineChartProps> = ({
                         {employee.name}
                       </p>
                       <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-mono-code">
-                        <span>{employee.nik}</span>
+                        <span>{employee.nik ? employee.nik.replace(/^DMJ-/i, 'PRIME-') : ''}</span>
                         <span>•</span>
                         <span className="text-slate-600 font-medium truncate">{employee.department}</span>
                       </div>
@@ -485,7 +469,7 @@ export const HrisTimelineChart: React.FC<HrisTimelineChartProps> = ({
               />
               <div>
                 <h3 className="text-base font-black text-slate-900">{selectedRecord.employeeName}</h3>
-                <p className="text-xs text-slate-500 font-mono-code">{selectedRecord.employeeNik}</p>
+                <p className="text-xs text-slate-500 font-mono-code">{selectedRecord.employeeNik ? selectedRecord.employeeNik.replace(/^DMJ-/i, 'PRIME-') : ''}</p>
                 <p className="text-xs font-semibold text-slate-700 mt-0.5">{selectedRecord.department}</p>
               </div>
             </div>

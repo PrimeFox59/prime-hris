@@ -171,7 +171,7 @@ export const UserPerformanceTab: React.FC<UserPerformanceTabProps> = ({
                   PORTAL PERSONAL KARYAWAN
                 </span>
                 <span className="text-xs font-mono-code text-slate-400 font-bold">
-                  {currentUser.nik}
+                  {currentUser.nik ? currentUser.nik.replace(/^DMJ-/i, 'PRIME-') : ''}
                 </span>
                 <span className="px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 text-[10px] font-mono-code">
                   Status: {currentUser.employmentType}
