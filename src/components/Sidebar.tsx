@@ -52,7 +52,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {
           id: 'payroll',
           title: 'SLIP GAJI SAYA',
-          desc: 'Rincian penerimaan gaji pokok, tunjangan kerja, upah lembur & cetak slip resmi Prime HRIS',
+          desc: 'Rincian penerimaan gaji pokok, tunjangan kerja, upah lembur & cetak slip resmi PRIME hris',
           icon: Banknote,
           badge: 'SLIP'
         },
@@ -66,7 +66,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {
           id: 'proposal',
           title: 'PROPOSAL KOMERSIAL',
-          desc: 'Proposal penawaran implementasi Prime HRIS Enterprise Platform',
+          desc: 'Proposal penawaran implementasi PRIME hris Enterprise Platform',
           icon: FileSpreadsheet,
           badge: 'PRIME'
         }
@@ -99,14 +99,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {
           id: 'payroll',
           title: 'PAYROLL & PROYEK',
-          desc: 'Penggajian rapi per proyek, rekap upah lembur Depnaker & slip gaji resmi Prime HRIS',
+          desc: 'Penggajian rapi per proyek, rekap upah lembur Depnaker & slip gaji resmi PRIME hris',
           icon: Banknote,
           badge: null
         },
         {
           id: 'proposal',
           title: 'PROPOSAL KOMERSIAL',
-          desc: 'Proposal penawaran implementasi Prime HRIS Enterprise Platform',
+          desc: 'Proposal penawaran implementasi PRIME hris Enterprise Platform',
           icon: FileSpreadsheet,
           badge: 'PRIME'
         }
@@ -139,14 +139,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {
         id: 'payroll',
         title: 'PAYROLL & PROYEK',
-        desc: 'Penggajian rapi dengan filter per proyek & slip gaji resmi Prime HRIS',
+        desc: 'Penggajian rapi dengan filter per proyek & slip gaji resmi PRIME hris',
         icon: Banknote,
         badge: null
       },
       {
         id: 'proposal',
         title: 'PROPOSAL KOMERSIAL',
-        desc: 'Proposal penawaran implementasi Prime HRIS Enterprise Platform',
+        desc: 'Proposal penawaran implementasi PRIME hris Enterprise Platform',
         icon: FileSpreadsheet,
         badge: 'PRIME'
       }
